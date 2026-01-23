@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:x="http://xpert.com/faces">
+    <h:head>
+        <title>REZAGO</title>
+        <link type="text/css" rel="stylesheet" href="faces/javax.faces.resource/theme.css?ln=primefaces-cupertino" />
+        <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+        <link href="resources/assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="resources/assets/css/font-awesome.min.css" rel="stylesheet" />
+
+        <link href="resources/assets/css/bootstrap-theme.css" rel="stylesheet" />
+        <link href="resources/assets/css/main.css" rel="stylesheet" />
+
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <meta http-equiv="Refresh" content="#{loginBean.usuarioConsulta ? '0.1;url=renovaciones.xhtml':''}"/>
+    </h:head>
+    <h:body>
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>        
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <p:growl id="mensajes" showDetail="true" life="4000"/>
+        <h:form id="allform" enctype="multipart/form-data" style=" background: #e3e3e3; min-height: calc(100vh - 424px);">
+            <div class="menu">
+                <a href="renovaciones.xhtml" class="logo" title="Logo Senadi" ><img src="resources/images/senadilogo.png" width="165px"/></a>            
+
+                <i id="edit_action" class="material-icons prefix user" style="position: absolute; padding: 0 7px; line-height: 42px; display: inline-block;">person</i>
+                <p:outputLabel value="#{loginBean.login}" style="margin-left: 35px; line-height: 42px; display: inline-block; padding: 0 7px; position: absolute" class="user"/>      
+
+                <div class="header-right">
+                    <p:commandLink styleClass="btn_logout"
+                                   actionListener="#{loginBean.logout}"
+                                   oncomplete="logout(xhr, status, args)"
+                                   title="CERRAR SESIÓN" immediate="true">
+                        <i class="material-icons">exit_to_app</i>
+                    </p:commandLink>
+                </div>
+                <a class="itemm" href="settings.xhtml" title="Configuración" style="display:  #{loginBean.usuarioConsulta eq true?'none':'inline-block'}"><i class="material-icons" >settings</i></a>
+                <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
+                <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
+                <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
+                <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
+                <a class="activo" href="#" title="REZAGO" >REZAGO</a>
+            </div>
+
+            <h:panelGrid columns="1"  style="text-align: center; font-size: 16px; font-weight: bold; margin: 0 auto; width: 97%;">
+                <p:panel class="panelContent" >
+                    <p:outputLabel value="RENOVACIONES"/>
+                    <p:commandButton id="buscar_registro" value="BUSCAR REZAGO" 
+                                     style="font-size: 12px; float: left"
+                                     class="btn_peque"
+                                     actionListener="#{renrezBean.cargarRezago}"
+                                     update="mensajes tablaDeDatos num_reg tablaDeDatos:pasabtn"
+                                     process="@this" rendered="#{!loginBean.usuarioConsulta}"/>
+                    <p:tabView style="font-size: 12px; margin: 0 auto; width: 50%; color: black !important">
+                        <p:tab title="Búsqueda por Criterio" >
+                            <p:outputLabel value="BUSCAR: " style="font-size: 13px; font-weight: bold; margin-right: 5px;"/>
+                            <p:inputText id="buscarText" value="#{renrezBean.criterio}" 
+                                         style="font-size: 14px; margin-right: 5px; width: 40%" placeholder="Ingrese un No. Solicitud Ej: SENADI-2022-12345"
+                                         title="Ingrese un No. Solicitud Ej: SENADI-2022-12345"/>
+                            <p:commandButton value="BUSCAR" actionListener="#{renrezBean.buscarRezagoRenovacionCriterio}"
+                                             update="allform:tablaDeDatos mensajes allform:num_reg "
+                                             style="font-size: 13px"
+                                             process="@parent" class="btn_peque"/>
+                        </p:tab>
+                        <p:tab title="Búsqueda por Fecha" >                            
+                            <p:outputLabel value="DESDE:" style="font-size: 13px; margin-right: 5px;"/>
+                            <p:calendar pattern="yyyy-MM-dd" value="#{renrezBean.fechaInicio}" label="Fecha Desde" style="font-size: 20px !important; margin-right: 5px;" 
+                                        placeholder="Fecha Inicio de Búsqueda" navigator="true"/>
+                            <p:outputLabel value="HASTA:" style="font-size: 13px; margin-right: 5px;"/>
+                            <p:calendar pattern="yyyy-MM-dd" value="#{renrezBean.fechaFin}" label="Fecha Hasta" style="font-size: 13px; margin-right: 5px;"
+                                        placeholder="Fecha Fin de Búsqueda" navigator="true"/>
+
+                            <p:commandButton value="BUSCAR"  
+                                             actionListener="#{renrezBean.buscarRenovacionesPorFecha}" 
+                                             update="allform:tablaDeDatos mensajes allform:num_reg "
+                                             style="font-size: 13px"
+                                             process="@parent" title="Se busca por fecha de Presentación" class="btn_peque"/>                            
+                        </p:tab>                        
+                    </p:tabView>
+
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage name="/images/ajax-loader.gif" />
+                    </p:dialog>
+                    <p:outputLabel id="num_reg" value="#{renrezBean.numRegistros}" style="font-size: 12px"/>
+                    <br/>
+                    <p:dataTable id="tablaDeDatos" var="renovacion"
+                                 value="#{renrezBean.renovaciones}" widgetVar="tablaDeDatos"
+                                 emptyMessage="No hay Datos para mostrar"                                              
+                                 filteredValue="#{renrezBean.renovacionesFiltradas}"
+                                 binding="#{renrezBean.renovacionDataTable}"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="20"
+                                 rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                 selection="#{renrezBean.selectedRenovaciones}"
+                                 style="border: black !important; width: 60%; text-align: center; margin: 0 auto;" 
+                                 rowKey="#{renovacion.idRenewalForm}">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="BUSCAR EN RESULTADO: " />
+                                <p:inputText id="globalFilter" onkeyup="PF('tablaDeDatos').filter()"
+                                             style="width:300px" placeholder="Escriba aquí"/>
+                            </p:outputPanel>
+                        </f:facet>                       
+
+                        <p:column id="tramiteexp" headerText="Trámite" style="text-align: center;" filterBy="#{renovacion.solicitudSenadi}"
+                                  filterMatchMode="contains">
+                            <p:commandLink value="#{renovacion.solicitudSenadi}" actionListener="#{renrezBean.prepararExpediente}" process="@this"
+                                           style="color: blue"
+                                           oncomplete="PF('dlgExpediente').show();" update="allform:dlgExpediente mensajes"/>
+                        </p:column>
+
+
+                        <p:column headerText="F. Presentación" style="text-align: center;" filterBy="#{renovacion.fechaPresentacion}" >
+                            <h:outputText value="#{renovacion.fechaPresentacion}" >
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:outputText>
+                        </p:column>                                               
+
+                        <p:column headerText="Registro" style="text-align: center; width: 13rem" filterBy="#{renovacion.registroNo}" >
+                            <h:outputText value="#{renovacion.registroNo}" />
+                        </p:column>
+
+                        <p:column headerText="Tipo" style="text-align: center; width: 13rem" filterBy="#{renovacion.tacNJ}" >
+                            <h:outputText value="#{renovacion.tacNJ}" />
+                        </p:column>
+
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center; " rendered="#{!loginBean.usuarioConsulta}" exportable="false"/>
+                        <f:facet name="footer">
+                            <p:outputLabel id="num_registros" value="#{renrezBean.numRegistros}" style="font-size: 12px"/>
+                            <br/>                            
+                            <p:commandButton id="pasabtn" value="PASAR SELECCIONADOS A RENOVACIONES" class="btn_buscar" update="mensajes allform:dlgPasarTramite"
+                                             actionListener="#{renrezBean.pasarSeleccionados}" process="tablaDeDatos" rendered="#{renrezBean.botonpasar}"
+                                             oncomplete="if(args.pasado){PF('dlgPasarTramite').show();}" style="float: right !important"/>                            
+                            <p:commandButton value="QUITAR" oncomplete="if(args.pasado){PF('dlgQuitarTramite').show();}" process="tablaDeDatos"
+                                             actionListener="#{renrezBean.prepararQuitar}" update="mensajes allform:dlgQuitarTramite"
+                                             rendered="#{renrezBean.botonpasar}" style="float: right !important" class="btn_buscar"/>
+                            <br/><br/>
+                        </f:facet>
+                    </p:dataTable>
+                    <br/><br/>
+
+                    <h:panelGrid columns="2" style="float: right;">
+                        <h:commandLink title="Exportar a excel..." rendered="#{!loginBean.usuarioConsulta}" immediate="true">
+                            <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
+                            <p:dataExporter type="xls" target="tablaDeDatos" fileName="rezagados_renovaciones" />
+                        </h:commandLink>                        
+                    </h:panelGrid>
+                    <br/>
+                </p:panel>
+
+                <p:inputTextarea value="#{renrezBean.tramitesLog}"
+                                 class="maxsize" style="width: 50% !important" readonly="true" id="textarea" 
+                                 rendered="#{renrezBean.tramitesLog != ''}"/>
+
+            </h:panelGrid>
+
+            <p:dialog id="dlgQuitarTramite" modal="true" resizable="true"
+                      header="#{renrezBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgQuitarTramite" style="font-size: 11px;" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true" width="60%">
+                <p:ajax event="close" update="dlgQuitarTramite" resetValues="true" />                
+                <h:form id="frmQuitado" >
+                    <p:dataTable id="tablaDeQuitar" var="renovacion"
+                                 value="#{renrezBean.selectedRenovaciones}" widgetVar="tablaDeQuitar"
+                                 emptyMessage="No hay Datos para mostrar"                                              
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="15"
+                                 rowsPerPageTemplate="15,30,50,100,200,300"
+                                 style="border: black !important; width: 100%; text-align: center; margin: 0 auto;"
+                                 rowIndexVar="rowIndex" editable="true">
+
+                        <p:column headerText="No." style="text-align: center; width: 5%">
+                            <h:outputText value="#{rowIndex + 1}" />
+                        </p:column>
+
+                        <p:column id="tramiteexp" headerText="Trámite" style="text-align: center; width: 15%">
+                            <h:outputText value="#{renovacion.solicitudSenadi}" />
+                        </p:column>
+
+                        <p:column headerText="F. Presentación" style="text-align: center;"  >
+                            <h:outputText value="#{renovacion.fechaPresentacion}" >
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:outputText>
+                        </p:column>                                               
+
+                        <p:column headerText="Registro" style="text-align: center; width: 15%"  >
+                            <h:outputText value="#{renovacion.registroNo}" />
+                        </p:column>
+
+                        <p:column headerText="Tipo" style="text-align: center; width: 5%"  >
+                            <h:outputText value="#{renovacion.tacNJ}" />
+                        </p:column>
+
+                        <p:column headerText="Observación" style="text-align: center; width: 40%" >
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{renovacion.nacTitularAc}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputTextarea value="#{renovacion.nacTitularAc}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column>
+                            <p:rowEditor editTitle="Editar Delegado" cancelTitle="Cancelar" saveTitle="Guardar Cambios"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <p:outputLabel value="Total Registros: #{renrezBean.selectedRenovaciones.size()}" style="font-size: 12px"/>                                                       
+                        </f:facet>
+                    </p:dataTable>
+
+                    <br/>
+
+                    <p:commandButton value="CERRAR" style="font-size: 12px; float: right" class="btn_cerrar"
+                                     update="mensajes" oncomplete="PF('dlgQuitarTramite').hide();"/>
+                    <p:commandButton value="REMOVER TRÁMITES DE LA LISTA DE REZAGADOS" 
+                                     widgetVar="traspasarBtn" style="font-size: 12px; float: right" actionListener="#{renrezBean.quitarTramites}" 
+                                     class="btn_buscar"  update="mensajes allform:textarea allform:tablaDeDatos" process="@this" 
+                                     oncomplete="if(args.quitado){PF('dlgQuitarTramite').hide();}">
+                        <p:confirm header="CONFIRMAR" message="SEGURO DE REMOVER LOS REGISTROS DE LA TABLA, DE LA LISTA DE REZAGADOS ?"/> 
+                    </p:commandButton>
+                </h:form>
+            </p:dialog>
+
+
+            <p:dialog id="dlgPasarTramite" modal="true" resizable="true"
+                      header="#{renrezBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgPasarTramite" style="font-size: 11px;" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true" width="50%">
+                <p:ajax event="close" update="dlgPasarTramite" resetValues="true" />                
+                <h:form id="frmTramite" >
+                    <p:dataTable id="tablaDeTraspaso" var="renovacion"
+                                 value="#{renrezBean.selectedRenovaciones}" widgetVar="tablaDeTraspaso"
+                                 emptyMessage="No hay Datos para mostrar"                                              
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="15"
+                                 rowsPerPageTemplate="15,30,50,100,200,300"
+                                 style="border: black !important; width: 100%; text-align: center; margin: 0 auto;"
+                                 rowIndexVar="rowIndex"
+                                 >
+
+                        <p:column headerText="No." style="text-align: center; width: 5%">
+                            <h:outputText value="#{rowIndex + 1}" />
+                        </p:column>
+
+                        <p:column id="tramiteexp" headerText="Trámite" style="text-align: center;">
+                            <h:outputText value="#{renovacion.solicitudSenadi}" />
+                        </p:column>
+
+                        <p:column headerText="F. Presentación" style="text-align: center;"  >
+                            <h:outputText value="#{renovacion.fechaPresentacion}" >
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:outputText>
+                        </p:column>                                               
+
+                        <p:column headerText="Registro" style="text-align: center; width: 13rem"  >
+                            <h:outputText value="#{renovacion.registroNo}" />
+                        </p:column>
+
+                        <p:column headerText="Tipo" style="text-align: center; width: 13rem"  >
+                            <h:outputText value="#{renovacion.tacNJ}" />
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <p:outputLabel value="Total Registros: #{renrezBean.selectedRenovaciones.size()}" style="font-size: 12px"/>                                                       
+                        </f:facet>
+                    </p:dataTable>
+
+                    <p:progressBar widgetVar="pbAjaxLong" ajax="true" value="#{renrezBean.valorProgessBar}" 
+                                   labelTemplate="{value}%" styleClass="mt-3" global="false" interval="500">
+                        <p:ajax event="complete" listener="#{renrezBean.onComplete}" update="allform:tablaDeDatos mensajes allform:textarea"
+                                oncomplete="PF('dlgPasarTramite').hide()" />
+                    </p:progressBar>
+
+                    <br/>
+
+                    <p:commandButton value="CERRAR" style="font-size: 12px; float: right" class="btn_cerrar"
+                                     update="mensajes" oncomplete="PF('dlgPasarTramite').hide();"/>
+                    <p:commandButton value="TRASPASAR REZAGADOS" onclick="PF('pbAjaxLong').start();PF('traspasarBtn').disable();" 
+                                     widgetVar="traspasarBtn" style="font-size: 12px; float: right" actionListener="#{renrezBean.longRunning()}" 
+                                     class="btn_buscar"  update="mensajes allform:textarea allform:tablaDeDatos" process="@this" >
+                        <p:confirm header="CONFIRMAR" message="SEGURO DE PASAR TODOS LOS REGISTROS DE LA TABLA A RENOVACIONES ?"/> 
+                    </p:commandButton>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgExpediente" modal="true" resizable="true"
+                      header="#{renrezBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgExpediente" style="font-size: 11px;" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true" width="50%">
+                <p:ajax event="close" update="dlgExpediente" resetValues="true" />                
+                <h:form id="frmExpediente" >
+                    <p:dataTable id="tablaDeArchivos" var="archivo"
+                                 value="#{renrezBean.archivos}" widgetVar="tablaDeArchivos"
+                                 emptyMessage="No hay Datos para mostrar"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="20"
+                                 rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                 style="border: black !important" >
+                        <p:column headerText="Archivos" style="text-align: center;" filterBy="#{archivo}" >
+                            <p:commandLink value="#{archivo.nombre}" style="color: #0089ec; font-size: 14px;"
+                                           onclick="otherpage('#{archivo.url}#{archivo.id}/#{archivo.documento}')"  
+                                           />
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton value="CERRAR" style="font-size: 12px; float: right" class="btn_peque"                                    
+                                     update="mensajes" oncomplete="PF('dlgExpediente').hide();"/>
+                </h:form>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="explode" hideEffect="explode">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes btn_peque" update="allform:tablaDeDatos"/>
+                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no btn_peque" />
+            </p:confirmDialog>
+            <br/>
+        </h:form>
+
+        <div class="menu" style="margin-top: 5px; text-align: center">
+            SERVICIO NACIONAL DE DERECHOS INTELECTUALES
+        </div>
+
+        <p:idleMonitor timeout="#{1000*60*60}" id="idleSesion">
+            <p:ajax event="idle" listener="#{idleMonitorCtrl.idleListener}"
+                    oncomplete="PF('idleDialog').show()" />
+        </p:idleMonitor>
+        <p:dialog header="Sesión Caducada" resizable="false"
+                  widgetVar="idleDialog" modal="true" closable="false" style="font-size: 12px">
+            <h:form id="sesionCaducaForm">
+                <div class="titlePage">
+                    <h:outputText value="Sesión Caducada " />
+                    <p:commandButton styleClass="nav-link js-scroll-trigger"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="logout(xhr, status, args)"
+                                     value="ACEPTAR" immediate="true" style="font-size: 12px"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+
+        <!-- <script src="resources/assets/js/headroom.min.js"></script>
+        <script src="resources/assets/js/jQuery.headroom.min.js"></script>
+        <script src="resources/assets/js/template.js"></script> -->
+
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+                $("#footer").load("footer.html");
+            }, 150);
+        });
+
+        function getIdIndex(idName) {
+            var doc = document.forms['allform'];
+            var i;
+            var idResult = 0;
+            for (i = 0; doc.length > i; i++) {
+                if (doc[i].id.includes(idName)) {
+                    idResult = i;
+                    console.log(doc[i].id);
+                    break;
+                }
+            }
+            return idResult;
+        }
+
+        //<![CDATA[
+        function popupwindow(url, title, args) {
+            if (args.doit) {
+                window.open(url, title);
+            }
+        }
+        function otherpage(url) {
+            setTimeout(function () {
+                window.open(url, '_blank');
+            }, 0);
+        }
+        function logout(xhr, status, args) {
+            setTimeout(function () {
+                window.location = 'login.xhtml';
+            }, 500);
+        }
+        //]]>
+    </script>
+</html>

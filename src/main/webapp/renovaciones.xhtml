@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>MODIFICACIONES-RENOVACIONES</title>
+        <link type="text/css" rel="stylesheet" href="faces/javax.faces.resource/theme.css?ln=primefaces-cupertino" />
+        <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+        <link href="resources/assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="resources/assets/css/font-awesome.min.css" rel="stylesheet" />
+
+        <link href="resources/assets/css/bootstrap-theme.css" rel="stylesheet" />
+        <link href="resources/assets/css/main.css" rel="stylesheet" />
+
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+    </h:head>
+    <h:body style="background-color: #D6FFF4">
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>        
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <div class="menu">
+            <a href="renovaciones.xhtml" class="logo" title="Logo Senadi" ><img src="resources/images/senadilogo.png" width="165px"/></a>            
+
+            <i id="edit_action" class="material-icons prefix user" style="position: absolute; padding: 0 7px; line-height: 42px; display: inline-block;">person</i>
+            <p:outputLabel value="#{loginBean.login}" style="margin-left: 35px; line-height: 42px; display: inline-block; padding: 0 7px; position: absolute" class="user"/>      
+
+            <div class="header-right">
+                <p:commandLink styleClass="btn_logout"
+                               actionListener="#{loginBean.logout}"
+                               oncomplete="logout(xhr, status, args)"
+                               title="CERRAR SESIÓN" immediate="true">
+                    <i class="material-icons">exit_to_app</i>
+                </p:commandLink>
+            </div>
+            <a class="itemm" href="settings.xhtml" title="Configuración" style="display:  #{loginBean.usuarioConsulta eq true?'none':'inline-block'}"><i class="material-icons" >settings</i></a>
+            <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
+            <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
+            <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
+            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
+            <a class="activo" href="#" title="Renovaciones" >RENOVACIONES</a>
+            <a class="itemm" href="rezrenova.xhtml" title="REZAGO" style="display:  #{loginBean.usuarioConsulta?'none':'inline-block'}">REZAGO</a>
+        </div>
+
+        <p:growl id="mensajes" showDetail="true" life="3000" />
+        <h:form id="renovacionForm" style="text-align: center; font: normal 20px 'Cookie', cursive;">
+            <!--<p:outputLabel value="RENOVACIONES" />-->            
+
+            <p:panel class="panelContent" >
+                <p:commandButton id="nuevo_registro" value="NUEVA RENOVACIÓN" class="btn_peque"
+                                 style="float: left; font-size: 12px;"
+                                 actionListener="#{modificacionBean.loadNuevoRegistro}"                            
+                                 update="renovacionForm:dlgNuevoR renovacionForm:frmNuevoR:datosNuevoR renovacionForm:frmNuevoR:guardarBtn"
+                                 oncomplete="if(args.doit){PF('dlgNuevoR').show()};"
+                                 process="@this" rendered="#{modificacionBean.usuarioConsulta}"/>
+
+                <p:tabView style="font-size: 12px; margin: -10px auto; width: 700px; text-align: left">
+                    <p:tab title="Búsqueda por Criterio" >
+                        <p:outputLabel value="BUSCAR: " />
+                        <p:inputText id="buscarText" value="#{modificacionBean.texto}" style="font-size: 16px" />
+                        <p:tooltip for="buscarText" value="Puede buscar por Trámite, Titular, Denominación o Certificado" 
+                                   position="bottom" style="font-size: 12px"/>
+                        <p:commandButton value="BUSCAR" actionListener="#{modificacionBean.buscarRenovaciones}" 
+                                         update="renovacionForm:tablaDeDatos mensajes renovacionForm:num_registros"
+                                         style="font-size: 13px" class="btn_peque"
+                                         process="@parent"/>
+                    </p:tab>
+                    <p:tab title="Búsqueda por Fecha" >
+                        <p:outputLabel value="Desde:"/>
+                        <p:calendar pattern="yyyy-MM-dd" value="#{modificacionBean.fechaInicio}" label="Fecha Desde" locale="es" navigator="true"/>
+                        <p:outputLabel value="Hasta:"/>
+                        <p:calendar pattern="yyyy-MM-dd" value="#{modificacionBean.fechaFin}" label="Fecha Hasta" navigator="true"/>
+
+                        <p:commandButton value="BUSCAR"  
+                                         actionListener="#{modificacionBean.buscarRenovacionesPorFecha}" class="btn_peque"
+                                         update="mensajes renovacionForm:tablaDeDatos renovacionForm:num_registros" 
+                                         process="@parent"/>                         
+                    </p:tab>
+                    <p:tab title="Búsqueda por Fecha Certificado" >
+                        <p:outputLabel value="Desde:"/>
+                        <p:calendar pattern="yyyy-MM-dd" value="#{modificacionBean.fechaInicioCertificado}" label="Fecha Desde" locale="es" navigator="true"/>
+                        <p:outputLabel value="Hasta:"/>
+                        <p:calendar pattern="yyyy-MM-dd" value="#{modificacionBean.fechaFinCertificado}" label="Fecha Hasta" navigator="true"/>
+
+                        <p:commandButton value="BUSCAR"  
+                                         actionListener="#{modificacionBean.buscarRenovacionesPorFechaCertificado}" class="btn_peque"
+                                         update="mensajes renovacionForm:tablaDeDatos renovacionForm:num_registros" 
+                                         process="@parent"/>                         
+                    </p:tab>
+                </p:tabView>
+
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_pink_color">N. TOTAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_purple_color">N. PARCIAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_red_color">CANCELADO TOTAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_orange_color">CANCELADO PARCIAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_green_color">CON CERTIFICADO</div>
+
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                    <p:graphicImage name="/images/ajax-loader.gif" />
+                </p:dialog>
+
+                <p:dataTable id="tablaDeDatos" var="renovacion"
+                             value="#{modificacionBean.renovaciones}" widgetVar="tablaDeRenovaciones"
+                             emptyMessage="No hay Datos para mostrar"                                              
+                             filteredValue="#{modificacionBean.renovacionesFiltradas}"
+                             binding="#{modificacionBean.renovacionesDataTable}"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rows="20"
+                             rowsPerPageTemplate="20,50,100,150,200,250,300"
+                             style="margin:3px auto; font-size: 9px !important;" 
+                             scrollable="none"
+                             selection="#{modificacionBean.selectedRenovaciones}"
+                             rowKey="#{renovacion.id}"
+                             disabledSelection="#{renovacion.cancelado eq null ?false:(renovacion.cancelado.contains('TOTAL')?true:(renovacion.cancelado.contains('PARCIAL')?false:true))}"
+                             rowStyleClass="#{renovacion.cancelado eq null ?'':(renovacion.cancelado.contains('TOTAL') and !renovacion.cancelado.contains('NULIDAD')) ?
+                                              'border_red_color':renovacion.cancelado eq 'NULIDAD TOTAL'?
+                                              'border_pink_color':renovacion.cancelado eq 'PARCIAL'?
+                                              'border_orange_color':renovacion.cancelado eq 'NULIDAD PARCIAL'?
+                                              'border_purple_color':''}">
+
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="BUSCAR EN RESULTADO: " />
+                            <p:inputText id="globalFilter" onkeyup="PF('tablaDeRenovaciones').filter()"
+                                         style="width:300px" placeholder="Escriba aquí"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column selectionMode="multiple" style="width:30px;text-align:center" rendered="#{modificacionBean.usuarioConsulta}" exportable="false" />
+
+                    <p:column  id="solicitud" headerText="Solicitud" style="text-align: center;" 
+                               filterBy="#{renovacion.solicitudSenadi}">
+                        <h:outputText value="#{renovacion.solicitudSenadi}" />
+                    </p:column>
+
+                    <p:column  id="fechap" headerText="Fecha Presentación" style="text-align: center;"
+                               filterBy="#{renovacion.fechaPres}"
+                               filterMatchMode="startsWith">
+                        <h:outputText value="#{renovacion.fechaPres}" />
+                    </p:column>
+
+                    <p:column  id="comprobante" headerText="# Comprobante" style="text-align: center;"
+                               filterBy="#{renovacion.noComprobantePresentSolic}"
+                               filterMatchMode="startsWith">
+                        <h:outputText value="#{renovacion.noComprobantePresentSolic}" />
+                    </p:column>
+
+                    <p:column  headerText="# Comprobante Em. Cert." style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.noComprobanteEmisionCert}" />
+                    </p:column>
+
+                    <p:column  headerText="Total Fol. Exp." style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.totalFoliosExpediente}" />
+                    </p:column>
+
+                    <p:column  headerText="Certificado" style="text-align: center;" filterBy="#{renovacion.certificadoNo}" >
+                        <p:commandLink id="notlink" value="#{renovacion.certificadoNo}" style="color: #0089ec; font-size: 14px; font-weight: bold" process="@this"
+                                       title="Visualizar Certificado #{renovacion.certificadoNo}" actionListener="#{modificacionBean.validarRenovacion(renovacion)}"
+                                       oncomplete="if(args.viewnotificacion){otherpage(args.view)};" update="mensajes notlink" rendered="#{renovacion.certificadoEmitido and !loginBean.usuarioConsulta}"/>
+                        <h:outputText value="#{renovacion.certificadoNo}" rendered="#{!renovacion.certificadoEmitido or loginBean.usuarioConsulta}"/>
+                    </p:column>
+
+                    <p:column  id="fechac" headerText="Fecha Certificado" style="text-align: center;"
+                               filterBy="#{renovacion.fechaCertPres}">
+                        <h:outputText value="#{renovacion.fechaCertPres}" />
+                    </p:column>
+                    <p:column  id="titulor" headerText="Título Resolución" style="text-align: center;"
+                               filterBy="#{renovacion.tituloResolucion}">
+                        <h:outputText value="#{renovacion.tituloResolucion}" />
+                    </p:column>
+                    <p:column  id="nregistro" headerText="# registro" style="text-align: center;"
+                               filterBy="#{renovacion.registroNo}">
+                        <h:outputText value="#{renovacion.registroNo}" />
+                    </p:column>
+
+                    <p:column  id="fechar" headerText="Fecha Registro" style="text-align: center;"
+                               filterBy="#{renovacion.fechaRegPres}">
+                        <h:outputText value="#{renovacion.fechaRegPres}" />
+                    </p:column>
+                    <p:column  id="fechavc" headerText="F. Venc. Registro" style="text-align: center;"
+                               filterBy="#{renovacion.fechaVenRegPres}">
+                        <h:outputText value="#{renovacion.fechaVenRegPres}" />
+                    </p:column>
+
+                    <p:column  id="denominacion" headerText="Denominación" style="text-align: center;"
+                               filterBy="#{renovacion.denominacion}">
+                        <h:outputText value="#{renovacion.denominacion}" />
+                    </p:column>
+
+                    <p:column  headerText="Lema" style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.lema}" />
+                    </p:column>
+
+                    <p:column  id="signo" headerText="Signo" style="text-align: center;"
+                               filterBy="#{renovacion.signo}">
+                        <h:outputText value="#{renovacion.signo}" />
+                    </p:column>
+
+                    <p:column  headerText="Clase" style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.clase}" />
+                    </p:column>
+
+                    <p:column  headerText="Protege" style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.protege}" />
+                    </p:column>
+
+                    <p:column  id="titulara" headerText="Titular Actual" style="text-align: center;"
+                               filterBy="#{renovacion.titularActual}">
+                        <h:outputText value="#{renovacion.titularActual}" />
+                    </p:column>
+
+                    <p:column  headerText="TACNJ" style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.tacNJ}" />
+                    </p:column>
+
+                    <p:column  headerText="Nac. Tit. Act." style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.nacTitularAc}" />
+                    </p:column>
+
+                    <p:column headerText="Abogado Patrocinador/apoderado/representante:" width="0" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.abogadoPatrocinadorApeApoRepre}" />
+                    </p:column>
+
+                    <p:column  id="casilleros" headerText="Casillero SENADI" style="text-align: center;"
+                               filterBy="#{renovacion.casilleroSenadi}">
+                        <h:outputText value="#{renovacion.casilleroSenadi}" />
+                    </p:column>
+
+                    <p:column  id="casijud" headerText="Casillero Judicial" style="text-align: center;"
+                               filterBy="#{renovacion.casilleroJudicial}">
+                        <h:outputText value="#{renovacion.casilleroJudicial}" />
+                    </p:column>
+
+                    <p:column  id="responsable" headerText="Responsable" style="text-align: center;"
+                               filterBy="#{renovacion.responsable}">
+                        <h:outputText value="#{renovacion.responsable}" />
+                    </p:column>
+
+                    <p:column  headerText="Identificación" style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{renovacion.identificacion}" />
+                    </p:column>
+
+                    <p:column id="vernot" headerText="Acción" style="margin: 0 auto; width: 135px;" rendered="#{!modificacionBean.usuarioConsulta}" 
+                              exportable="false">                        
+                        <p:commandLink class="link" title="Ver certificado #{renovacion.certificadoNo}" process="@this"
+                                       actionListener="#{modificacionBean.verNotificacion}" 
+                                       rendered="#{renovacion.certificadoEmitido}"
+                                       oncomplete="if(args.notit){otherpage(args.rutanot);}" update="mensajes">
+                            <i class="pi pi-eye" style="font-size: 1.5rem"></i>
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column id="editar" headerText="Acción" style="margin: 0 auto; width: 140px; " rendered="#{modificacionBean.usuarioConsulta}" 
+                              exportable="false" styleClass="#{renovacion.certificadoEmitido eq true ?'border_green_color':null}" >
+                        <p:commandLink class="link" 
+                                       actionListener="#{modificacionBean.prepararEditar}"
+                                       update="renovacionForm:dlgNuevoR renovacionForm:frmNuevoR:datosNuevoR renovacionForm:frmNuevoR:guardarBtn"
+                                       oncomplete="if(args.peditar){PF('dlgNuevoR').show()};"
+                                       process="@this"
+                                       title="Editar" >
+                            <i id="edit_action" class="material-icons md-18">edit</i>
+                        </p:commandLink>
+
+                        <p:commandLink class="link"
+                                       actionListener="#{modificacionBean.prepararHistorial}"
+                                       title="Seguimiento" process="@this"
+                                       update="renovacionForm:dlgHistorial"
+                                       oncomplete="PF('dlgHistorial').show();">
+                            <i id="history_action" class="material-icons md-18">history</i>                            
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Descargar Antiguo" 
+                                       actionListener="#{modificacionBean.viewRenovacion}" 
+                                       process="@this" update="mensajes" disabled="#{renovacion.cancelado eq null ?false:renovacion.cancelado eq 'TOTAL'?true:false}"
+                                       oncomplete="popupwindow('reportes', '_blank', args);">
+                            <i id="download_action" class="material-icons md-18">cloud_download</i>                            
+                        </p:commandLink>
+
+                        <p:commandLink class="link" title="Descargar Nuevo" 
+                                       actionListener="#{modificacionBean.viewNewRenovacion}"
+                                       process="@this" update="mensajes" disabled="#{renovacion.cancelado eq null ?false:renovacion.cancelado eq 'TOTAL' ?true:false}"
+                                       oncomplete="popupwindow('reportes', '_blank', args);">
+                            <i id="download_action" class="material-icons md-18">cloud_download</i>                            
+                        </p:commandLink>
+
+                        <p:commandLink class="link" title="Descargar Nuevo 2022" 
+                                       actionListener="#{modificacionBean.viewNewInfoRenovacion}"
+                                       process="@this" update="mensajes" disabled="#{renovacion.cancelado eq null ?false:renovacion.cancelado eq 'TOTAL'?true:false}"
+                                       oncomplete="popupwindow('newinforme', '_blank', args);">
+                            <i id="downloadn_action" class="material-icons md-18">cloud_download</i>
+                        </p:commandLink>
+                        <p:commandLink class="link" 
+                                       actionListener="#{modificacionBean.eliminarRenovacion}"
+                                       update="mensajes renovacionForm:tablaDeDatos"
+                                       title="Eliminar" process="@this" 
+                                       >
+                            <i id="delete_action" class="material-icons md-18">delete</i>
+                            <p:confirm header="CONFIRMAR" message="SEGURO DE ELIMINAR EL REGISTRO: #{renovacion.solicitudSenadi}?"/>
+                        </p:commandLink>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:selectBooleanCheckbox value="#{modificacionBean.separado}" itemLabel="Separados" rendered="#{modificacionBean.usuarioConsulta}"/>
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados A. Formato" 
+                                         actionListener="#{modificacionBean.downloadSelected}" class="btn_down"
+                                         update="mensajes" oncomplete="popupwindow('reportes', '_self', args);" rendered="#{modificacionBean.usuarioConsulta}"/>
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados N. Formato" 
+                                         actionListener="#{modificacionBean.downloadSelectedNew}"  class="btn_down"
+                                         update="mensajes" oncomplete="popupwindow('reportes', '_self', args);" 
+                                         rendered="#{modificacionBean.usuarioConsulta}"/>
+
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados N. Formato (S)" 
+                                         actionListener="#{modificacionBean.downloadSelectedNewN}" class="btn_down"
+                                         update="mensajes" oncomplete="popupwindow('reportes', '_self', args);" rendered="#{modificacionBean.usuarioConsulta}"/>
+
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados N. Formato 2022" 
+                                         actionListener="#{modificacionBean.downloadSelectedNewInfo}" class="btn_down"
+                                         update="mensajes" oncomplete="popupwindow('newinforme', '_self', args);" rendered="#{modificacionBean.usuarioConsulta}"/>
+
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados N. Formato 2022 (S)" 
+                                         actionListener="#{modificacionBean.downloadSelectedNewInfoS}" class="btn_down"
+                                         update="mensajes" oncomplete="popupwindow('newinforme', '_self', args);" rendered="#{modificacionBean.usuarioConsulta}"/>
+
+                        <p:commandButton process="tablaDeDatos" value="Eliminar Seleccionados" 
+                                         actionListener="#{modificacionBean.eliminarSeleccionados}" class="btn_down"
+                                         update="mensajes renovacionForm:tablaDeDatos" rendered="#{modificacionBean.usuarioConsulta}">
+                            <p:confirm header="Seguridad" message="Seguro de Eliminar los Registros seleccionados?" />
+                        </p:commandButton>
+                    </f:facet>
+                </p:dataTable>
+                <p:outputLabel id="num_registros" value="#{modificacionBean.numRegistros}" style="float: left; font-size: 12px"/>
+                <!--<p:commandLink value="Descargar Seleccionados" style="font-size: 12px" actionListener="{modificacionBean.downloadSelected}"
+                               process="@this"/>-->
+                <h:panelGrid columns="2" style="float: right;">
+                    <h:commandLink title="Exportar a excel..." rendered="#{modificacionBean.usuarioConsulta}" immediate="true">
+                        <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
+                        <p:dataExporter type="xls" target="tablaDeDatos" fileName="#{modificacionBean.exportName}" />
+                    </h:commandLink>
+                </h:panelGrid>
+
+            </p:panel>
+
+            <p:dialog id="dlgNuevoR" modal="true" resizable="true" width="80%" 
+                      header="#{modificacionBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgNuevoR" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true">
+                <p:ajax event="close" update="dlgNuevoR" resetValues="true" />
+                <p:growl id="nuevoreg" life="1000"/>
+                <h:form id="frmNuevoR" >
+                    <p:panelGrid columns="4" id="datosNuevoR" styleClass="showcase-text-align-center" style="width: 100%;"
+                                 columnClasses="fiveteen-percent,thirty-five-percent,fiveteen-percent,thirty-five-percent"
+                                 class="noBorders">
+
+                        <p:outputLabel value="Solicitud:" for="solicitudForm"/>                                                
+                        <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
+                            <p:inputText id="solicitudForm" value="#{modificacionBean.renovacion.solicitudSenadi}" title="Solicitud" required="true" 
+                                         style="background: #aed581 !important; text-transform: uppercase; width: 80%" />
+                            <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{modificacionBean.buscarTramite}" 
+                                             rendered="#{modificacionBean.dialogTitle eq 'NUEVA RENOVACIÓN'?true:false}" process="@parent" 
+                                             update="mensajes frmNuevoR:datosNuevoR" style="width: 12%" title="BUSCAR RENOVACIÓN"/>
+                        </p:panel>
+
+                        <p:outputLabel value="Fecha Presentación:" for="fechaPresForm" />
+                        <p:calendar id="fechaPresForm"  value="#{modificacionBean.renovacion.fechaPresentacion}" navigator="true" 
+                                    mask="true" pattern="yyyy-MM-dd" class="pagoDato" required="true"  inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Comp. Pres. Solicitud:" for="comprobanteForm"  />
+                        <p:inputText id="comprobanteForm" value="#{modificacionBean.renovacion.noComprobantePresentSolic}" class="maxsize" />
+
+                        <p:outputLabel value="N. Certificado:" for="certificadoForm"  />
+                        <p:inputText id="certificadoForm" value="#{modificacionBean.renovacion.certificadoNo}"  
+                                     placeholder="Automático" style="background: #f7c7d8 !important;" class="maxsize">
+                            <p:keyFilter mask="num" />
+                        </p:inputText>
+
+                        <p:outputLabel value="Fecha Certificado:" for="fechaCertForm" />
+                        <p:calendar id="fechaCertForm"  value="#{modificacionBean.renovacion.fechaCertificado}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" class="pagoDato" required="true" inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Título Resolución:" for="tituloResForm"  />
+                        <p:inputText id="tituloResForm" value="#{modificacionBean.renovacion.tituloResolucion}" class="maxsize"/>
+
+                        <p:outputLabel value="Número de Registro:" for="numRegistroForm"  />
+                        <p:inputText id="numRegistroForm" value="#{modificacionBean.renovacion.registroNo}" class="maxsize"/>
+
+                        <p:outputLabel value="Fecha Registro:" for="fechaRegistroForm" />
+                        <p:calendar id="fechaRegistroForm"  value="#{modificacionBean.renovacion.fechaRegistro}" 
+                                    mask="true" pattern="yyyy-MM-dd" inputStyleClass="maxsize" navigator="true"/>
+
+                        <p:outputLabel value="Fecha Vencimiento Registro:" for="fechaVencRegForm" />
+                        <p:calendar id="fechaVencRegForm"  value="#{modificacionBean.renovacion.fechaVenceRegistro}" 
+                                    mask="true" pattern="yyyy-MM-dd" inputStyleClass="maxsize" navigator="true"/>
+
+                        <p:outputLabel value="Denominación:" for="denominacionForm"  />
+                        <p:inputTextarea id="denominacionForm" value="#{modificacionBean.renovacion.denominacion}" required="true" class="maxsize"/>
+
+                        <p:outputLabel value="Signo(s) que acompaña(n) al Lema: " for="lemaForm"  />
+                        <p:inputText id="lemaForm" value="#{modificacionBean.renovacion.lema}" class="maxsize"/>
+
+                        <p:outputLabel value="Signo:" for="signoForm"  />
+                        <p:inputText id="signoForm" value="#{modificacionBean.renovacion.signo}" class="maxsize"/>
+
+
+                        <p:outputLabel value="Titular Actual:" for="titularActualForm"  />
+                        <p:inputTextarea id="titularActualForm" value="#{modificacionBean.renovacion.titularActual}" required="true" class="maxsize"/>
+
+
+                        <p:outputLabel value="Ab. Patr./apod/repre:" for="abogadoPForm"  />
+                        <p:inputTextarea id="abogadoPForm" value="#{modificacionBean.renovacion.abogadoPatrocinadorApeApoRepre}" class="maxsize"/>
+
+                        <p:outputLabel value="Casillero SENADI:" for="casilleroSenadiForm"  />
+                        <p:inputText id="casilleroSenadiForm" value="#{modificacionBean.renovacion.casilleroSenadi}" class="maxsize"/>
+
+                        <p:outputLabel value="Casillero Judicial:" for="casilleroJudicialForm"  />
+                        <p:inputText id="casilleroJudicialForm" value="#{modificacionBean.renovacion.casilleroJudicial}" class="maxsize"/>
+
+                        <p:outputLabel value="Responsable:" for="responsableForm"  />
+                        <p:inputText id="responsableForm" value="#{modificacionBean.renovacion.responsable}" class="maxsize"/>
+
+                        <p:outputLabel value="Identificación:" for="identificacionForm"  />
+                        <p:inputTextarea id="identificacionForm" value="#{modificacionBean.renovacion.identificacion}" class="maxsize"/>
+
+                        <p:outputLabel value="Url Expediente: "/>
+                        <p:commandLink value="Ruta Expediente" actionListener="#{modificacionBean.prepararExpediente}" process="@this"
+                                       disabled="#{modificacionBean.renovacion.solicitudSenadi eq null? true:false}" style="color: blue"
+                                       oncomplete="PF('dlgExpediente').show();" update="renovacionForm:dlgExpediente mensajes"/>
+
+                        <p:outputLabel value="Url Compobante: " />
+                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{modificacionBean.renovacion.idRenewalForm}/pdf_voucher_renewalfrm_#{modificacionBean.renovacion.idRenewalForm}.pdf')"  
+                                       disabled="#{modificacionBean.renovacion.idRenewalForm eq null? true:false}" style="color: blue !important"/>
+
+                    </p:panelGrid>
+                    <br/>
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder" style="float: right">
+
+                        <p:outputLabel value="PASAR A: " rendered="#{modificacionBean.edicion}"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 100px" 
+                                         value="#{modificacionBean.estadoTemp}" rendered="#{modificacionBean.edicion}">
+                            <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="NOTIFICADAS" itemValue="NOTIFICADAS"/>
+                            <f:selectItem itemLabel="DESISTIDAS" itemValue="DESISTIDAS"/>
+                            <f:selectItem itemLabel="CADUCADAS-NEGADAS" itemValue="CADUCADAS-NEGADAS"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="#{modificacionBean.saveEdit}" actionListener="#{modificacionBean.guardarRegistro}"
+                                         update="mensajes renovacionForm:tablaDeDatos datosNuevoR"
+                                         oncomplete="if(args.saved){PF('dlgNuevoR').hide();}"
+                                         process="@form" class="btn_peque">
+                            <p:confirm header="Seguridad" message="#{modificacionBean.mensajeConfirmacion}" />
+                        </p:commandButton>
+                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoR').hide()" class="btn_cerrar"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgExpediente" modal="true" resizable="true"
+                      header="#{modificacionBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgExpediente" style="font-size: 11px;" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true" width="50%">
+                <p:ajax event="close" update="dlgExpediente" resetValues="true" />                
+                <h:form id="frmExpediente" >
+                    <p:dataTable id="tablaDeArchivos" var="archivo"
+                                 value="#{modificacionBean.archivos}" widgetVar="tablaDeArchivos"
+                                 emptyMessage="No hay Datos para mostrar"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="20"
+                                 rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                 style="border: black !important" >
+                        <p:column headerText="Archivos" style="text-align: center;" filterBy="#{archivo}" >
+                            <p:commandLink value="#{archivo}" style="color: #0089ec; font-size: 14px;"
+                                           onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{modificacionBean.renovacion.idRenewalForm}/#{archivo}')"  
+                                           />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgHistorial" modal="true" resizable="true"
+                      header="#{modificacionBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgHistorial" style="font-size: 11px; width: 270px" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true">
+                <p:ajax event="close" update="dlgHistorial" resetValues="true" />                
+                <h:form id="frmHistory" >
+
+                    <p:inputTextarea id='historialText' value="#{modificacionBean.historial}" rows="10" cols="115" readonly="true"/>
+
+                </h:form>
+
+            </p:dialog>
+            <p:confirmDialog global="true" showEffect="explode" hideEffect="explode">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" update="renovacionForm:tablaDeDatos"/>
+                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no"/>
+            </p:confirmDialog>
+
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" style="background: transparent !important">
+                <p:graphicImage name="/images/ajax-loader.gif" style="background: transparent !important"/>
+            </p:dialog>
+        </h:form>
+        <div class="menu" style="margin-top: 5px; text-align: center">
+            SERVICIO NACIONAL DE DERECHOS INTELECTUALES
+        </div>
+
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+            }, 200);
+        });
+
+        function onlyNumbers(e) {
+            var keynum = window.event ? window.event.keyCode : e.which;
+            if ((keynum == 8) || (keynum == 46))
+                return true;
+
+            return /\d/.test(String.fromCharCode(keynum));
+        }
+        //<![CDATA[
+        function popupwindow(url, title, args) {
+            if (args.doit) {
+                window.open(url, title);
+            }
+
+        }
+
+        function otherpage(url) {
+            setTimeout(function () {
+                window.open(url, '_blank');
+            }, 0);
+        }
+
+        function manejarSeleccion(xhr, status, args) {
+            if (!args.validationFailed) {
+                setTimeout(function () {
+                    window.location = args.view;
+                }, 500);
+            }
+        }
+
+        function logout(xhr, status, args) {
+            setTimeout(function () {
+                window.location = 'login.xhtml';
+            }, 500);
+        }
+        //]]>
+    </script>
+</html>

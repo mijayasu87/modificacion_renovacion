@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>CADUCADAS-NEGADAS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+    </h:head>
+    <h:body>
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>        
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <div class="menu">
+            <a href="renovaciones.xhtml" class="logo" title="Logo Senadi" ><img src="resources/images/senadilogo.png" width="165px"/></a>
+
+            <i id="edit_action" class="material-icons prefix user" style="position: absolute; padding: 0 7px; line-height: 42px; display: inline-block;">person</i>
+            <p:outputLabel value="#{loginBean.login}" style="margin-left: 35px; line-height: 42px; display: inline-block; padding: 0 7px; position: absolute" class="user"/>
+
+            <div class="header-right">
+                <p:commandLink styleClass="btn_logout"
+                               actionListener="#{loginBean.logout}"
+                               oncomplete="logout(xhr, status, args)"
+                               title="CERRAR SESIÓN" immediate="true">
+                    <i class="material-icons">exit_to_app</i>
+                </p:commandLink>
+            </div>
+            <a class="itemm" href="settings.xhtml" title="Configuración" style="display:  #{loginBean.usuarioConsulta eq true?'none':'inline-block'}"><i class="material-icons" >settings</i></a>
+            <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
+            <a class="activo" href="#" title="Caducadas" >CADUCADAS-NEGADAS</a>
+            <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
+            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
+            <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>           
+        </div>
+
+        <p:growl id="mensajes" showDetail="true" life="2000" />
+        <h:form id="caducadaForm" style="text-align: center; font: normal 20px 'Cookie', cursive;">
+            <p:panel class="panelContent">                
+                <p:commandButton id="nuevo_registro" value="NUEVO CADUCADA-NEGADA" 
+                                 style="float: left; font-size: 12px;"
+                                 actionListener="#{caducadaBean.loadNuevoRegistro}" class="btn_peque"
+                                 update="caducadaForm:dlgNuevoC caducadaForm:frmNuevoC:datosNuevoC caducadaForm:frmNuevoC:guardarBtn"
+                                 oncomplete="if(args.doit){PF('dlgNuevoC').show()};"
+                                 process="@this" rendered="#{caducadaBean.usuarioConsulta}"/>
+
+
+                <p:tabView style="font-size: 12px; margin: -10px auto; width: 700px">
+                    <p:tab title="Búsqueda por Criterio" >
+                        <p:outputLabel value="BUSCAR: " style="font-size: 12px"/>                
+                        <p:inputText id="buscarText" value="#{caducadaBean.texto}" style="font-size: 16px;"/>
+                        <p:commandButton value="BUSCAR" actionListener="#{caducadaBean.buscarCaducadas}" 
+                                         update="caducadaForm:tablaDeDatos mensajes caducadaForm:num_registros"
+                                         style="font-size: 12px" class="btn_peque"
+                                         process="@parent"/>
+                    </p:tab>
+                    <p:tab title="Búsqueda por Fecha" >
+
+                        <p:outputLabel value="Desde:"/>
+                        <p:calendar pattern="yyyy-MM-dd" value="#{caducadaBean.fechaInicio}" label="Fecha Desde" navigator="true"/>
+                        <p:outputLabel value="Hasta:"/>
+                        <p:calendar pattern="yyyy-MM-dd" value="#{caducadaBean.fechaFin}" label="Fecha Hasta" navigator="true"/>
+
+                        <p:commandButton value="BUSCAR" class="btn_peque"
+                                         actionListener="#{caducadaBean.buscarCaducadasPorFecha}"
+                                         update="mensajes caducadaForm:tablaDeDatos caducadaForm:num_registros" 
+                                         process="@parent"/> 
+                    </p:tab>
+                </p:tabView>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_pink_color">N. TOTAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_purple_color">N. PARCIAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_red_color">CANCELADO TOTAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_orange_color">CANCELADO PARCIAL</div>
+                <div style="float: right; font-weight: bold; margin-top: -20px; padding: 3px" class="border_green_color">NOIFICADO</div>
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                    <p:graphicImage name="/images/ajax-loader.gif" />
+                </p:dialog>
+
+                <p:dataTable id="tablaDeDatos" var="caducada"
+                             value="#{caducadaBean.caducadas}" widgetVar="tablaDeCaducadas"
+                             emptyMessage="No hay Datos para mostrar"                                              
+                             filteredValue="#{caducadaBean.caducadasFiltradas}"
+                             binding="#{caducadaBean.caducadasDataTable}"                             
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rows="20"
+                             rowsPerPageTemplate="20,50,100,150,200,250,300"
+                             style="margin:3px auto; font-size: 9px !important" 
+                             scrollable="none"
+                             selection="#{caducadaBean.selectedCaducadas}"
+                             disabledSelection="#{caducada.cancelado eq null ?false:caducada.cancelado.contains('TOTAL')?true:caducada.cancelado.contains('PARCIAL')?false:true}"
+                             rowStyleClass="#{caducada.cancelado eq null ?'':caducada.cancelado eq 'TOTAL'?'border_red_color':caducada.cancelado eq 'NULIDAD TOTAL'?'border_pink_color':caducada.cancelado eq 'PARCIAL'?'border_orange_color':caducada.cancelado eq 'NULIDAD PARCIAL'?'border_purple_color':''}"
+                             rowKey="#{caducada.id}">
+                    <f:facet name="header">
+                        <p:outputPanel>
+                            <h:outputText value="BUSCAR EN TODOS: " />
+                            <p:inputText id="globalFilter" onkeyup="PF('tablaDeCaducadas').filter()"
+                                         style="width:300px" placeholder="Escriba aquí"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column selectionMode="multiple" style="width:30px;text-align:center" rendered="#{caducadaBean.usuarioConsulta}" exportable="false"/>
+
+                    <p:column  id="resolucion" headerText="Resolución" style="text-align: center;" 
+                               filterBy="#{caducada.resolucion}" rendered="#{!caducada.caducadaEmitida}">
+                        <h:outputText value="#{caducada.resolucion}" />
+                    </p:column>
+                    
+                    
+                    <p:column  headerText="Resolución" style="text-align: center;" filterBy="#{caducada.resolucion}" rendered="#{caducada.caducadaEmitida}">
+                        <p:commandLink id="notlink" value="#{caducada.resolucion}" style="color: #0089ec; font-size: 14px; font-weight: bold" process="@this"
+                                       title="Visualizar Certificado #{caducada.resolucion}" actionListener="#{caducadaBean.validarCaducadaDocumento(caducada)}"
+                                       oncomplete="if(args.viewnotificacion){otherpage(args.view)};" update="mensajes notlink" rendered="#{!loginBean.usuarioConsulta}"/>
+                        <h:outputText value="#{caducada.resolucion}" rendered="#{loginBean.usuarioConsulta}"/>
+                    </p:column>
+
+                    <p:column  id="solicitud" headerText="Solicitud" style="text-align: center;" 
+                               filterBy="#{caducada.solicitudSenadi}">
+                        <h:outputText value="#{caducada.solicitudSenadi}" />
+                    </p:column>
+
+                    <p:column  id="fechas" headerText="Fecha Solicitud" style="text-align: center;"
+                               filterBy="#{caducada.fechaSolicitud}"
+                               filterMatchMode="startsWith">
+                        <h:outputText value="#{caducada.fechaSolicitud}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd" />
+                        </h:outputText>
+                    </p:column>                                                            
+
+                    <p:column  id="denominacion" headerText="Denominación" style="text-align: center;"
+                               filterBy="#{caducada.denominacion}">
+                        <h:outputText value="#{caducada.denominacion}" />
+                    </p:column>
+
+                    <p:column  id="nregistro" headerText="# registro" style="text-align: center;"
+                               filterBy="#{caducada.registroNo}">
+                        <h:outputText value="#{caducada.registroNo}" />
+                    </p:column>
+
+                    <p:column  id="fechar" headerText="Fecha Registro" style="text-align: center;"
+                               filterBy="#{caducada.fechaRegistro}">
+                        <h:outputText value="#{caducada.fechaRegistro}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column  id="solicitante" headerText="Solicitante" style="text-align: center;"
+                               filterBy="#{caducada.solicitante}">
+                        <h:outputText value="#{caducada.solicitante}" />
+                    </p:column>
+
+                    <p:column  id="fechapro" headerText="F. Providencia" style="text-align: center;"
+                               filterBy="#{caducada.fechaProvidencia}">
+                        <h:outputText value="#{caducada.fechaProvidencia}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column  id="abopatro" headerText="Abg. Patrocinador" style="text-align: center;"
+                               filterBy="#{caducada.abogadoPatrocinador}">
+                        <h:outputText value="#{caducada.abogadoPatrocinador}" />
+                    </p:column>
+
+                    <p:column  id="reqnot" headerText="Req. Notificado" style="text-align: center;"
+                               filterBy="#{caducada.antDes}">
+                        <h:outputText value="#{caducada.antDes}" />
+                    </p:column>
+
+                    <p:column  id="fechaoto" headerText="F. Otorgada" style="text-align: center;"
+                               filterBy="#{caducada.fechaOtorgada}">
+                        <h:outputText value="#{caducada.fechaOtorgada}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column  id="responsable" headerText="Responsable" style="text-align: center;"
+                               filterBy="#{caducada.responsable}">
+                        <h:outputText value="#{caducada.responsable}" />
+                    </p:column>
+
+                    <p:column  id="signo" headerText="Signo" style="text-align: center;"
+                               filterBy="#{caducada.signo}">
+                        <h:outputText value="#{caducada.signo}" />
+                    </p:column>
+
+                    <p:column  id="fechavenc" headerText="F. Vencimiento" style="text-align: center;"
+                               filterBy="#{caducada.fechaVencimiento}">
+                        <h:outputText value="#{caducada.fechaVencimiento}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd" />
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column  headerText="Identificación" style="text-align: center;" styleClass="vd-hidden-column">
+                        <h:outputText value="#{caducada.identificacion}" />
+                    </p:column>
+
+                    <p:column id="editar" headerText="Acción" style="margin: 0 auto; width: 150px; " rendered="#{caducadaBean.usuarioConsulta}" 
+                              exportable="false" styleClass="#{caducada.caducadaEmitida eq true ?'border_green_color':null}">
+                        <p:commandLink class="link" actionListener="#{caducadaBean.prepararEditar}"
+                                       update="caducadaForm:dlgNuevoC caducadaForm:frmNuevoC:datosNuevoC caducadaForm:frmNuevoC:guardarBtn"
+                                       oncomplete="if(args.peditar){PF('dlgNuevoC').show()};"
+                                       process="@this"
+                                       title="Editar">
+                            <i id="edit_action" class="material-icons md-18">edit</i>
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Descargar Modo 1"                                       
+                                       actionListener="#{caducadaBean.viewCaducada}"
+                                       process="@this" update="mensajes"
+                                       oncomplete="popupwindow('cadinforme', '_blank', args);">
+                            <i id="download_action" class="material-icons md-18">cloud_download</i>                            
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Descargar Modo 2"                                       
+                                       actionListener="#{caducadaBean.viewCaducadaOther}"
+                                       process="@this" update="mensajes"
+                                       oncomplete="popupwindow('cadinforme', '_blank', args);">
+                            <i id="download_action" class="material-icons md-18">cloud_download</i>                            
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Descargar Modo 3" style="color: brown;"
+                                           actionListener="#{caducadaBean.viewCaducadaN}"
+                                           process="@this" 
+                                           update="mensajes"
+                                           oncomplete="popupwindow('caducareport', '_blank', args);">
+                                <i id="download_action" class="material-icons md-18">cloud_download</i>
+                            </p:commandLink>
+                        <p:commandLink class="link"
+                                       actionListener="#{caducadaBean.prepararHistorial}"
+                                       title="Seguimiento" process="@this"
+                                       update="caducadaForm:dlgHistorial"
+                                       oncomplete="PF('dlgHistorial').show();">
+                            <i id="history_action" class="material-icons md-18">history</i>                            
+                        </p:commandLink>
+                        <p:commandLink class="link" 
+                                       actionListener="#{caducadaBean.eliminarCaducada}"
+                                       update="mensajes caducadaForm:tablaDeDatos"
+                                       title="Eliminar" process="@this">
+                            <i id="delete_action" class="material-icons md-18">delete</i>
+                            <p:confirm header="CONFIRMAR" message="SEGURO DE ELIMINAR EL REGISTRO: #{caducada.solicitudSenadi}?" /> 
+                        </p:commandLink>                        
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados ANTES-DESPUÉS" 
+                                         actionListener="#{caducadaBean.downloadSelected}" 
+                                         update="mensajes" oncomplete="popupwindow('cadinforme', '_self', args);" 
+                                         rendered="#{caducadaBean.usuarioConsulta}" class="btn_peque"/>
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados OTROS" 
+                                         actionListener="#{caducadaBean.downloadSelectedOther}" 
+                                         update="mensajes" oncomplete="popupwindow('cadinforme', '_self', args);" 
+                                         rendered="#{caducadaBean.usuarioConsulta}" class="btn_peque"/>
+                        <p:commandButton process="tablaDeDatos" value="Descargar Seleccionados NEGADA" 
+                                         actionListener="#{caducadaBean.downloadSelectedNegada}" 
+                                         update="mensajes" oncomplete="popupwindow('caducareport', '_self', args);" 
+                                         rendered="#{caducadaBean.usuarioConsulta}" class="btn_peque"/>
+                    </f:facet>
+                </p:dataTable>
+                <p:outputLabel id="num_registros" value="#{caducadaBean.numRegistros}" style="float: left; font-size: 12px"/>
+                <h:panelGrid columns="2" style="float: right;">
+                    <h:commandLink title="Exportar a excel..." rendered="#{caducadaBean.usuarioConsulta}" immediate="true">
+                        <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
+                        <p:dataExporter type="xls" target="tablaDeDatos" fileName="#{caducadaBean.exportName}" />
+                    </h:commandLink>
+                </h:panelGrid>
+            </p:panel>
+
+            <p:dialog id="dlgNuevoC" modal="true" resizable="true" width="80%"
+                      header="#{caducadaBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgNuevoC" style="font-size: 11px; margin-bottom: 10px" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true">
+                <p:ajax event="close" update="dlgNuevoC" resetValues="true" />
+                <p:growl id="nuevoreg" life="1000"/>
+                <h:form id="frmNuevoC" >
+                    <p:panelGrid columns="6" id="datosNuevoC" styleClass="showcase-text-align-center" style="width: 100%">
+                        
+                        <p:outputLabel value="Solicitud:" for="solicitudForm"/>
+                        <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
+                            <p:inputText id="solicitudForm" value="#{caducadaBean.caducada.solicitudSenadi}" required="true"  
+                                         title="Solicitud SENADI"  style="background: #aed581 !important; text-transform: uppercase; width: 80%"/>                            
+                            <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{caducadaBean.buscarTramite}" 
+                                             rendered="#{caducadaBean.dialogTitle eq 'NUEVO REGISTRO CADUCADA-NEGADA'?true:false}" process="@parent" 
+                                             update="mensajes frmNuevoC:datosNuevoC" style="width: 12%" title="BUSCAR DESISTIMIENTO"/>
+                        </p:panel>
+                        
+                        <p:outputLabel value="Resolución:" for="resolucionForm"/>
+                        <p:inputText id="resolucionForm" value="#{caducadaBean.caducada.resolucion}" placeholder="Automático" 
+                                     title="Resolución" readonly="true" class="maxsize" style="background: #f7c7d8 !important;"/>
+
+                        <p:outputLabel value="Fecha Otorgada:" for="fechaOtoForm" />
+                        <p:calendar id="fechaOtoForm"  value="#{caducadaBean.caducada.fechaOtorgada}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Fecha Solicitud:" for="fechaSolForm"/>
+                        <p:calendar id="fechaSolForm"  value="#{caducadaBean.caducada.fechaSolicitud}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Denominación:" for="denominacionForm"  />
+                        <p:inputTextarea id="denominacionForm" value="#{caducadaBean.caducada.denominacion}" required="true" class="maxsize"/>
+
+                        <p:outputLabel value="Número Registro:" for="registronoForm"/>
+                        <p:inputText id="registronoForm" value="#{caducadaBean.caducada.registroNo}" title="num registro" class="maxsize"/>
+
+                        <p:outputLabel value="Fecha Registro:" for="fechaRegForm" />
+                        <p:calendar id="fechaRegForm"  value="#{caducadaBean.caducada.fechaRegistro}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Fecha Vencimiento:" for="fechaVencimientoForm" />
+                        <p:calendar id="fechaVencimientoForm"  value="#{caducadaBean.caducada.fechaVencimiento}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize estilo_orange"/>
+
+                        <p:outputLabel value="Solicitante:" for="solicitanteForm"  />
+                        <p:inputTextarea id="solicitanteForm" value="#{caducadaBean.caducada.solicitante}" required="true" class="maxsize"/>
+
+                        <p:outputLabel value="Fecha Providencia:" for="fechaProForm" />
+                        <p:calendar id="fechaProForm"  value="#{caducadaBean.caducada.fechaProvidencia}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Fecha Notificación:" for="fechaNotForm" />
+                        <p:calendar id="fechaNotForm"  value="#{caducadaBean.caducada.fechaNotificacion}" navigator="true"
+                                    mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
+
+                        <p:outputLabel value="Abogado Patrocinador:" for="aboPatForm"  />
+                        <p:inputTextarea id="aboPatForm" value="#{caducadaBean.caducada.abogadoPatrocinador}" required="true" class="maxsize"/>
+
+                        <p:outputLabel value="Número Casillero:" for="numCasForm"/>
+                        <p:inputText id="numCasForm" value="#{caducadaBean.caducada.casilleroNo}" title="num casillero" class="maxsize"/>
+
+                        <p:outputLabel value="Casillero SENADI:" for="casilleroSenadiForm"  style="float: right"/>
+                        <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
+                            <p:inputText id="casilleroSenadiForm" value="#{caducadaBean.caducada.casilleroNo}" 
+                                         style="width: 80%" />
+                            <p:commandButton icon="pi pi-search" class="btn_peque" actionListener="#{caducadaBean.buscarCasillero}" 
+                                             rendered="#{caducadaBean.dialogTitle eq 'NUEVO REGISTRO CADUCADA-NEGADA'?false:true}" process="@parent" 
+                                             update="casilleroSenadiForm" style="width: 12%" title="BUSCAR CASILLERO"/>
+                        </p:panel>                        
+
+
+                        <p:outputLabel value="Email:" for="emailForm"/>
+                        <p:inputText id="emailForm" value="#{caducadaBean.caducada.email}" title="email" class="maxsize"/>
+
+                        <p:outputLabel value="Número Certificado:" for="certificadonoForm"/>
+                        <p:inputText id="certificadonoForm" value="#{caducadaBean.caducada.certificaNo}" title="num certificado" class="maxsize"/>                        
+
+                        <p:outputLabel value="Solicitud:" for="solForm"/>
+                        <p:inputText id="solForm" value="#{caducadaBean.caducada.solicitud}" title="solicitud" class="maxsize"/>
+
+
+                        <p:outputLabel value="Responsable:" for="responsableForm"/>
+                        <p:inputText id="responsableForm" value="#{caducadaBean.caducada.responsable}" title="responsable" class="maxsize"/>
+
+                        <p:outputLabel value="Signo:" for="signoForm"/>
+                        <p:inputText id="signoForm" value="#{caducadaBean.caducada.signo}" title="signo" class="maxsize"/>
+
+                        <p:outputLabel value="Identificación:" for="identificacionForm"/>
+                        <p:inputTextarea id="identificacionForm" value="#{caducadaBean.caducada.identificacion}" title="signo" class="maxsize"/>
+                        
+                        <p:outputLabel value="Observación" for="obsForm"/>
+                        <p:inputTextarea id="obsForm" value="#{caducadaBean.caducada.observacion}" title="Observación" class="maxsize" required="true"/>
+
+                        <p:outputLabel value="ANTES - DESPUÉS:" for="antDesForm"/>
+                        <p:selectOneMenu id="antDesForm" style="font-size: 12px;"
+                                         value="#{caducadaBean.caducada.antDes}" required="true" class="maxsize" editable="true">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="ANTES" itemValue="ANTES"/>
+                            <f:selectItem itemLabel="DESPUÉS" itemValue="DESPUÉS"/>
+                            <f:selectItem itemLabel="ACCIÓN DE CANCELACIÓN" itemValue="ACCIÓN DE CANCELACIÓN"/>
+                            <f:selectItem itemLabel="REVOCATORIA DE OFICIO" itemValue="REVOCATORIA DE OFICIO"/>
+                            <f:selectItem itemLabel="RENOVADA" itemValue="RENOVADA"/>
+                        </p:selectOneMenu>
+
+                        <p:commandLink value="Ruta Expediente" actionListener="#{caducadaBean.prepararExpediente}" process="@this"
+                                       disabled="#{caducadaBean.caducada.solicitudSenadi eq null? true:false}" style="color: blue"
+                                       oncomplete="PF('dlgExpediente').show();" update="caducadaForm:dlgExpediente mensajes"/>
+
+                    </p:panelGrid>
+                    
+                    <br/>
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder" style="float: right">
+
+                        <p:outputLabel value="PASAR A: " rendered="#{caducadaBean.edicion}"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 100px; width: 200px" 
+                                         value="#{caducadaBean.estadoTemp}" rendered="#{caducadaBean.edicion}">
+                            <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="RENOVACIONES" itemValue="RENOVACIONES"/>
+                            <f:selectItem itemLabel="NOTIFICADAS" itemValue="NOTIFICADAS"/>
+                            <f:selectItem itemLabel="DESISTIDAS" itemValue="DESISTIDAS"/>
+                        </p:selectOneMenu>
+                        
+                        <p:commandButton value="#{caducadaBean.saveEdit}" actionListener="#{caducadaBean.guardarRegistro}"
+                                         update="mensajes caducadaForm:tablaDeDatos datosNuevoC" 
+                                         oncomplete="if(args.saved){PF('dlgNuevoC').hide();}" 
+                                         process="@form" class="btn_peque">
+                            <p:confirm header="Seguridad" message="#{caducadaBean.mensajeConfirmacion}" />
+                        </p:commandButton> 
+                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoC').hide()" class="btn_cerrar"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgExpediente" modal="true" resizable="true"
+                      header="#{caducadaBean.dialogTitle}" fitViewport="true"
+                      widgetVar="dlgExpediente" style="font-size: 11px;" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true" width="50%">
+                <p:ajax event="close" update="dlgExpediente" resetValues="true" />                
+                <h:form id="frmExpediente" >
+                    <p:dataTable id="tablaDeArchivos" var="archivo"
+                                 value="#{caducadaBean.archivos}" widgetVar="tablaDeArchivos"
+                                 emptyMessage="No hay Datos para mostrar"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="20"
+                                 rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                 style="border: black !important" >
+                        <p:column headerText="Archivos" style="text-align: center;" filterBy="#{archivo}" >
+                            <p:commandLink value="#{archivo}" style="color: #0089ec; font-size: 14px;"
+                                           onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{caducadaBean.caducada.idRenewalForm}/#{archivo}')"
+                                           />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="dlgHistorial" modal="true" resizable="true"
+                      header="HISTORIAL" fitViewport="true"
+                      widgetVar="dlgHistorial" style="font-size: 11px; width: 200px" showEffect="explode" 
+                      hideEffect="explode" closeOnEscape="true">
+                <p:ajax event="close" update="dlgHistorial" resetValues="true" />                
+                <h:form id="frmHistory" >
+                    <p:inputTextarea id='historialText' value="#{caducadaBean.historial}" rows="10" cols="120" readonly="true"/>
+                </h:form>
+            </p:dialog>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" update="caducadaForm:tablaDeDatos"/>
+                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no"/>
+            </p:confirmDialog>
+
+        </h:form>
+        <div class="menu" style="margin-top: 5px; text-align: center">
+            SERVICIO NACIONAL DE DERECHOS INTELECTUALES
+        </div>
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+            }, 150);
+        });
+        //<![CDATA[
+        function manejarSeleccion(xhr, status, args) {
+            if (!args.validationFailed) {
+                setTimeout(function () {
+                    window.location = args.view;
+                }, 500);
+            }
+        }
+
+        function otherpage(url) {
+            setTimeout(function () {
+                window.open(url, '_blank');
+            }, 0);
+        }
+
+        function logout(xhr, status, args) {
+            setTimeout(function () {
+                window.location = 'login.xhtml';
+            }, 500);
+        }
+
+        function popupwindow(url, title, args) {
+            if (args.doit) {
+                window.open(url, title);
+            }
+
+        }
+        //]]>
+    </script>
+</html>

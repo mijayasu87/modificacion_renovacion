@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
+	<property name="ireport.zoom" value="1.6105100000000012"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="384"/>
+	<parameter name="title" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="fecha_certificado" class="java.lang.String"/>
+	<parameter name="idRenovacion" class="java.lang.String"/>
+	<parameter name="fecha_presentacion" class="java.lang.String"/>
+	<parameter name="fecha_registro" class="java.lang.String"/>
+	<parameter name="fecha_vence_reg" class="java.lang.String"/>
+	<parameter name="delegado" class="java.lang.String"/>
+	<parameter name="delegacion" class="java.lang.String"/>
+	<parameter name="resolucionData" class="java.lang.String"/>
+	<parameter name="apartado" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from renovacion where id = $P{idRenovacion}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="solicitud_senadi" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_presentacion" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_comprobante_present_solic" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_comprobante_emision_cert" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_folios_expediente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="certificado_no" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_certificado" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="titulo_resolucion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_registro" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_registro" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_vence_registro" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="denominacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="lema" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="signo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="clase" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="protege" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="titular_actual" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tacnj" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nac_titular_ac" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="abogado_patrocinador_ape_apo_repre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="casillero_senadi" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="casillero_judicial" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="responsable" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="texto" class="java.lang.String">
+		<variableExpression><![CDATA["\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"Quito, "+$P{fecha_certificado}+". Vista la solicitud de renovación No. "+$F{solicitud_senadi}+", presentada el "+$P{fecha_presentacion}+", del registro de "+$F{signo}+" No. "+$F{no_registro}+
+", otorgado el "+$P{fecha_registro}+". De acuerdo a lo establecido "+$P{apartado}+" del Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación, y al haber cumplido con los requisitos "+
+"legales y reglamentarios, y en ejercicio de la facultad delegada por el Director Nacional de Propiedad Industrial mediante resolución, No. "+$P{resolucionData}+
+", se OTORGA el certificado de renovación No. "+$F{certificado_no}+", con los siguientes datos:"]]></variableExpression>
+	</variable>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="-19" y="-20" width="595" height="822" uuid="2a414a1f-7d19-478e-937d-890175e16e10"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "background_new.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="25" splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band height="22" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="710" splitType="Stretch">
+			<textField>
+				<reportElement x="57" y="143" width="441" height="197" uuid="367c9703-c810-4922-b82a-a8d2a53e6c1e"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="SansSerif" size="12" pdfFontName="Helvetica" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{texto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="57" y="323" width="162" height="66" uuid="c4252ba8-8d31-40dd-8275-83e126015e37"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[DENOMINACIÓN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="219" y="323" width="279" height="66" uuid="8175af18-9ff6-4e83-8cc8-47ff9d38f0d8"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denominacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="57" y="377" width="162" height="92" uuid="79fc4c31-874a-4010-9d7b-bf2ad541f385"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[TITULAR ACTUAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="219" y="377" width="279" height="92" uuid="a0ced7d1-23db-4724-a1f3-812610b52f41"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titular_actual}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="57" y="469" width="162" height="48" uuid="bc257bbd-f960-409c-b581-82c61dd3fffb"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[FECHA DE VENCIMIENTO:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="219" y="469" width="279" height="48" uuid="dd9ec0f2-a066-47ef-8e6d-4606e0f104e1"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_vence_reg}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="367" y="489" width="143" height="139" uuid="6ace09a7-39ae-427f-ae5d-06e2c5fa2678"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="49" y="698" width="100" height="12" uuid="81363007-7ba0-4b62-9ba7-509e37759ff8"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{responsable}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="62" width="555" height="27" uuid="0261b427-bb5b-4b37-868c-937413f95d1f"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="16" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{title}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="57" y="130" width="441" height="31" uuid="3ea0bb9f-bfc6-49c1-8712-6cef35a5ef53"/>
+				<textElement textAlignment="Justified">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SERVICIO NACIONAL DE DERECHOS INTELECTUALES - SENADI.- Dirección Nacional de Propiedad Industrial.-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="608" width="555" height="20" uuid="df973f3f-b892-471f-af12-19286acffcf4"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{delegado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="625" width="555" height="20" uuid="e831af46-2c6d-4f82-82ca-b56493fedb1d"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{delegacion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="9" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="8" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="7" splitType="Stretch"/>
+	</summary>
+</jasperReport>

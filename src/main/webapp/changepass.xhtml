@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>PATENTES</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+    </h:head>
+    <h:body style="background-color: #D6FFF4">       
+        <p:growl id="mensajes" showDetail="true" life="2000" />
+        <h:form >            
+            <div class="menu">
+                <a href="renovaciones.xhtml" class="logo" title="Ir a Inicio" ><img src="resources/images/senadilogo.png" width="165px"/></a>            
+
+                <p:outputLabel 
+                    style="position: absolute; padding: 0 7px; line-height: 42px; display: inline-block;">
+                    <i id="edit_action" class="material-icons prefix" style="position: absolute; padding: 0 7px; line-height: 42px; display: inline-block;">person</i>
+                    <p:outputLabel value="#{loginBean.usuario.login}" style="margin-left: 35px"/>
+                </p:outputLabel>
+
+                <div class="header-right">
+
+                    <p:commandLink styleClass="btn_logout"
+                                   actionListener="#{loginBean.logout}"
+                                   oncomplete="logout(xhr, status, args)"
+                                   title="CERRAR SESIÓN" immediate="true">
+                        <i class="material-icons">exit_to_app</i>
+                    </p:commandLink>
+                </div>                                    
+            </div>
+            <br/>
+            <p:panel id="panel" style="width:500px; text-align: center; margin:20px auto; box-shadow: 1px 1px 10px black !important;">
+                <h2 style="text-align: center">CAMBIAR CONTRASEÑA</h2>
+                <h:panelGrid columns="2" cellpadding="5" >
+                    <p:outputLabel value="Nombre:" for="name"/>
+                    <p:inputText id="name" value="#{changePassBean.usuario.nombre}" readonly="true"/>
+
+                    <p:outputLabel value="Usuario:" for="userName"/>
+                    <p:inputText id="userName" value="#{changePassBean.userName}" readonly="true"/>
+
+                    <p:outputLabel value="Contraseña Actual:" for="passActualInput"/>
+                    <p:password id="passActualInput" value="#{changePassBean.passActual}"/>
+
+                    <p:outputLabel value="Nueva Contraseña:" for="newPass"/>
+                    <p:password id="newPass" value="#{changePassBean.newPass}" 
+                                weakLabel="Débil" goodLabel="Bueno" strongLabel="Fuerte"
+                                promptLabel="Por favor, ingrese un Password.!" feedback="true"/>
+
+                    <p:outputLabel value="Confirmar Contraseña:" for="confPass"/>
+                    <p:password id="confPass" value="#{changePassBean.confirmarPass}" 
+                                weakLabel="Débil" goodLabel="Bueno" strongLabel="Fuerte"
+                                promptLabel="Por favor, ingrese nuevamente el Password.!" feedback="true"/>
+
+                </h:panelGrid>
+                <br/>
+                <p:commandButton value="GUARDAR" actionListener="#{changePassBean.savePass}"
+                                 oncomplete="manejarRegistro(xhr, status, args)" update="mensajes">
+                    <p:confirm header="Seguridad" message="Está seguro de editar su usuario.?" />
+                </p:commandButton>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="explode" hideEffect="explode">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" update="renovacionForm:tablaDeDatos"/>
+                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no"/>
+            </p:confirmDialog>
+        </h:form>
+        <div class="menu" style="margin-top: 10%; text-align: center; ">
+            SERVICIO NACIONAL DE DERECHOS INTELECTUALES
+        </div>
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+            }, 200);
+        });
+        //<![CDATA[
+
+        function popupwindow(url, title) {
+            window.open(url, title, "toolbar=no, scrollbars=yes, resizable=yes, top=170, left=170, width=800, height=600");
+        }
+
+        function manejarRegistro(xhr, status, args) {
+            if (!args.validationFailed && args.doit) {
+                setTimeout(function () {
+                    window.location = args.view;
+                }, 500);
+            }
+        }
+        function logout(xhr, status, args) {
+            setTimeout(function () {
+                window.location = 'login.xhtml';
+            }, 500);
+        }
+//]]>
+    </script>
+</html>

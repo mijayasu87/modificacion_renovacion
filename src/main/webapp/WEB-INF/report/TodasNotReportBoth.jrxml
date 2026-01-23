@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
+	<property name="ireport.zoom" value="1.1000000000000019"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="514"/>
+	<parameter name="title" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="fecha_el_not" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="notifica" class="java.lang.String"/>
+	<field name="tipo_sol" class="java.lang.String"/>
+	<field name="tit_actual" class="java.lang.String"/>
+	<field name="sol_senadi" class="java.lang.String"/>
+	<field name="fecha_pres" class="java.lang.String"/>
+	<field name="denom" class="java.lang.String"/>
+	<field name="reg_no" class="java.lang.String"/>
+	<field name="fecha_reg" class="java.lang.String"/>
+	<field name="fecha_el_not" class="java.lang.String"/>
+	<field name="ro" class="java.lang.String"/>
+	<field name="cas_senadi" class="java.lang.String"/>
+	<field name="cas_judicial" class="java.lang.String"/>
+	<field name="tit_apod_repre" class="java.lang.String"/>
+	<field name="nom_apod_repre" class="java.lang.String"/>
+	<field name="respons" class="java.lang.String"/>
+	<field name="sign" class="java.lang.String"/>
+	<field name="r1" class="java.lang.String"/>
+	<field name="r2" class="java.lang.String"/>
+	<field name="r3" class="java.lang.String"/>
+	<field name="r4" class="java.lang.String"/>
+	<field name="r5" class="java.lang.String"/>
+	<field name="r6" class="java.lang.String"/>
+	<field name="idNotificada" class="java.lang.Integer"/>
+	<variable name="notificacion_no" class="java.lang.String">
+		<variableExpression><![CDATA[$F{notifica}+"-"+$F{tipo_sol}+"-2020-SENADI"]]></variableExpression>
+	</variable>
+	<variable name="solicitud_no" class="java.lang.String">
+		<variableExpression><![CDATA[$F{sol_senadi}+"-"+$F{tipo_sol}+"-("+$F{fecha_pres}+")"]]></variableExpression>
+	</variable>
+	<variable name="registro_n" class="java.lang.String">
+		<variableExpression><![CDATA[$F{tipo_sol}+"-"+$F{reg_no}+"-("+$F{tipo_sol}+"-"+$F{fecha_reg}+")-("+$F{sign}+")"]]></variableExpression>
+	</variable>
+	<variable name="inicio" class="java.lang.String">
+		<variableExpression><![CDATA["\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+"\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+
+" Quito, "+$F{fecha_el_not}+".- Esta Unidad administrativa comunica a usted que no ha presentado con la solicitud de renovación lo siguiente:"]]></variableExpression>
+	</variable>
+	<variable name="fin" class="java.lang.String">
+		<variableExpression><![CDATA["Razón: Siento por tal que el día de hoy 2 de Julio de 2019 notifiqué con la providencia que antecede a "+$F{tit_actual}
++", mediante boleta depositada en la casilla No. "+$F{cas_senadi}+""+$F{cas_judicial}+", correspondiente a su apoderado/a "+$F{tit_apod_repre}+" "+$F{nom_apod_repre}+".- Lo que certifico."]]></variableExpression>
+	</variable>
+	<variable name="centro" class="java.lang.String">
+		<variableExpression><![CDATA["Cúmplase con lo dispuesto en ésta providencia dentro del plazo de dos meses, vencido el cual, de no atenderse lo solicitado, se producirá el abandono del procedimiento, ordenándose el archivo del expediente respectivo, de conformidad con el artículo 212 del Código Orgánico Administrativo.  El presente acto administrativo se emite en ejercicio de la facultad delegada por el Director Nacional de Propiedad Industrial, mediante resolución No.002-2019  DNPI-SENADI  de 31 de Enero de 2019."]]></variableExpression>
+	</variable>
+	<variable name="centrofin" class="java.lang.String">
+		<variableExpression><![CDATA["Cúmplase con lo dispuesto en ésta providencia dentro del plazo de dos meses, vencido el cual, de no atenderse lo solicitado, se producirá el abandono del procedimiento, ordenándose el archivo del expediente respectivo, de conformidad con el artículo 212 del Código Orgánico Administrativo.  El presente acto administrativo se emite en ejercicio de la facultad delegada por el Director Nacional de Propiedad Industrial, mediante resolución No.002-2019  DNPI-SENADI  de 31 de Enero de 2019."+"<b>"+" Notifíquese.- "+"</b>"+"f)"+"<b>"+" Ab. Franklin Jara "+"</b>"+"DELEGADO DEL DIRECTOR NACIONAL DE PROPIEDAD INDUSTRIAL."]]></variableExpression>
+	</variable>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="-19" y="-20" width="595" height="822" uuid="2a414a1f-7d19-478e-937d-890175e16e10"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "background.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="14" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="6"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="9" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="747" splitType="Stretch">
+			<textField>
+				<reportElement x="45" y="224" width="478" height="53" uuid="97456e4b-6284-45d6-b911-358d2f76d73b"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{inicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="113" y="270" width="357" height="20" uuid="1d829927-b3f0-40c1-ab2a-f0070706a0c5"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Art. 152. COA Poder o documento de personería debidamente legalizado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="290" width="357" height="20" uuid="62838cb7-68eb-4ebc-80a8-214528d467e7"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Comprobante de pago para emisión de certificado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="310" width="357" height="20" uuid="3a3d714b-10b5-46a5-b858-f899837693ea"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Firma del solicitante en la solicitud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="330" width="357" height="20" uuid="7c909fc7-cc3c-4c9c-b991-d0c951500802"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Titular en la solicitud no corresponde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="350" width="357" height="20" uuid="afc76e2b-238d-4018-bf78-1f0333ccf25d"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Denominación en la solicitud no corresponde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="370" width="357" height="20" uuid="ec993f4f-e55e-477f-9af5-6aee0c03f9e1"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Número de registro en la solicitud no corresponde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="59" y="393" width="35" height="20" uuid="8ef978ce-9cd8-4c06-af21-708aa6568efd"/>
+				<textElement>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Otros:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="94" y="393" width="417" height="37" uuid="b2e34b4d-7322-4716-baca-6a1cf775df16"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Times New Roman" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="551" width="555" height="20" uuid="2c765d4f-00b2-4d78-875f-31c48b5947ea"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Ab. Franklin Jara]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="564" width="555" height="20" uuid="7faa1dd3-b7f9-4741-8271-aed69e2e049d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DELEGADO DE LA DIRECTORA NACIONAL DE PROPIEDAD INDUSTRIAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="45" y="605" width="478" height="53" uuid="2817117b-0575-4e8d-980a-6246ad1d6685"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="682" width="555" height="20" uuid="b4673392-037a-493a-a990-520f581ce665"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Gabriel Montenegro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="696" width="555" height="20" uuid="eb6f3a7f-78d4-480c-92bd-414c697abe5f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SECRETARIO]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="721" width="159" height="20" uuid="81952c15-8338-4a8b-82b4-d2a96bcd879a"/>
+				<textElement>
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{respons}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="440" width="478" height="99" uuid="ba8d3e6a-5401-42b2-b95b-e61e9f4282b5"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{centro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="118" width="100" height="20" uuid="3fc10290-4868-4b02-b9b8-1b4a28ae05ca"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Notificación No.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="118" width="366" height="20" uuid="374c78e8-2130-4c1f-befa-1bfc085b8eb7"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{notificacion_no}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="132" width="100" height="20" uuid="d4e2e08f-676e-4f71-93f7-b7ae0f84f464"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Solicitante:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="132" width="366" height="20" uuid="5bb75f7f-be2c-41c7-bb47-68eb8b9ca230"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_actual}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="146" width="100" height="20" uuid="22ccfb03-f6e4-4fd3-84a1-98b1e5555e7f"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Solicitud No.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="146" width="366" height="20" uuid="53e21533-6e16-4609-b7c0-f7a609791ca6"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{solicitud_no}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="160" width="100" height="34" uuid="067c3617-35d6-4d89-ae02-ab8964dda285"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Denominación:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="160" width="366" height="34" uuid="2eb0bd4a-c0db-4720-a72c-f1c5ae439a8a"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denom}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="192" width="100" height="20" uuid="cbe38100-d1ec-4708-b31c-cea4e79fb73a"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[No. de registro:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="192" width="366" height="20" uuid="9c1bc5dd-e800-400b-a40e-9236ad088611"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{registro_n}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="77" width="555" height="20" uuid="12312736-388d-432d-a655-33cf04be7fd6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="17" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[RENOVACIÓN]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="67" y="270" width="46" height="20" uuid="9bde11f7-0f6e-4ecf-9b6c-cfa825e3ae51"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="290" width="46" height="20" uuid="9ece59d4-8f89-4b28-b22f-272754055ab7"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="310" width="46" height="20" uuid="d5b47fa7-ca28-4bf9-9500-6f7c3ffe82c2"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="330" width="46" height="20" uuid="b37c1f8c-a098-4757-b86c-1101386e1cc7"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="350" width="46" height="20" uuid="b1095854-8efe-430a-bad0-3a8657dce98e"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="370" width="46" height="20" uuid="b30991e4-f2a4-49e0-8b11-ad1ca521e1a3"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r6}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="347" y="509" width="100" height="20" uuid="1cb959c3-f655-4a78-b094-9bc31251f32e"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Notifíquese.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="224" width="478" height="20" uuid="41b97140-bd7b-4d38-bd03-d264f950b190"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SERVICIO NACIONAL DE DERECHOS INTELECTUALES - SENADI.-]]></text>
+			</staticText>
+		</band>
+		<band height="762">
+			<textField isBlankWhenNull="true">
+				<reportElement x="45" y="729" width="159" height="20" uuid="0ba7e4bc-540d-4497-b26a-6aa27ae61e50"/>
+				<textElement>
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{respons}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="388" width="46" height="20" uuid="ceedc5dd-79c4-440f-88ca-1e884c09b96c"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r5}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="115" width="555" height="20" uuid="3a6afa97-7cf3-4829-b98e-52711701f09d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="16" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[RENOVACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="59" y="431" width="35" height="20" uuid="506e1654-e7bc-45c8-8fe5-c1d0d884634d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Otros:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="170" width="366" height="20" uuid="016bab7f-baec-4538-9217-88d48559fac8"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tit_actual}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="368" width="46" height="20" uuid="5baabe4c-545e-428b-9dc9-f93428121ace"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="198" width="366" height="34" uuid="37d5b748-3fa4-46e0-bc72-41ea6f3da8cf"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denom}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="113" y="368" width="357" height="20" uuid="9dc50568-3c55-4ff7-bc60-ab693a6b91d5"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Titular en la solicitud no corresponde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="328" width="357" height="20" uuid="4a7b15e9-07ed-45be-a603-ab140ae7be91"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Comprobante de pago para emisión de certificado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="184" width="100" height="20" uuid="4d3947ed-d1b1-492e-b32b-bca1ab3acae4"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Solicitud No.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="67" y="328" width="46" height="20" uuid="18da1364-b048-46f8-a9d0-9fb68e964d6f"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="408" width="46" height="20" uuid="f8c16f75-f15a-4614-b7f1-72aff007bf8b"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r6}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="113" y="388" width="357" height="20" uuid="c8225e5d-5b64-40d9-a127-6d59ccfa33f7"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Denominación en la solicitud no corresponde]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="230" width="366" height="20" uuid="64b32d22-734b-4a6e-8154-9a62025db168"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{registro_n}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="431" width="417" height="37" uuid="68005c66-0dca-4134-9656-e8b0d5be6f0a"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Times New Roman" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="478" width="478" height="99" uuid="478c440a-0bb5-4e7a-b828-beffc400a24e"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Times New Roman" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{centrofin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="156" width="366" height="20" uuid="52faacde-3056-4b5a-9f96-3b4a6f7aa3b2"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{notificacion_no}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="198" width="100" height="34" uuid="bbe0fa2f-0575-437d-9d95-4c1d652167f0"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Denominación:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="170" width="100" height="20" uuid="9d875f03-4789-4e7d-a150-7bbc6e1e7b14"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Solicitante:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="67" y="308" width="46" height="20" uuid="155d457e-2609-49be-8ff0-37db310b6cea"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="45" y="230" width="100" height="20" uuid="3f3c872b-9237-4c85-ba9d-a8fd5e1fe3bc"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[No. de registro:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="67" y="348" width="46" height="20" uuid="019dbec8-89b5-47c2-a04e-ace3523404ae"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{r3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="690" width="555" height="20" uuid="1381eed7-2828-46c1-b9ad-4060bb81c328"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Gabriel Montenegro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="308" width="357" height="20" uuid="1a320c1d-ebdb-488b-a841-edec10b55dcd"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Art. 152. COA Poder o documento de personería debidamente legalizado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="156" width="100" height="20" uuid="258c1d42-d947-4592-b10d-3131fa1ddb62"/>
+				<textElement>
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Notificación No.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="348" width="357" height="20" uuid="795c5738-039a-4581-91be-4e0f6eec3f43"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Firma del solicitante en la solicitud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="704" width="555" height="20" uuid="f79d4e1c-4fd1-496e-bd6b-f5973e5e23d1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SECRETARIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="184" width="366" height="20" uuid="b9005575-8332-421b-9f56-8381e539566d"/>
+				<textElement markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{solicitud_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="262" width="478" height="53" uuid="9fb66a82-b3d7-4a00-a889-b4da705d32f3"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{inicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="45" y="592" width="478" height="53" uuid="255bebe8-a8d3-4890-b066-65d5974f9a78"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="113" y="408" width="357" height="20" uuid="b224270c-514d-4abe-a8fb-d36aee9573e7"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="11"/>
+				</textElement>
+				<text><![CDATA[ Número de registro en la solicitud no corresponde]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="16" y="18" width="495" height="78" forecolor="#FFFFFF" uuid="59084d11-4c69-4517-b326-337dce7960c7"/>
+				<text><![CDATA[Static text]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="45" y="262" width="478" height="20" uuid="1c493ea7-f0ee-4df8-8d86-a42aa9fc54c5"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Times New Roman" size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SERVICIO NACIONAL DE DERECHOS INTELECTUALES - SENADI.-]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="11" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="7" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="16" splitType="Stretch"/>
+	</summary>
+</jasperReport>

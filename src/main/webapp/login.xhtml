@@ -1,0 +1,118 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>RENOVACIONES - SENADI</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css"/>
+
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+    </h:head>
+    <h:body style="text-align:center; background-color:  #B7E5E8;">
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>        
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <p:growl id="mensajes" showDetail="true" life="2000" />
+        <h4 class="titul" style="margin-top: 50px; text-align: center; font-size: 20px;">BIENVENIDO, POR FAVOR INGRESE SUS DATOS.</h4>
+        
+        <h:form id="formlog">
+            <p:panel id="panelin" style="width:300px; text-align: center; margin:20px auto; box-shadow: 1px 1px 5px #45B8FF !important;">
+
+                <div style="padding: 15px 0">
+                    <h:graphicImage height="80" width="80" value="#{resource['images:iepi.png']}" />
+                    <h:graphicImage height="65" width="170" value="#{resource['images:sena.png']}" />
+                </div>
+
+                <p style="text-align: center; margin-bottom: 30px; font-weight: bold; font-size: 14px">RENOVACIONES - SENADI</p>
+
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">account_circle</i>
+                    <h:inputText id="icon_usuario" class="validate"
+                                 onfocus="animaOnFocus('lbl_usuario')"
+                                 onblur="animaOnBlur(this, 'lbl_usuario')"
+                                 onchange="animaOnChange(this, 'lbl_usuario')"                                 
+                                 value="#{loginBean.login}" required="true"
+                                 label="Nombre de usuario" />
+                    <label id="lbl_usuario" for="icon_usuario">Usuario</label>
+                </div>
+
+                <div class="input-field col s6">
+                    <i id="lockicon" class="material-icons prefix">lock</i>
+                    <h:inputSecret id="icon_password" class="validate" 
+                                   onfocus="animaOnFocus('lbl_password')"
+                                   onblur="animaOnBlur(this, 'lbl_password')"
+                                   value="#{loginBean.clave}" required="true"
+                                   label="Password"/>
+                    <label id="lbl_password" class="" for="icon_password">Password</label>
+                </div>
+
+                <p:commandButton id="loginButton" value="INGRESAR"
+                                 actionListener="#{loginBean.login}" update=":mensajes"
+                                 oncomplete="manejarLogin(xhr, status, args)"
+                                 style="margin: 25px 0;" class="btn_peque">
+                    <!--<p:effect rendered="#{loginBean.shake}" for="panel" type="shake" event="click" /> -->
+                </p:commandButton>
+
+            </p:panel>
+        </h:form>
+
+         <!-- Si aún no se ha registrado presione <a href="register_user.xhtml">Aquí.</a> -->
+
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+            }, 1200);
+        });
+
+        function animaOnFocus(label) {
+            iconLabel = document.getElementById(label);
+            iconLabel.className = "active";
+        }
+
+        function animaOnBlur(inputtext, label) {
+            iconLabel = document.getElementById(label);
+            if (inputtext.value == "") {
+                iconLabel.className = "";
+            } else {
+                iconLabel.className = "active";
+            }
+        }
+
+        function animaOnChange(inputtext, label) {
+            iconLabel = document.getElementById(label);
+            if (inputtext.value == "") {
+                iconLabel.className = "";
+            } else {
+                iconLabel.className = "active";
+            }
+        }
+
+        function validar(e) {
+            tecla = (document.all) ? e.keyCode : e.which;
+            if (tecla == 8)
+                return true;
+            patron = /[A-Za-z\s]/;
+            te = String.fromCharCode(tecla);
+            return patron.test(te);
+        }
+        //<![CDATA[
+        function manejarLogin(xhr, status, args) {
+            if (!args.validationFailed && args.estaLogeado) {                
+                setTimeout(function () {
+                    window.location = args.view;
+                }, 500);
+            }else{
+                jQuery('#formlog').effect("shake", { times:3 }, 500);
+            }
+        }
+        //]]>
+    </script>
+</html>

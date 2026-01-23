@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b783718-a942-41b1-9feb-a8b67a8a1daa">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1632"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.Integer"/>
+	<parameter name="resolucionData" class="java.lang.String"/>
+	<parameter name="delegado" class="java.lang.String"/>
+	<parameter name="delegacion" class="java.lang.String"/>
+	<parameter name="resolucionNot" class="java.lang.String"/>
+	<parameter name="secretaria" class="java.lang.String"/>
+	<parameter name="denominacion" class="java.lang.String"/>
+	<parameter name="claus" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from caducada where id = $P{id}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="resolucion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="solicitud_senadi" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_solicitud" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="denominacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_registro" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_registro" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="solicitante" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_providencia" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_notificacion" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="abogado_patrocinador" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="casillero_no" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="requisito_notificado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="certificado_no" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_otorgada" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="solicitud" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_de_solicitud" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="responsable" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="signo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_vencimiento" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="identificacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ant_des" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="resolucion_no" class="java.lang.String">
+		<variableExpression><![CDATA[$F{resolucion}+" - "+new SimpleDateFormat("yyyy").format($F{fecha_otorgada})+" - SENADI"]]></variableExpression>
+	</variable>
+	<variable name="solicitud_no" class="java.lang.String">
+		<variableExpression><![CDATA[$F{solicitud_senadi}+" del ("+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format($F{fecha_solicitud})+")"]]></variableExpression>
+	</variable>
+	<variable name="registro_no" class="java.lang.String">
+		<variableExpression><![CDATA[$F{no_registro}+" - ("+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format($F{fecha_registro})+")("+$F{signo}+")"]]></variableExpression>
+	</variable>
+	<variable name="parrafo1" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>SERVICIO NACIONAL DE DERECHOS INTELECTUALES - SENADI, DIRECCIÓN "+
+"NACIONAL DE PROPIEDAD INDUSTRIAL - UNIDAD DE MODIFICACIONES AL REGISTRO.-</style> Quito, D.M., "+
+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_providencia})+", a las 13h00.-<br/><br/>"+
+"<style pdfFontName='Times-Bold'>ANTECEDENTES:</style>\n\n"+
+"1. Con fecha "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_solicitud})+
+", "+$F{solicitante}.replace("&","&amp;")+" presento solicitud de renovación No. "+$F{solicitud_senadi}+", correspondiente a la "+$F{signo}+" "+
+$F{denominacion}.replace("&","&amp;")+", con número de registro "+$F{no_registro}+", otorgado el "+
+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_registro})+
+", y cuya fecha de vencimiento fue el "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_vencimiento})+".\n\n\n"+
+"<style pdfFontName='Times-Bold'>PARA RESOLVER SE CONSIDERA:\n\n"+
+"PRIMERO.- </style>Que, de conformidad con lo que dispone el artículo 153 de la Decisión 486 de la Comisión de la Comunidad "+
+"Andina, el titular marcario o quien tenga legítimo interés solicitará la renovación dentro del término legal correspondiente:\n<br/>"]]></variableExpression>
+	</variable>
+	<variable name="parrafo2" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Italic'>“Artículo 153.- El titular del registro, o quien tuviere legítimo interés, deberá solicitar la "+
+"renovación del registro ante la oficina nacional competente, dentro de los seis meses anteriores "+
+"a la expiración del registro. No obstante, tanto el titular del registro como quien tuviere legítimo "+
+"interés gozarán de un plazo de gracia de seis meses, contados a partir de la fecha de vencimiento del "+
+"registro, para solicitar su renovación. (…)”</style>\n\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo3" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>SEGUNDO.- </style>Que, en el mismo sentido, el artículo "+
+"365 del Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación "+
+"norma vigente al momento de la presentación de la solicitud analizada, señala:\n\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo4" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Italic'>“Art. 365.- Duración del registro de una marca. - La adquisición de una marca tendrá una duración de "+
+"diez años contados a partir de la fecha de su concesión y podrá renovarse por períodos sucesivos de diez años.”.</style>\n\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo5" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>TERCERO.- </style>Que, el artículo 366 del Código "+
+"Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación norma "+
+"vigente al momento de la presentación de la solicitud analizada, al respecto establece: \n\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo6" class="java.lang.String">
+		<variableExpression><![CDATA["\n\n<style pdfFontName='Times-Italic'>“Art. 366.- Renovación de registro de marca. - El titular del registro, o quien "+
+"tuviere legítimo interés, deberá solicitar la renovación del registro ante la autoridad "+
+"nacional competente en materia de derechos intelectuales dentro de los seis meses anteriores "+
+"a la expiración del registro. No obstante, tanto el titular del registro como quien tuviere "+
+"legítimo interés gozarán de un plazo de gracia de seis meses contados a partir de la fecha de "+
+"vencimiento del registro para solicitar su renovación (…).”</style>"]]></variableExpression>
+	</variable>
+	<variable name="parrafo7" class="java.lang.String">
+		<variableExpression><![CDATA["\n\n<style pdfFontName='Times-Bold'>CUARTO.- </style> Que, revisado la vigencia de el/la "+$F{signo}+", "+
+"esta Autoridad evidenció que la solicitud de renovación fue presentada "+$F{ant_des}+
+" de los seis (6) meses que dispone la normativa vigente incluido el periodo de gracia; "+
+"por cuanto, la solicitud de renovación fue presentada de manera extemporánea, considerando "+
+"que la fecha de vencimiento fue/es el "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_vencimiento})+"."]]></variableExpression>
+	</variable>
+	<variable name="parrafo8" class="java.lang.String">
+		<variableExpression><![CDATA["\n\nPor lo que, el artículo 238 del Reglamento de gestión de los Conocimientos señala:"+
+"\n\n<style pdfFontName='Times-Italic'>“Artículo 238.- Extemporaneidad de las solicitudes de renovación. Las solicitudes "+
+"de renovación presentadas fuera del plazo establecido en el Código Orgánico de la Economía "+
+"Social de los Conocimientos, Creatividad e Innovación, se declararán extemporáneas y serán "+
+"archivadas, sin que ello implique la devolución del pago realizado.”</style>"]]></variableExpression>
+	</variable>
+	<variable name="parrafo9" class="java.lang.String">
+		<variableExpression><![CDATA["\n\nPor lo expuesto, tomando en cuenta las consideraciones de hecho y de derecho realizadas, "+
+"esta Unidad, en ejercicio de la facultad conferida mediante Acción de Personal No. "+$P{resolucionData}+".\n\n"+
+"<style pdfFontName='Times-Bold'>RESUELVE:</style>\n\n"+
+"<style pdfFontName='Times-Bold'>1.- </style>Negar la solicitud de renovación No. "+$F{solicitud_senadi}+", "+
+"de fecha "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_solicitud})+
+", correspondiente a "+$F{signo}+" de la denominación "+$F{denominacion}.replace("&","&amp;")+", con título de registro "+$F{no_registro}+
+", otorgado el "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_registro})+
+", por haber sido presentada fuera del plazo establecido en la legislación nacional y comunitaria.\n\n"+
+"<style pdfFontName='Times-Bold'>2.- </style>Ordenar el archivo del expediente, conformado para el efecto.\n\n"+
+"El presente acto administrativo es susceptible de los recursos administrativos establecidos en el artículo 597 "+
+"del Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación; o por vía "+
+"jurisdiccional ante uno de los Tribunales Distritales de lo Contencioso Administrativo. "+
+"<style pdfFontName='Times-Bold'>NOTIFÍQUESE y CÚMPLASE. -</style>"]]></variableExpression>
+	</variable>
+	<variable name="parrafo10" class="java.lang.String">
+		<variableExpression><![CDATA[$P{delegado}+"\n<style pdfFontName='Times-Bold'>"+$P{delegacion}+"</style>"]]></variableExpression>
+	</variable>
+	<variable name="parrafo11" class="java.lang.String">
+		<variableExpression><![CDATA["\n\n<style pdfFontName='Times-Bold'>RAZON: </style>Siento por tal que el día de hoy "+
+"<style pdfFontName='Times-Bold'>"+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_notificacion})+
+"</style>, notifiqué con la resolución que antecede a <style pdfFontName='Times-Bold'>"+$F{solicitante}.replace("&","&amp;")+"</style>, mediante boleta "+
+"depositada en la casilla SENADI <style pdfFontName='Times-Bold'>"+$F{casillero_no}+"</style>. - Lo que certifico, en virtud de la "+
+"delegación de la Directora de Gestión Institucional conferida mediante Resolución No. "+$P{resolucionNot}+"."]]></variableExpression>
+	</variable>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image>
+				<reportElement x="-19" y="-22" width="593" height="824" uuid="b3a0a4d0-1e90-4413-9306-1bc6e769c665"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "background_encuentro.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="53" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="619" splitType="Stretch">
+			<staticText>
+				<reportElement x="55" y="0" width="100" height="20" uuid="cea663a8-28f3-42ba-b4ce-3337b3b86400"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[Resolución No.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="17" width="100" height="20" uuid="4feb972f-f34c-490e-b477-cfe83413206c"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[Solicitante:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="34" width="100" height="20" uuid="8ec9332d-41bf-498d-90c4-7f8e25392202"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[Solicitud No.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="51" width="100" height="20" uuid="413d4fc7-46c5-4291-bf28-babe95ddaafa"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[Denominación:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="55" y="68" width="100" height="20" uuid="e185831a-981c-483c-8e3f-7051da42d562"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[No. de registro:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="155" y="0" width="374" height="20" uuid="74cc9167-99d1-4603-ac95-66d71321a33a"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{resolucion_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="17" width="374" height="20" uuid="1e4f0fb9-9731-4ae1-9277-6cf044f75d29"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{solicitante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="34" width="374" height="20" uuid="1955d0f8-b1fb-48da-8b63-023aff542af3"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{solicitud_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="51" width="374" height="20" uuid="91f46648-add0-41c5-bb61-91f204798ed7"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denominacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="68" width="374" height="20" uuid="dc20073d-6d66-4d55-9542-fee354d1b083"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{registro_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="107" width="467" height="500" uuid="4d1aa4c9-41b8-4d17-b4b9-e98a032c6595"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo1}+$V{parrafo2}+$V{parrafo3}+$V{parrafo4}+$V{parrafo5}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="420">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="55" y="0" width="467" height="420" uuid="99d5489f-48f8-4aea-99be-20ac6b0bedd5"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo6}+$V{parrafo7}+$V{parrafo8}+$V{parrafo9}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="309">
+			<image>
+				<reportElement x="372" y="177" width="168" height="122" uuid="b4471329-3e41-4f19-bcce-f7f2b8da3a5b"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="57" width="555" height="38" uuid="1a4da243-8470-4f32-befb-c6183b2901d0"/>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo10}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="111" width="467" height="111" uuid="cbfa531b-1992-43c5-a07b-309a970438ec"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo11}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="271" width="555" height="20" uuid="6aae79c0-b0fb-4a27-85bb-14da62740089"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{secretaria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="285" width="555" height="20" uuid="a52a2f3c-c35d-4510-93ab-db0cb40447cc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{denominacion}]]></textFieldExpression>
+			</textField>
+			<break>
+				<reportElement x="0" y="98" width="100" height="1" uuid="a18f87a9-a4eb-448a-a7c3-d75a1c8d8666"/>
+			</break>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="9" splitType="Stretch"/>
+	</columnFooter>
+	<lastPageFooter>
+		<band height="20">
+			<textField>
+				<reportElement x="477" y="0" width="27" height="13" uuid="375c20fd-1758-4952-abd7-a02d5ca215f2"/>
+				<textFieldExpression><![CDATA[$F{responsable}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="16" splitType="Stretch"/>
+	</summary>
+</jasperReport>

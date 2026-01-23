@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:x="http://xpert.com/faces">
+    <h:head>
+        <meta charset="utf-8" />
+
+        <title>RENOVACIONES</title>
+
+        <link type="text/css" rel="stylesheet" href="faces/javax.faces.resource/theme.css?ln=primefaces-cupertino" />
+        <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+        <link href="resources/assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="resources/assets/css/font-awesome.min.css" rel="stylesheet" />
+
+        <link href="resources/assets/css/bootstrap-theme.css" rel="stylesheet" />
+        <link href="resources/assets/css/main.css" rel="stylesheet" />
+
+        <h:outputStylesheet library="css" name="style.css"/>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+    </h:head>
+    <h:body style="background-color: #D6FFF4">
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>        
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <p:growl id="mensajes" showDetail="true" life="4000"/>
+        <h:form id="allform"   style=" background: #e3e3e3; min-height: calc(100vh - 424px);">
+            <div class="menu">
+                <a href="renovaciones.xhtml" class="logo" title="Logo Senadi" ><img src="resources/images/senadilogo.png" width="165px"/></a>
+
+                <i id="edit_action" class="material-icons prefix user" style="position: absolute; padding: 0 7px; line-height: 42px; display: inline-block;">person</i>
+                <p:outputLabel value="#{loginBean.login}" style="margin-left: 35px; line-height: 42px; display: inline-block; padding: 0 7px; position: absolute" class="user"/>                
+
+                <div class="header-right">
+                    <p:commandLink styleClass="btn_logout"
+                                   actionListener="#{loginBean.logout}"
+                                   oncomplete="logout(xhr, status, args)"
+                                   title="CERRAR SESIÓN" immediate="true">
+                        <i class="material-icons">exit_to_app</i>
+                    </p:commandLink>
+                </div>
+
+                <a class="itemm" href="settings.xhtml" title="Configuración" ><i class="material-icons" >settings</i></a> 
+                <a class="activo" href="#" title="Upload Certificados" ><i class="material-icons" >upload</i></a>
+                <div style="float: right; display: inline-block;">
+                    <p:commandLink styleClass="itemm" value="VER NOTIFICADOS" actionListener="#{uploadBean.prepararNotificados}" 
+                                   style="color: black; text-decoration: none" oncomplete="PF('dlgNotificadas').show()" 
+                                   title="VER NOTIFICADOS" update="allform:dlgNotificadas mensajes"/>
+                </div>
+            </div>
+            <br/>
+
+            <h:panelGrid columns="1"  style="text-align: center; font-size: 16px; font-weight: bold; margin: 0 auto; width: 50%;">
+
+                <p:outputLabel value="SUBA TODOS LOS DOCUMENTOS QUE NECESITE NOTIFICAR" style="font-size: 16px !important;"/>
+                <p:outputLabel value="Asegúrese que en el nombre del certificado a subir conste la solicitud de transferencia, Ej: SENADI-2022-999999_xxx.pdf" 
+                               style="font-size: 10px !important; color: black"/>
+
+                <p:commandButton value="CARGAR DOCUMENTOS DE FILEZILLA" actionListener="#{uploadBean.cargarDocumentosFtp}" 
+                                 update="tablaDeDocs updoc subdocexp mensajes" class="btn_peque"  process="@parent"/>
+
+                <p:dataTable id="tablaDeDocs" var="documento"
+                             value="#{uploadBean.documentos}" widgetVar="tablaDeDocs"
+                             emptyMessage="No hay Datos para mostrar"                                              
+                             filteredValue="#{uploadBean.documentosFiltrados}"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rows="20"
+                             rowsPerPageTemplate="20,50,100,150,200,250,300"
+                             style="border: black !important; width: 900px;" >
+
+                    <p:column headerText="Documento" style="text-align: center;" filterBy="#{documento.documento}" filterMatchMode="contains">
+                        <h:outputText value="#{documento.documento}" />
+                    </p:column>
+
+                    <p:column headerText="Estado" style="text-align: center;" rendered="#{uploadBean.cargaHecha}">
+                        <p:outputLabel  rendered="#{documento.estado}">
+                            <i class="pi pi-check" style="font-size: 2rem; color: green"></i>
+                        </p:outputLabel>
+                        <p:outputLabel  rendered="#{!documento.estado}">
+                            <i class="pi pi-spin pi-spinner" style="font-size: 2rem; "></i>
+                        </p:outputLabel>                        
+                    </p:column>
+
+                    <p:column headerText="Estado" style="text-align: center;" rendered="#{!uploadBean.cargaHecha}">
+                        <p:outputLabel  rendered="#{documento.estado}">
+                            <i class="pi pi-check" style="font-size: 2rem; color: green"></i>
+                        </p:outputLabel>
+
+                        <p:outputLabel  rendered="#{!documento.estado}">
+                            <i class="pi pi-times" style="font-size: 2rem; color: red"></i>
+                        </p:outputLabel>                        
+                    </p:column>
+
+                    <p:column headerText="Observación" rendered="#{uploadBean.obsaviso}">
+                        <h:outputText value="#{documento.observacion}" />
+                    </p:column>
+                    <f:facet name="footer">
+                        <span class="font-bold">#{uploadBean.documentos.size()} registros.</span>
+                    </f:facet>
+                </p:dataTable>
+
+                <p:panel id="updoc" style="width: 900px">
+                    <p:commandButton id="subdocexp" value="SUBIR DOCUMENTOS A LOS EXPEDIENTES" actionListener="#{uploadBean.subirDocumentos}" 
+                                     update="tablaDeDocs updoc progressbar" class="btn_peque" styleClass="mr-2" process="@parent"
+                                     rendered="#{uploadBean.activo and !uploadBean.obsaviso}"  onclick="PF('progressbar').start();">
+                        <p:confirm header="CONFIRMAR" message="SEGURO DE SUBIR LOS DOCUMENTOS DE LA TABLA A SUS RESPECTIVOS EXPEDIENTES?"/>
+                    </p:commandButton> 
+
+                    <p:progressBar value="#{uploadBean.progressValue}" id="progressbar" labelTemplate="Espere a que el proceso termine: {value}% Subidos"  
+                                   widgetVar="progressbar" interval="500" ajax="true" global="false" >
+                        <p:ajax event="complete" update="mensajes" listener="#{uploadBean.onComplete}" />
+                    </p:progressBar>
+                    <br/>
+                    <p:commandButton class="btn_peque" value="NOTIFICAR" actionListener="#{uploadBean.prepararNotificar}"  oncomplete="if(args.uploadn){PF('dlgNotificar').show()}"
+                                     rendered="#{uploadBean.notexistentes}" update="mensajes allform:dlgNotificar" style="float: right"/>
+                    <br/>
+                    <br/><br/>
+                </p:panel>
+
+                <p:dialog id="dlgNotificar" modal="true" resizable="true"
+                          header="DOCUMENTOS A NOTIFICAR" fitViewport="true"
+                          widgetVar="dlgNotificar" style="font-size: 11px; margin-bottom: 10px" showEffect="clip" 
+                          hideEffect="explode" closeOnEscape="true" width="80%">
+                    <p:ajax event="close" update="dlgNotificar" resetValues="true" />
+                    <p:growl id="nuevoreg" life="1000"/>
+                    <h:form id="frmNotif" >
+                        <p:dataTable id="tablaDeDatos" var="notificacion"
+                                     value="#{uploadBean.notificaciones}" widgetVar="tablaDeDatos"
+                                     emptyMessage="No hay Datos para mostrar"                                              
+                                     filteredValue="#{uploadBean.notificacionesFiltradas}"
+                                     binding="#{uploadBean.notificacionesDataTable}"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rows="20"
+                                     rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                     style="border: black !important" >
+
+                            <p:column headerText="Trámite" style="text-align: center;" filterBy="#{notificacion.solicitud}" >
+                                <h:outputText value="#{notificacion.solicitud}" />
+                            </p:column>
+
+                            <p:column headerText="Documento" style="text-align: center;" filterBy="#{notificacion.documento}" >
+                                <h:outputText value="#{notificacion.documento}" />
+                            </p:column>
+
+                            <p:column headerText="Casillero" style="text-align: center;" filterBy="#{notificacion.casillero}" >
+                                <h:outputText value="#{notificacion.casillero}" />
+                            </p:column>                            
+
+                            <p:column headerText="F. Notificación" style="text-align: center;" filterBy="#{notificacion.fechaNotificacion}" >
+                                <h:outputText value="#{notificacion.fechaNotificacion}" >
+                                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Estado" style="text-align: center;" filterBy="#{notificacion.estado}" >
+                                <h:outputText value="#{notificacion.estado eq true ?'NOTIFICADO':'SIN NOTIFICAR'}" />
+                            </p:column>
+
+                            <p:column headerText="Archivo" style="text-align: center;" filterBy="#{notificacion.estado}" >
+                                <p:commandLink class="link" 
+                                               onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{notificacion.renewalFormId}/#{notificacion.documento}')"  
+                                               process="@this"
+                                               title="Visualizar archivo en expediente" rendered="#{!loginBean.usuarioConsulta}">
+
+                                    <i class="pi pi-eye" style="font-size: 2rem"></i>
+                                </p:commandLink>
+                            </p:column>
+                            <f:facet name="footer">
+                                <span class="font-bold">#{uploadBean.notificaciones.size()} registros.</span>
+                            </f:facet>
+                        </p:dataTable>                        
+                        <p:commandButton value="NOTIFICAR A CASILLEROS" actionListener="#{uploadBean.notificarCertificados}" class="btn_peque"
+                                         update="mensajes" style="float: right" process="@parent" oncomplete="PF('dlgNotificar').hide()"
+                                         onclick="PF('progressbarn').start();">
+                            <p:confirm header="CONFIRMAR" message="SEGURO DE REALIZAR LA NOTIFICACIÓN A TODOS LOS CASILLEROS MOSTRADOS?"/>
+                        </p:commandButton>
+                        <br/><br/><br/>
+                        <p:progressBar value="#{uploadBean.progressValue}" id="progressbarn" labelTemplate="Espere a que el proceso de notificación termine: {value}% Notificados"  
+                                       widgetVar="progressbarn" interval="500" ajax="true" global="false" style="color: black; font-weight: bold;">
+                            <p:ajax event="complete" update="mensajes" listener="#{uploadBean.onCompleteN}" />
+                        </p:progressBar>
+                    </h:form>
+                </p:dialog>
+
+            </h:panelGrid>
+
+            <p:dialog id="dlgNotificadas" modal="true" resizable="true"
+                      header="DOCUMENTOS NOTIFICADOS" fitViewport="true"
+                      widgetVar="dlgNotificadas" style="font-size: 11px; margin-bottom: 10px" showEffect="clip" 
+                      hideEffect="explode" closeOnEscape="true" width="80%">
+                <p:ajax event="close" update="dlgNotificadas" resetValues="true" />
+                <p:growl id="notireg" life="1000"/>
+                <h:form id="frmNotificada" >
+
+                    <p:tabView style="font-size: 12px; margin: 0 auto; width: 80%; color: black !important">
+                        <p:tab title="Búsqueda por Criterio" >
+                            <p:outputLabel value="BUSCAR: " style="font-size: 13px; font-weight: bold; margin-right: 5px;"/>
+                            <p:inputText id="buscarText" value="#{uploadBean.criterio}" 
+                                         style="font-size: 14px; margin-right: 5px; width: 40%" placeholder="Ingrese un criterio de búsqueda"
+                                         title="Puede buscar por No. Solicitud, Denominación o Titular Actual"/>
+                            <p:commandButton value="BUSCAR" actionListener="#{uploadBean.buscarNotificados}"
+                                             update="allform:frmNotificada:tablaDeNotificados mensajes "
+                                             style="font-size: 13px"
+                                             process="@parent" class="btn_peque"/>
+                        </p:tab>
+                        <p:tab title="Búsqueda por Fecha" >                            
+                            <p:outputLabel value="DESDE:" style="font-size: 13px; margin-right: 5px;"/>
+                            <p:calendar pattern="yyyy-MM-dd" value="#{uploadBean.fechaInicio}" label="Fecha Desde" style="font-size: 20px !important; margin-right: 5px;" 
+                                        placeholder="Fecha Inicio de Búsqueda" navigator="true"/>
+                            <p:outputLabel value="HASTA:" style="font-size: 13px; margin-right: 5px;"/>
+                            <p:calendar pattern="yyyy-MM-dd" value="#{uploadBean.fechaFin}" label="Fecha Hasta" style="font-size: 13px; margin-right: 5px;"
+                                        placeholder="Fecha Fin de Búsqueda" navigator="true"/>
+
+                            <p:commandButton value="BUSCAR"  
+                                             actionListener="#{uploadBean.buscarNotificadosPorFecha}" 
+                                             update="allform:frmNotificada:tablaDeNotificados mensajes"
+                                             style="font-size: 13px"
+                                             process="@parent" title="Se busca por fecha de Presentación" class="btn_peque"/>                            
+                        </p:tab>
+                    </p:tabView>                    
+
+                    <p:dataTable id="tablaDeNotificados" var="notificacion"
+                                 value="#{uploadBean.notificados}" widgetVar="tablaDeNotificados"
+                                 emptyMessage="No hay Datos para mostrar"                                              
+                                 filteredValue="#{uploadBean.notificadosFiltradas}"
+                                 binding="#{uploadBean.notificadosDataTable}"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,100,150,200,250,300"
+                                 style="border: black !important" >
+
+                        <p:column headerText="Documento" style="text-align: center;" filterBy="#{notificacion.solicitud}" >
+                            <h:outputText value="#{notificacion.solicitud}" />
+                        </p:column>
+
+                        <p:column headerText="Trámite" style="text-align: center;" filterBy="#{notificacion.documento}" >
+                            <h:outputText value="#{notificacion.documento}" />
+                        </p:column>
+
+                        <p:column headerText="Casillero" style="text-align: center;" filterBy="#{notificacion.casillero}" >
+                            <h:outputText value="#{notificacion.casillero}" />
+                        </p:column>                            
+
+                        <p:column headerText="F. Notificación" style="text-align: center;" filterBy="#{notificacion.fechaNotificacion}" >
+                            <h:outputText value="#{notificacion.fechaNotificacion}" >
+                                <f:convertDateTime pattern="yyyy-MM-dd" />
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Estado" style="text-align: center;" filterBy="#{notificacion.estado}" >
+                            <h:outputText value="#{notificacion.estado eq true ?'NOTIFICADO':'SIN NOTIFICAR'}" />
+                        </p:column>
+
+                        <p:column headerText="Acción" style="text-align: center;" >
+                            <p:panelGrid columns="2" class="noBorders">                                
+                                <p:commandLink class="link" 
+                                               onclick="otherpage('https://registro.propiedadintelectual.gob.ec/casilleros/media/files/#{notificacion.casillero}/#{notificacion.documento}')"  
+                                               process="@this"
+                                               title="Visualizar Notificación" rendered="#{!loginBean.usuarioConsulta}">
+
+                                    <i class="pi pi-eye" style="font-size: 2rem"></i>
+                                </p:commandLink>
+                                <p:commandLink class="link" 
+                                               actionListener="#{uploadBean.darDeBaja}"
+                                               process="@this" update="mensajes tablaDeNotificados"
+                                               title="Dar de baja notificación" rendered="#{!loginBean.usuarioConsulta}">
+
+                                    <i class="pi pi-thumbs-down" style="font-size: 2rem"></i>
+                                    <p:confirm header="CONFIRMAR" message="SEGURO DE DAR DE BAJA LA NOTIFICACIÓN DEL TRÁMITE #{notificacion.solicitud}?"/>
+                                </p:commandLink>
+                            </p:panelGrid>
+                        </p:column>
+                        <f:facet name="footer">
+                            <span class="font-bold">#{uploadBean.notificados.size()} registros.</span>
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="explode" hideEffect="explode">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes btn_peque" update="allform:frmNotif:tablaDeDatos"/>
+                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no btn_peque" />
+            </p:confirmDialog>
+
+            <!--<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="/images/ajax-loader.gif" />
+            </p:dialog>-->
+            <br/>
+        </h:form>
+
+        <p:dialog header="Sesión Caducada" resizable="false"
+                  widgetVar="idleDialog" modal="true" closable="false" style="font-size: 12px">
+            <h:form id="sesionCaducaForm">
+                <div class="titlePage">
+                    <h:outputText value="Sesión Caducada " />
+                    <p:commandButton styleClass="nav-link js-scroll-trigger"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="logout(xhr, status, args)"
+                                     value="ACEPTAR" immediate="true" style="font-size: 12px"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <div class="menu" style="margin-top: 5px; text-align: center">
+            SERVICIO NACIONAL DE DERECHOS INTELECTUALES
+        </div>
+
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+            }, 150);
+        });
+
+        function getIdIndex(idName) {
+            var doc = document.forms['allform'];
+            var i;
+            var idResult = 0;
+            for (i = 0; doc.length > i; i++) {
+                if (doc[i].id.includes(idName)) {
+                    idResult = i;
+                    console.log(doc[i].id);
+                    break;
+                }
+            }
+            return idResult;
+        }
+
+        //<![CDATA[
+
+        function start() {
+
+
+            window['progress'] = setInterval(function () {
+                var pbClient = PF('pbClient'),
+                        oldValue = pbClient.getValue(),
+                        newValue = oldValue + 10;
+
+                pbClient.setValue(pbClient.getValue() + 10);
+
+                if (newValue === 100) {
+                    clearInterval(window['progress']);
+                }
+
+
+            }, 1000);
+        }
+
+        function cancel() {
+            clearInterval(window['progress']);
+            PF('pbClient').setValue(0);
+            PF('startButton1').enable();
+        }
+
+        function popupwindow(url, title, args) {
+            if (args.doit) {
+                window.open(url, title);
+            }
+        }
+        function otherpage(url) {
+            setTimeout(function () {
+                window.open(url, '_blank');
+            }, 0);
+        }
+        function samepage() {
+            setTimeout(function () {
+                window.location = 'uplocert.xhtml';
+            }, 0);
+        }
+        function logout(xhr, status, args) {
+            setTimeout(function () {
+                window.location = 'login.xhtml';
+            }, 500);
+        }
+        //]]>
+    </script>
+</html>

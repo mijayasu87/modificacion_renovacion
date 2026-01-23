@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
+	<property name="ireport.zoom" value="1.331000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="480"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="nombrePersona" class="java.lang.String"/>
+	<parameter name="delegacion" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.Integer"/>
+	<parameter name="resoluciontransf" class="java.lang.String"/>
+	<parameter name="resolucionnot" class="java.lang.String"/>
+	<parameter name="secretaria" class="java.lang.String"/>
+	<parameter name="denosecre" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+    a.*
+FROM 
+    abandono AS a
+WHERE 
+    a.id = $P{id}
+GROUP BY 
+    a.id;]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="solicitud" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_presentacion" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="notificacion" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_notificacion" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_registro" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_registro" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="denominacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="signo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="titular_actual" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ape_apod_repre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_elabora_notificacion" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="certificado" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_certificado" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="casillero_senadi" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="casillero_judicial" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ro" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="responsable" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="identificacion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="r1" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comprobante" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="certificado_emitido" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="notificacion_emitida" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cancelado" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tipo_abandono" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="solicitante" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numero_abandono" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_abandono" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecha_vencimiento" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="solicitud_n" class="java.lang.String">
+		<variableExpression><![CDATA[$F{solicitud}+" - ("+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_presentacion})+")"]]></variableExpression>
+	</variable>
+	<variable name="notificacion_n" class="java.lang.String">
+		<variableExpression><![CDATA[$F{notificacion}+"-"+java.time.LocalDate.now().getYear()]]></variableExpression>
+	</variable>
+	<variable name="registro_n" class="java.lang.String">
+		<variableExpression><![CDATA[$F{no_registro}+", de ("+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_registro})+")("+$F{signo}+")"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_1" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>SERVICIO NACIONAL DE DERECHOS INTELECTUALES - "+
+"DIRECCIÓN TÉCNICA DE MODIFICACIONES AL REGISTRO.-</style> Quito, D.M., "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_abandono})+
+", a las 13h30.- \n\n"+
+"<style pdfFontName='Times-Bold'>ANTECEDENTES</style>"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_2" class="java.lang.String">
+		<variableExpression><![CDATA["1. Con fecha "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_presentacion})+",  "+$F{solicitante}+
+"., presentó solicitud de RENOVACIÓN, "+$F{solicitud}+", de la "+$F{signo}+", correspondiente a la denominación "+
+$F{denominacion}+", con número de registro No. "+$F{no_registro}+", otorgado el "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_registro})+".\n\n"+
+
+"2. Con "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_elabora_notificacion})+", mediante notificación No. "+
+$F{notificacion}+", se solicitó "+$F{ro}+"\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_3" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>PARA RESOLVER SE CONSIDERA:\n\n"+
+"PRIMERO.-</style> Que, de conformidad a lo que dispone La Constitución de la República del Ecuador, "+
+"en su Artículo 76 numeral 1 y 7 literal a, señala:\n\n"+
+"Art. 76.- “En todo proceso en el que se determinen derechos y obligaciones de cualquier orden, se asegurará el derecho al debido proceso (…).\n\n"+
+"<style pdfFontName='Times-Bold'>SEGUNDO.-</style> Que, de conformidad a lo que dispone La Constitución de la "+
+"República del Ecuador, en su Artículo 82, señala:\n\n"+
+"Art. 82.- de la Constitución de la República del Ecuador, “El derecho a la seguridad jurídica se fundamenta en el respeto a la Constitución y "+
+"en la existencia de normas jurídicas previas, claras, públicas y aplicadas por las autoridades competentes.”\n\n"+
+"<style pdfFontName='Times-Bold'>TERCERO.-</style> Que, de conformidad al Código Orgánico Administrativo, en su artículo 140, señala:\n\n"+
+"Art. 140.- Subsanaciones. Cuando alguno de los actos de la persona interesada no reúna los requisitos necesarios, la "+
+"administración pública le notificará para que en el término de diez días, subsane su omisión.\n\n"+
+"La administración pública especificará los requisitos que deben ser enmendados por la persona interesada con la "+
+"indicación de su fundamento legal, técnico o económico y las instrucciones detalladas del modo en que debe proceder "+
+"para subsanar las deficiencias.\n\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_3_1" class="java.lang.String">
+		<variableExpression><![CDATA["Si la persona interesada no cumple lo dispuesto por la administración pública se entenderá como desistimiento "+
+"y será declarado en la resolución (…).”\n\n"+
+"<style pdfFontName='Times-Bold'>CUARTO.-</style> Que, toda vez que se ha revisado y analizado la "+
+"información que reposa en el archivo de esta Dirección, tanto físico como digital; se ha determinado "+
+"que el interesado no ha cumplido lo dispuesto por esta dirección. En tal virtud, y con sustento en lo "+
+"prescrito en el artículo 140 del Código Orgánico Administrativo (COA), y por cuanto ha transcurrido el "+
+"plazo previsto en dicha disposición, esta dirección, tomando en cuenta las consideraciones de hecho y de "+
+"derecho realizadas, en ejercicio de la facultad conferida mediante Acción de Personal No. SENADI-DATH-2025-06-111,"+
+" de 12 de junio de 2025;\n"]]></variableExpression>
+	</variable>
+	<variable name="titulo_abandono" class="java.lang.String">
+		<variableExpression><![CDATA["Resolución No. "+$F{numero_abandono}+"-"+new SimpleDateFormat("yyyy").format(new java.util.Date())+"-SENADI"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_4" class="java.lang.String">
+		<variableExpression><![CDATA["1.- Declarar el desistimiento de la solicitud de RENOVACIÓN No. "+$F{solicitud}+", de fecha "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_presentacion})+", correspondiente a la "+$F{signo}+
+", con denominación "+$F{denominacion}+", con título de registro No. "+$F{no_registro}+", otorgado el "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_registro})+".\n\n"+
+"2.- Ordenar el archivo del expediente, conformado para el efecto."]]></variableExpression>
+	</variable>
+	<variable name="parrafo_5" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>RAZÓN.-</style> Siento por tal que el día de hoy "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_abandono})+
+", notifiqué con la resolución que antecede a "+$F{solicitante}+", <style pdfFontName='Times-Bold'>NOTIFÍQUESE y CÚMPLASE. -</style>"]]></variableExpression>
+	</variable>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="-19" y="-20" width="595" height="822" uuid="2a414a1f-7d19-478e-937d-890175e16e10"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "background.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="25" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="50">
+			<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.intValue() > 1)]]></printWhenExpression>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="227" splitType="Stretch">
+			<staticText>
+				<reportElement x="49" y="49" width="87" height="20" uuid="723396e7-2daa-425f-bb4b-ecc5b98de52f"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Solicitante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="49" y="69" width="87" height="20" uuid="277cb785-2b3c-4539-89dd-ae21ef1487c4"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Solicitud:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="136" y="69" width="418" height="20" uuid="0765de38-c3e3-4aec-b108-0c6305229749"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{solicitud_n}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="49" y="89" width="87" height="20" uuid="cf9878bc-062f-4f5c-a297-4fb290ef7d5a"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Denominación:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="136" y="89" width="418" height="20" uuid="4dcca2f9-de6c-4513-9561-6a3fd805ca56"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denominacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="49" y="109" width="87" height="20" uuid="5737f0d5-3434-4508-a2e1-b29cf5a984a4"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Registro No.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="136" y="109" width="418" height="20" uuid="ae5e451a-ae15-48d8-8bb9-5cd29c774f26"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{registro_n}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="49" y="146" width="480" height="68" uuid="5038c762-8915-419b-850c-1b6840f032ac"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="12" width="555" height="20" uuid="ec0f0223-1df3-4705-86e9-c087efa719b6"/>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="Times New Roman" size="16" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{titulo_abandono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="136" y="49" width="419" height="20" uuid="79ed6ca9-1aab-4e45-9f23-eb41e3fd5710"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{solicitante}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="27">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="49" y="0" width="479" height="27" uuid="ab7e5387-8cd5-4568-94c2-055d19eade42"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_2}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="29" splitType="Immediate">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="50" y="0" width="479" height="29" uuid="df3880b9-538b-4531-9489-c90697c8426b"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_3}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="29" splitType="Prevent">
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="48" y="0" width="479" height="29" uuid="2985774b-9ae3-4b7b-bb0c-598745289a7f"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_3_1}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="226">
+			<textField>
+				<reportElement x="0" y="183" width="555" height="20" uuid="f4f273bc-e219-4e5d-8275-6921ca970c5b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="false" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombrePersona}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="198" width="555" height="15" uuid="282d7c42-5dc0-47d2-be5e-aec1b882088a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{delegacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="48" y="37" width="480" height="146" uuid="76cac135-2646-4591-bbae-ce691e62f465"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_4}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="20" uuid="257d1b44-50dd-4a78-b334-24ea3e3e458a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[RESUELVE]]></text>
+			</staticText>
+		</band>
+		<band height="213">
+			<image>
+				<reportElement x="406" y="62" width="121" height="106" uuid="6ace09a7-39ae-427f-ae5d-06e2c5fa2678"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="465" y="191" width="64" height="12" uuid="81363007-7ba0-4b62-9ba7-509e37759ff8"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{responsable}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="94" width="555" height="20" uuid="9ce26e7a-91c7-4a67-b1d4-8718f368a6f2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="false" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{secretaria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="111" width="555" height="20" uuid="cc73076e-c2aa-4c9b-a27c-f99834b1b2fa"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{denosecre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="49" y="2" width="479" height="48" uuid="41d08e80-b263-4ba8-b74a-0b38b7551efa"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_5}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="10" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="7" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="555" pageHeight="802" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
+	<property name="ireport.zoom" value="1.464100000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[Select ro from notificada where id = $P{id}]]>
+	</queryString>
+	<field name="ro" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="rotext" class="java.lang.String">
+		<variableExpression><![CDATA[$F{ro}]]></variableExpression>
+	</variable>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="14" y="0" width="448" height="16" uuid="95030f19-dab1-4614-ae3f-afbfa44b30de"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" isItalic="true" pdfFontName="Times-Italic"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ro}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

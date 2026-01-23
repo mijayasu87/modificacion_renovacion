@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="modificacionPU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>java:/jboss/datasources/modificacion_prod</jta-data-source>
+    <class>senadi.gob.ec.mod.model.Renovacion</class>
+    <class>senadi.gob.ec.mod.model.Notificada</class>
+    <class>senadi.gob.ec.mod.model.Desistida</class>
+    <class>senadi.gob.ec.mod.model.Caducada</class>
+    <class>senadi.gob.ec.mod.model.Historial</class>
+    <class>senadi.gob.ec.mod.model.Delegacion</class>
+    <class>senadi.gob.ec.mod.model.Delegado</class>
+    <class>senadi.gob.ec.mod.model.Resolucion</class>
+    <class>senadi.gob.ec.mod.model.UploadNotificacion</class>
+    <class>senadi.gob.ec.mod.model.Secretario</class>
+    <class>senadi.gob.ec.mod.model.Abandono</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="transferenciaPU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>java:/jboss/datasources/transferencia_prod</jta-data-source>
+    <class>senadi.gob.ec.mod.model.transf.TituloCancelado</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="autenticacionPU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>java:/jboss/datasources/autenticacion</jta-data-source>
+    <class>senadi.gob.ec.mod.model.Usuario</class>
+    <class>senadi.gob.ec.mod.model.UsuarioRol</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="procesosPU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>java:/jboss/datasources/iepi3</jta-data-source>
+    <class>senadi.gob.ec.mod.daop.PpdiPersona</class>
+    <class>senadi.gob.ec.mod.daop.PpdiPersonaSolicitudSignoDistintivo</class>
+    <class>senadi.gob.ec.mod.daop.PpdiSolicitudSignoDistintivo</class>
+    <class>senadi.gob.ec.mod.daop.PpdiTituloSignoDistintivo</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+</persistence>
