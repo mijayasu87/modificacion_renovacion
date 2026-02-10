@@ -52,7 +52,7 @@ public class LDAPIngreso {
         }
     }
 
-    public int validarIngresoLDAP(String user, String pass) {
+    public int validarIngresoLDAP(String user, String pass, String grupo) {
         validarConexion();
         Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -63,7 +63,7 @@ public class LDAPIngreso {
         env.put(Context.SECURITY_CREDENTIALS, pass);
 
         String defaultSearchBase = "OU=Usuarios,OU=Oficina matriz,DC=iepi,DC=gov,DC=EC";
-        String groupDistinguishedName = "CN=SC_Renovaciones,OU=SistemaCORE,OU=Oficina matriz,DC=iepi,DC=gov,DC=ec";
+        String groupDistinguishedName = "CN="+grupo+",OU=SistemaCORE,OU=Oficina matriz,DC=iepi,DC=gov,DC=ec";
 
         DirContext ctx;
         try {

@@ -50,9 +50,9 @@ public class LoginBean implements Serializable {
     private boolean subrogante;
 
     private String nombre;
-    
+
     private RazonCorreccion razon;
-    
+
     private List<Abandono> abandonos;
     private Abandono abandono;
 
@@ -86,8 +86,11 @@ public class LoginBean implements Serializable {
 
         FacesMessage msg = null;
 
+        String grupo = "SC_Renovaciones";
+        String modolectura = "SC_LecturaModificaciones";
+
         LDAPIngreso ldap = new LDAPIngreso();
-        int n = ldap.validarIngresoLDAP(login, clave);
+        int n = ldap.validarIngresoLDAP(login, clave, grupo);
 //        int n = -1;
         if (n == 1) {
             shake = false;
@@ -103,8 +106,25 @@ public class LoginBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenid@", login);
 
         } else if (n == -1) {
-            boolean validar = ldap.validarIngresoLDAPSinrestrinccion(login, clave);
-            if (validar) {
+//            boolean validar = ldap.validarIngresoLDAPSinrestrinccion(login, clave);
+//            if (validar) {
+//                usuarioConsulta = true;
+//                shake = false;
+//
+//                logeado = true;
+//
+//                PrimeFaces.current().ajax().addCallbackParam("estaLogeado", logeado);
+//                if (logeado) {
+//
+//                    PrimeFaces.current().ajax().addCallbackParam("view", "renovaciones.xhtml");
+//                }
+//                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "LECTURA-Bienvenid@", login);
+//            } else {
+//                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Login Error", "Credenciales Incorrectas");
+//            }
+
+            int lect = ldap.validarIngresoLDAP(login, clave, modolectura);
+            if (lect == 1) {
                 usuarioConsulta = true;
                 shake = false;
 
@@ -116,6 +136,9 @@ public class LoginBean implements Serializable {
                     PrimeFaces.current().ajax().addCallbackParam("view", "renovaciones.xhtml");
                 }
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "LECTURA-Bienvenid@", login);
+
+            } else if (n == -1) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Login Error", "No tiene autorización para ingresar");
             } else {
                 msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Login Error", "Credenciales Incorrectas");
             }
