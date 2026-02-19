@@ -314,6 +314,21 @@ public class Operaciones {
             }
         }
         return fecha;
+    }        
+
+    public static LocalDate calcularFechaLimiteExcluyendoFinesSemana(int diasHabiles) {
+        LocalDate fecha = LocalDate.now();
+        int cont = 0;
+
+        while (cont < diasHabiles) {
+            fecha = fecha.minusDays(1);
+            DayOfWeek diaSemana = fecha.getDayOfWeek();
+            if (diaSemana != DayOfWeek.SATURDAY && diaSemana != DayOfWeek.SUNDAY) {
+                cont++;
+            }
+        }
+
+        return fecha;
     }
 
 }

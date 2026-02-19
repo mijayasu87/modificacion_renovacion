@@ -251,6 +251,7 @@ public class NotificadaBean implements Serializable {
                             renova.setCertificadoEmitido(notificada.isCertificadoEmitido());
                             renova.setNotificacionEmitida(notificada.isNotificacionEmitida());
                             renova.setCancelado(notificada.getCancelado());
+                            renova.setObservacion(notificada.getRo());
 
                             if (c.validarExistenciaRenovacion(renova.getSolicitudSenadi())) {
                                 //context.addCallbackParam("saved", false);
@@ -376,6 +377,7 @@ public class NotificadaBean implements Serializable {
                             caducada.setFechaVencimiento(notificada.getFechaVenceRegistro());
                             caducada.setIdentificacion(notificada.getIdentificacion());
                             caducada.setCancelado(notificada.getCancelado());
+                            caducada.setObservacion(notificada.getRo());
 
                             if (c.validarExistenciaCaducada(caducada.getSolicitudSenadi())) {
                                 //context.addCallbackParam("saved", false);

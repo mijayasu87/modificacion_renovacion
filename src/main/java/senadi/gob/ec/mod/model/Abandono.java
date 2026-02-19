@@ -63,7 +63,7 @@ public class Abandono implements Serializable {
     private Date fechaElaboraNotificacion;
 
     @Column(name = "certificado")
-    private String certificado;
+    private Integer certificado;
 
     @Column(name = "fecha_certificado")
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -288,20 +288,6 @@ public class Abandono implements Serializable {
      */
     public void setFechaElaboraNotificacion(Date fechaElaboraNotificacion) {
         this.fechaElaboraNotificacion = fechaElaboraNotificacion;
-    }
-
-    /**
-     * @return the certificado
-     */
-    public String getCertificado() {
-        return certificado;
-    }
-
-    /**
-     * @param certificado the certificado to set
-     */
-    public void setCertificado(String certificado) {
-        this.certificado = certificado;
     }
 
     /**
@@ -554,6 +540,20 @@ public class Abandono implements Serializable {
      */
     public void setAbadonoNotificado(boolean abadonoNotificado) {
         this.abadonoNotificado = abadonoNotificado;
+    }
+
+    /**
+     * @return the certificado
+     */
+    public Integer getCertificado() {
+        return certificado;
+    }
+
+    /**
+     * @param certificado the certificado to set
+     */
+    public void setCertificado(Integer certificado) {
+        this.certificado = certificado;
     }
 
     

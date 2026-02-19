@@ -4,10 +4,12 @@
  */
 package senadi.gob.ec.mod.dao;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Query;
 import senadi.gob.ec.mod.model.Abandono;
+import senadi.gob.ec.mod.model.Notificada;
 import senadi.gob.ec.mod.ucc.Operaciones;
 
 /**
@@ -104,6 +106,36 @@ public class AbandonoDAO extends DAOAbstract<Abandono> {
         } else {
             return true;
         }
+    }
+    
+    public List<Notificada> getAbandonosErjafeVencidos(int dias) {
+
+        // Calcula la fecha límite en Java
+        LocalDate fechaLimite = LocalDate.now().minusDays(dias);
+        Date fechaLimiteDate = java.sql.Date.valueOf(fechaLimite);
+
+        Query query = this.getEntityManager().createQuery("SELECT n FROM Notificada n WHERE n.tipoAbandono = :tipo AND n.fechaPuestaAbandono <= :fechaLimite");
+        query.setParameter("tipo", "ERJAFE");
+        query.setParameter("fechaLimite", fechaLimiteDate);
+        return query.getResultList();
+    }
+    
+    /**
+     * Funciona para coa y reglamento
+     * @param diasHabiles: número de días a calcular
+     * @param type: tipo de abandono (COA ó REGLAMENTO)
+     * @return devuelve el listado de notificaciones que están vencidas
+     */
+    public List<Notificada> getAbandonosSinFinesSemana(int diasHabiles, String type) {
+        LocalDate fechaLimite = Operaciones.calcularFechaLimiteExcluyendoFinesSemana(diasHabiles);
+        Date fechaLimiteDate = java.sql.Date.valueOf(fechaLimite);
+
+        Query query = this.getEntityManager().createQuery(
+                "SELECT n FROM Notificada n WHERE n.tipoAbandono = :tipo AND n.fechaPuestaAbandono <= :fechaLimite"
+        );
+        query.setParameter("tipo", type);
+        query.setParameter("fechaLimite", fechaLimiteDate);
+        return query.getResultList();
     }
 
 }

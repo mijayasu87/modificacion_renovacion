@@ -295,7 +295,7 @@ and open the template in the editor.
                         <p:calendar id="fechaNotificacionForm"  value="#{abandonoBean.abandono.fechaNotificacion}" timeZone="GMT-5"
                                     mask="true" pattern="yyyy-MM-dd" required="true" title="Fecha Notifición" inputStyleClass="maxsize"
                                     navigator="true"/>
-                        
+
                         <p:outputLabel value="Casillero SENADI:" for="casSenadiForm" style="float: right"/>
                         <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
                             <p:inputText id="casSenadiForm" value="#{abandonoBean.abandono.casilleroSenadi}" title="Casillero SENADI" style="width: 80%"/>
@@ -323,14 +323,16 @@ and open the template in the editor.
                             <f:selectItem itemLabel="COA" itemValue="COA"/>
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="RO:" for="roForm" style="float: right"/>
-                        <p:inputTextarea id="roForm" value="#{abandonoBean.abandono.ro}" class="maxsize" required="true"/>
+
 
                         <p:outputLabel value="Url: " style="float: right !important"/>
                         <p:commandLink value="Ruta Expediente" actionListener="#{abandonoBean.prepararExpediente}" process="@this"
                                        disabled="#{abandonoBean.abandono.solicitud eq null? true:false}" style="color: blue"
                                        oncomplete="PF('dlgExpediente').show();" update="allform:dlgExpediente mensajes"/>
                     </p:panelGrid>
+                    <p:outputLabel value="RO:" for="roForm" style="float: left"/>
+                    <p:inputTextarea id="roForm" value="#{abandonoBean.abandono.ro}" class="maxsize" required="true"/>
+                    <br/><br/>
                     <p:commandButton value="CERRAR" oncomplete="PF('dlgNuevaT').hide();" process="@form" class="btn_cerrar" style="float: right"/>
                     <p:commandButton value="#{abandonoBean.saveEdit}" actionListener="#{abandonoBean.guardarAbandono}"
                                      update="mensajes allform:tablaDeAbandonos datosNuevaT"

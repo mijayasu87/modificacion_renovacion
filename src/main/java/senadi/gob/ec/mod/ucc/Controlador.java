@@ -1254,6 +1254,31 @@ public class Controlador {
             casillero = getCasilleroSenadiByOwnerId(aux.getOwnerId()) + "";
         }
         return casillero;
-
+    }
+    
+    public List<Notificada> getAbandonosErjafeVencidos(int dias) {
+        AbandonoDAO ad = new AbandonoDAO(null);
+        return ad.getAbandonosErjafeVencidos(dias);
+    }
+    
+    public boolean removeNotificacion(Notificada notificada) {
+        NotificadaDAO nd = new NotificadaDAO(notificada);
+        try {
+            if (!nd.getEntityManager().contains(notificada)) {
+                System.out.println("merge notificada");
+                notificada = nd.getEntityManager().merge(notificada);
+                nd = new NotificadaDAO(notificada);
+            }
+            nd.remove();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error al remover notificada: " + ex);
+            return false;
+        }
+    }
+    
+    public List<Notificada> getAbandonosSinFinesSemana(int dias, String tipoAbandono) {
+        AbandonoDAO ad = new AbandonoDAO(null);
+        return ad.getAbandonosSinFinesSemana(dias, tipoAbandono);
     }
 }

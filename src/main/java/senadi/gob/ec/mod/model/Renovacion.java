@@ -120,6 +120,9 @@ public class Renovacion implements Serializable {
 
     @Column(name = "cargado")
     private boolean cargado;
+    
+    @Column(name = "observacion")
+    private String observacion;
 
     @Transient
     private String rutaExpediente;
@@ -664,6 +667,20 @@ public class Renovacion implements Serializable {
      */
     public void setCancelado(String cancelado) {
         this.cancelado = cancelado;
+    }
+
+    /**
+     * @return the observacion
+     */
+    public String getObservacion() {
+        return observacion;
+    }
+
+    /**
+     * @param observacion the observacion to set
+     */
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
 }
