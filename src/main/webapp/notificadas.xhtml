@@ -172,21 +172,14 @@ and open the template in the editor.
                         <h:outputText value="#{notificada.totalFoliosExpediente}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
                                       styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
-
-                    <p:column  id="notificacion" headerText="Notificación" style="text-align: center;"
-                               filterBy="#{notificada.notificacion}" rendered="#{!notificada.notificacionEmitida}">
-                        <h:outputText value="#{notificada.notificacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
-                    </p:column>
-
-                    <p:column  headerText="Certificado" style="text-align: center;" filterBy="#{notificada.notificacion}" rendered="#{notificada.notificacionEmitida}">
+                    <p:column id="notificacion" headerText="Notificación" style="text-align: center;" filterBy="#{notificada.notificacion}" >
                         <p:commandLink id="notlink" value="#{notificada.notificacion}" style="color: #0089ec; font-size: 14px; font-weight: bold" process="@this"
                                        title="Visualizar Certificado #{notificada.notificacion}" actionListener="#{notificadaBean.validarNotificacion(notificada)}"
                                        oncomplete="if(args.viewnotificacion){otherpage(args.view)};" update="mensajes notlink" rendered="#{notificada.notificacionEmitida}"/>
-                        <h:outputText value="#{notificada.notificacion}" rendered="#{!notificada.notificacionEmitida}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
+                        <h:outputText value="#{notificada.notificacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
+                                      rendered="#{!notificada.notificacionEmitida}"
                                       styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
-                    </p:column>
-
+                    </p:column>                   
                     <p:column  id="fechaENo" headerText="F. El. Not." style="text-align: center;"
                                filterBy="#{notificada.fechaElaboraNotificacion}" >
                         <h:outputText value="#{notificada.fechaElaboraNotificacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
@@ -504,8 +497,8 @@ and open the template in the editor.
 
             <p:dialog id="dlgNuevoN" modal="true" resizable="true" width="80%"
                       header="#{notificadaBean.dialogTitle}" fitViewport="true"
-                      widgetVar="dlgNuevoN" style="font-size: 11px; margin-bottom: 10px; overflow: auto !important;" showEffect="explode" 
-                      hideEffect="explode" closeOnEscape="true" blockScroll="true">
+                      widgetVar="dlgNuevoN" style="font-size: 11px; margin-bottom: 10px; overflow: auto !important;" showEffect="explode"
+                      hideEffect="explode" closeOnEscape="true" blockScroll="true" styleClass="dlg-nuevo-n">
                 <p:ajax event="close" update="dlgNuevoN" resetValues="true" />
                 <p:growl id="nuevoreg" life="1000"/>
                 <h:form id="frmNuevoN">
@@ -516,8 +509,8 @@ and open the template in the editor.
 
                         <p:outputLabel value="Solicitud:" for="solicitudForm" style="font-weight: bold;float: right"/>
                         <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
-                            <p:inputText id="solicitudForm" value="#{notificadaBean.notificada.solicitud}" title="Solicitud" required="true" 
-                                         readonly="#{notificadaBean.edicion}" style="background: #aed581 !important; text-transform: uppercase; width: 80%" />
+                            <p:inputText id="solicitudForm" value="#{notificadaBean.notificada.solicitud}" title="Solicitud" required="true"
+                                         readonly="#{notificadaBean.edicion}" styleClass="input-key" style="width: 80%" />
                             <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{notificadaBean.buscarTramite}" 
                                              rendered="#{notificadaBean.dialogTitle eq 'NUEVA NOTIFICACIÓN'?true:false}" process="@parent" 
                                              update="mensajes frmNuevoN:datosNuevoN" style="width: 12%" title="BUSCAR NOTIFICADA"/>
@@ -538,8 +531,8 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" inputStyleClass="maxsize" required="true"/>
 
                         <p:outputLabel value="Notificación:" for="notificacionForm"  style="float: right"/>
-                        <p:inputText id="notificacionForm" value="#{notificadaBean.notificada.notificacion}" class="maxsize" 
-                                     readonly="true" placeholder="Automático" style="background: #f7c7d8 !important;"/>
+                        <p:inputText id="notificacionForm" value="#{notificadaBean.notificada.notificacion}"
+                                     readonly="#{!notificadaBean.edicion}" placeholder="Automático" styleClass="maxsize input-auto"/>
 
                         <p:outputLabel value="Fecha Certificado:" for="fechaCertForm" style="float: right"/>
                         <p:calendar id="fechaCertForm"  value="#{notificadaBean.notificada.fechaCertificado}" navigator="true"
@@ -565,10 +558,11 @@ and open the template in the editor.
 
                         <p:outputLabel value="Denominación:" for="denominacionForm"  style="float: right"/>
                         <p:inputTextarea id="denominacionForm" value="#{notificadaBean.notificada.denominacion}"  required="true"
-                                         class="maxsize"/>
+                                         class="maxsize" autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Titular Actual:" for="titularActualForm"  style="float: right"/>
-                        <p:inputTextarea id="titularActualForm" value="#{notificadaBean.notificada.titularActual}" class="maxsize" required="true"/>
+                        <p:inputTextarea id="titularActualForm" value="#{notificadaBean.notificada.titularActual}" class="maxsize" required="true"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Identificación:" for="identificacionForm"  style="float: right"/>
                         <p:inputText id="identificacionForm" value="#{notificadaBean.notificada.identificacion}" class="maxsize"/>
@@ -577,14 +571,16 @@ and open the template in the editor.
                         <p:inputTextarea id="abogadoPForm" value="#{notificadaBean.notificada.apeApodRepre}" class="maxsize" rendered="false"/>
 
                         <p:outputLabel value="Nom. Apod. Repre:" for="nomApodRepreForm"  style="float: right"/>
-                        <p:inputTextarea id="nomApodRepreForm" value="#{notificadaBean.notificada.nomApodRepre}" class="maxsize" required="true"/>
+                        <p:inputTextarea id="nomApodRepreForm" value="#{notificadaBean.notificada.nomApodRepre}" class="maxsize" required="true"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Fecha Notifica:" for="fechaNotificaForm" style="float: right"/>
                         <p:calendar id="fechaNotificaForm"  value="#{notificadaBean.notificada.fechaNotifica}" navigator="true"
                                     mask="true" pattern="yyyy-MM-dd" inputStyleClass="maxsize"/>
 
                         <p:outputLabel value="RO:" for="roForm"  style="float: right"/>
-                        <p:inputTextarea id="roForm" value="#{notificadaBean.notificada.ro}" class="maxsize" required="true"/>
+                        <p:inputTextarea id="roForm" value="#{notificadaBean.notificada.ro}" class="maxsize" required="true"
+                                         autoResize="true" rows="2"/>
 
                         <p:outputLabel value="Casillero SENADI:" for="casilleroSenadiForm"  style="float: right"/>
                         <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
@@ -601,20 +597,24 @@ and open the template in the editor.
                         <p:outputLabel value="Responsable:" for="responsableForm"  style="float: right"/>
                         <p:inputText id="responsableForm" value="#{notificadaBean.notificada.responsable}" class="maxsize"/>                                             
 
-                        <p:outputLabel value="Url Expediente: " style="float: right !important"/>
+                        <p:outputLabel value="Url Expediente:" style="float: right !important"/>
                         <p:commandLink value="Ruta Expediente" actionListener="#{notificadaBean.prepararExpediente}" process="@this"
-                                       disabled="#{notificadaBean.notificada.solicitud eq null? true:false}" style="color: blue"
-                                       oncomplete="PF('dlgExpediente').show();" update="notificadaForm:dlgExpediente mensajes"/>
+                                       disabled="#{notificadaBean.notificada.solicitud eq null? true:false}" styleClass="url-link"
+                                       oncomplete="PF('dlgExpediente').show();" update="notificadaForm:dlgExpediente mensajes">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">folder_open</i>
+                        </p:commandLink>
 
-                        <p:outputLabel value="Url Compobante: " style="float: right !important"/>
-                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{notificadaBean.notificada.idRenewalForm}/pdf_voucher_renewalfrm_#{notificadaBean.notificada.idRenewalForm}.pdf')"  
-                                       disabled="#{notificadaBean.notificada.idRenewalForm eq null? true:false}" style="color: blue !important;"/>
+                        <p:outputLabel value="Url Comprobante:" style="float: right !important"/>
+                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{notificadaBean.notificada.idRenewalForm}/pdf_voucher_renewalfrm_#{notificadaBean.notificada.idRenewalForm}.pdf')"
+                                       disabled="#{notificadaBean.notificada.idRenewalForm eq null? true:false}" styleClass="url-link">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">picture_as_pdf</i>
+                        </p:commandLink>
                     </p:panelGrid>
-                    <br/>
-                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder" style="float: right">
 
-                        <p:outputLabel value="PASAR A: " rendered="#{notificadaBean.edicion}"/>
-                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 100px" 
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder dlg-actions" style="width: 100%; text-align: right">
+
+                        <p:outputLabel value="PASAR A:" rendered="#{notificadaBean.edicion}" style="font-weight: bold"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 20px"
                                          value="#{notificadaBean.estadoTemp}" rendered="#{notificadaBean.edicion}">
                             <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="RENOVACIONES" itemValue="RENOVACIONES"/>
@@ -625,10 +625,10 @@ and open the template in the editor.
                         <p:commandButton value="#{notificadaBean.saveEdit}" actionListener="#{notificadaBean.guardarRegistro}"
                                          update="mensajes notificadaForm:tablaDeDatos datosNuevoN"
                                          oncomplete="if(args.saved){PF('dlgNuevoN').hide();}"
-                                         process="@form" class="btn_peque">
+                                         process="@form" class="btn_peque" icon="pi pi-check">
                             <p:confirm header="Seguridad" message="#{notificadaBean.mensajeConfirmacion}" />
                         </p:commandButton>
-                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoN').hide()" class="btn_cerrar"/>
+                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoN').hide()" class="btn_cerrar" icon="pi pi-times"/>
                     </p:panelGrid>
                 </h:form>
 

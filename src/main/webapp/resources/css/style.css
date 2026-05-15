@@ -574,3 +574,110 @@ body .ui-panel .ui-panel-content {
 .row-reglamento {
     border-bottom: solid #9c27b0 !important;
 }
+
+/* === Refinamiento visual del diálogo dlgNuevoN === */
+.dlg-nuevo-n.ui-dialog .ui-dialog-titlebar {
+    background: linear-gradient(90deg, #0293C3 0%, #45B8FF 100%) !important;
+    color: #fff !important;
+    padding: 8px 14px !important;
+    border-bottom: 2px solid #B7E5E8 !important;
+}
+
+.dlg-nuevo-n.ui-dialog .ui-dialog-title {
+    color: #fff !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    font-size: 14px !important;
+}
+
+.dlg-nuevo-n.ui-dialog .ui-dialog-title::before {
+    font-family: 'Material Icons';
+    content: 'description';
+    font-size: 18px;
+    vertical-align: middle;
+    margin-right: 8px;
+    line-height: 1;
+}
+
+.dlg-nuevo-n.ui-dialog .ui-dialog-content {
+    background: #fbfdff !important;
+    padding: 14px !important;
+}
+
+.dlg-nuevo-n .ui-panelgrid-cell {
+    padding: 6px 8px !important;
+    vertical-align: middle !important;
+}
+
+.dlg-nuevo-n .ui-outputlabel {
+    color: #2c3e50;
+    font-size: 12px !important;
+    font-weight: 600;
+    padding-right: 6px;
+    display: inline-block;
+    line-height: 1.4;
+}
+
+.dlg-nuevo-n .ui-inputtextarea {
+    min-height: 30px;
+    max-height: 80px;
+    overflow-y: auto !important;
+    resize: vertical;
+    line-height: 1.3;
+}
+
+.dlg-nuevo-n .ui-inputfield,
+.dlg-nuevo-n .ui-selectonemenu {
+    border: 1px solid #cfd8dc !important;
+    border-radius: 3px !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dlg-nuevo-n .ui-inputfield:focus,
+.dlg-nuevo-n .ui-selectonemenu:focus-within {
+    border-color: #0293C3 !important;
+    box-shadow: 0 0 0 2px rgba(2, 147, 195, 0.15) !important;
+    outline: none !important;
+}
+
+.input-key {
+    background: #f1f8e9 !important;
+    border-left: 4px solid #7cb342 !important;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.input-auto {
+    background: #fce4ec !important;
+    border-left: 4px solid #ec407a !important;
+    font-style: italic;
+    color: #880e4f;
+}
+
+.dlg-nuevo-n .url-link {
+    color: #0293C3 !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.dlg-nuevo-n .url-link:hover {
+    text-decoration: underline;
+    color: #01579b !important;
+}
+
+.dlg-nuevo-n .url-link.ui-state-disabled {
+    color: #9e9e9e !important;
+    cursor: not-allowed;
+}
+
+.dlg-actions {
+    border-top: 2px dashed #cfd8dc;
+    margin-top: 12px !important;
+    padding-top: 10px !important;
+    background: #f5f9fc;
+    border-radius: 0 0 4px 4px;
+}
+
+.dlg-actions .ui-panelgrid-cell {
+    padding: 4px 6px !important;
+}

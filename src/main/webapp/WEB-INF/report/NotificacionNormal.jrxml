@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b783718-a942-41b1-9feb-a8b67a8a1daa">
 	<property name="ireport.zoom" value="1.4641000000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="632"/>
+	<property name="ireport.y" value="392"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="id" class="java.lang.Integer"/>
 	<parameter name="resolucionData" class="java.lang.String"/>
@@ -174,7 +174,7 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>Razón:</style> Siento por tal, que el día de hoy <style pdfFontName='Times-Bold'>"+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format(new Date())+"</style>, "+
 "notifiqué con la providencia que antecede a "+$F{ape_apod_repre}+", mediante boleta depositada en la casilla "+
 "SENADI/JUDICIAL y/o correo electrónico: <style pdfFontName='Times-Bold'>"+$P{casilla}+"</style>, correspondiente "+
-"a su apoderado/a.- Lo que certifico, en virtud de la delegación de la Directora de Gestión Institucional conferida "+
+"a su apoderado/a.- Lo que certifico, por delegación de la directora general del Servicio Nacional de Derechos Intelectuales, conferida "+
 "mediante resolucion No. "+$P{resolucionNot}+"."]]></variableExpression>
 	</variable>
 	<variable name="parrafo5" class="java.lang.String">

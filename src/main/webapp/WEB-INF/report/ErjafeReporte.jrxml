@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
 	<property name="ireport.zoom" value="1.464100000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="101"/>
+	<property name="ireport.y" value="245"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="nombrePersona" class="java.lang.String"/>
 	<parameter name="delegacion" class="java.lang.String"/>
@@ -186,8 +186,8 @@
 "<style pdfFontName='Times-Bold'>Razón: </style>Siento por tal que el día de hoy, "+
 new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format(new java.util.Date())+", notifiqué la providencia que antecede, "+
 "a "+$F{solicitante}+", mediante boleta depositada en la casilla virtual "+$F{casillero_senadi}+", correspondiente a "
-+$F{nom_apod_repre}.replace("&","&amp;")+". - Lo que certifico, en virtud de la delegación de la Directora de Gestión "+
-"Institucional conferida mediante resolución "+$P{resolucionnot}+"."]]></variableExpression>
++$F{nom_apod_repre}.replace("&","&amp;")+". - Lo que certifico, por delegación de la directora general del Servicio Nacional de Derechos Intelectuales, "+
+"conferida mediante resolución "+$P{resolucionnot}+"."]]></variableExpression>
 	</variable>
 	<background>
 		<band height="802" splitType="Stretch">

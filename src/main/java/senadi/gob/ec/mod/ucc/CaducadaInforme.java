@@ -146,7 +146,7 @@ public class CaducadaInforme extends HttpServlet {
 
                 if (lb.getCaducada() != null) {
                     Caducada caux = lb.getCaducada();                    
-                    if (other) {                        
+                    if (other) {
                         response.setHeader("Content-disposition", "inline; filename=" + caux.getSolicitudSenadi().trim() + "_" + caux.getSigno().trim().replace(" ", "_").toLowerCase() + "_cad-neg_ro.pdf");
                         is = getServletContext().getResourceAsStream("/WEB-INF/report/CaducadaOtherReport.jrxml");                        
                     } else if (caux.getAntDes().equals("DESPUÉS")) {

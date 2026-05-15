@@ -183,7 +183,7 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 		<variableExpression><![CDATA["\n\n\n\n\n<style pdfFontName='Times-Bold'>Razón:</style> Siento por tal, que el día de hoy <style pdfFontName='Times-Bold'>"+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format(new Date())+"</style>, "+
 "notifiqué con la providencia que antecede a "+$F{ape_apod_repre}+", mediante boleta depositada en la casilla "+
 "SENADI/JUDICIAL y/o correo electrónico: <style pdfFontName='Times-Bold'>"+$P{casilla}+"</style>, correspondiente "+
-"a su apoderado/a.- Lo que certifico, en virtud de la delegación de la Directora de Gestión Institucional conferida "+
+"a su apoderado/a.- Lo que certifico, por delegación de la directora general del Servicio Nacional de Derechos Intelectuales, conferida "+
 "mediante resolucion No. "+$P{resolucionNot}+".\n\n"+
 "Toda contestación a la presente se la receptará exclusivamente a través del aplicativo de alcances a modificaciones "+
 "correspondiente al dominio: \n\n<style pdfFontName='Times-Bold'>https://buscadores.derechosintelectuales.gob.ec/alcancesmodificaciones/login.xhtml</style>"]]></variableExpression>

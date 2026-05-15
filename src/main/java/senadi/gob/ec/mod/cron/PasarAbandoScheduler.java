@@ -63,7 +63,7 @@ public class PasarAbandoScheduler {
             abandono.setFechaAbandono(new Date());
             abandono.setNumeroAbandono(c.getNextNumeroAbandono(abandono.getFechaAbandono()));
 
-            abandono.setFechaElaboraNotificacion(new Date());
+            abandono.setFechaElaboraNotificacion(notaux.getFechaNotifica());
             abandono.setNotificacion(notaux.getNotificacion());
             abandono.setFechaNotificacion(notaux.getFechaNotifica());
             abandono.setRegistro(notaux.getRegistroNo());

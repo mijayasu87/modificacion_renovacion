@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b783718-a942-41b1-9feb-a8b67a8a1daa">
 	<property name="ireport.zoom" value="1.4641000000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="528"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="id" class="java.lang.Integer"/>
 	<parameter name="resolucionData" class="java.lang.String"/>
@@ -156,7 +156,7 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 "de fecha "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_solicitud})+
 ", correspondiente a "+$F{signo}+" de la denominación "+$F{denominacion}.replace("&","&amp;")+", con título de registro "+$F{no_registro}+
 ", otorgado el "+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{fecha_registro})+
-", por haber sido presentada fuera del plazo establecido en la legislación nacional y comunitaria.\n\n"+
+", por haber sido presentada a pesar de que el estado del mismo era y/o constaba con "+$F{ant_des}+".\n\n"+
 "<style pdfFontName='Times-Bold'>2.- </style>Ordenar el archivo del expediente, conformado para el efecto.\n\n"+
 "El presente acto administrativo es susceptible de los recursos administrativos establecidos en el artículo 597 "+
 "del Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación; o por vía "+

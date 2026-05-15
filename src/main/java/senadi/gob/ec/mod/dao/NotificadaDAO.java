@@ -22,7 +22,7 @@ public class NotificadaDAO extends DAOAbstract<Notificada>{
     
     @Override
     public List<Notificada> buscarTodos() {
-        Query query = this.getEntityManager().createQuery("Select n From Notificada n ORDER BY n.id DESC");
+        Query query = this.getEntityManager().createQuery("Select n From Notificada n ORDER BY n.fechaNotifica DESC, n.notificacion DESC");
         query.setHint("javax.persistence.cache.storeMode", "REFRESH");
         return query.setMaxResults(300).getResultList();
     }

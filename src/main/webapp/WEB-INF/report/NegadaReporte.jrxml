@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
 	<property name="ireport.zoom" value="1.464100000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="864"/>
+	<property name="ireport.y" value="1008"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="nombrePersona" class="java.lang.String"/>
 	<parameter name="delegacion" class="java.lang.String"/>
@@ -140,7 +140,7 @@
 	<variable name="parrafo_4" class="java.lang.String">
 		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>1. Negar</style> la solicitud de "+$P{tipotramite}+" No. "+$F{solicitud_senadi}+","+
 "de fecha "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_solicitud})+", correspondiente "+
-"a la denominación "+$F{denominacion}+", con número de registro "+$F{no_registro}+", por "+$F{observacion}+", "+
+"a la denominación "+$F{denominacion}.replace("&","&amp;")+", con número de registro "+$F{no_registro}+", por "+$F{observacion}+", "+
 "constituyendo aquello un incumplimiento de los requisitos y condiciones previstos en la normativa "+
 "nacional y comunitaria aplicable.\n\n"+
 "<style pdfFontName='Times-Bold'>2. Ordenar</style> el archivo del expediente conformado para el efecto.\n\n"+
@@ -342,7 +342,7 @@ new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_notificacion})+
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="469" y="532" width="64" height="12" uuid="81363007-7ba0-4b62-9ba7-509e37759ff8"/>
+				<reportElement x="469" y="536" width="64" height="12" uuid="81363007-7ba0-4b62-9ba7-509e37759ff8"/>
 				<textElement>
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
@@ -356,7 +356,7 @@ new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_notificacion})+
 				<textFieldExpression><![CDATA[$P{secretaria}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="499" width="555" height="20" uuid="282d7c42-5dc0-47d2-be5e-aec1b882088a"/>
+				<reportElement x="71" y="499" width="437" height="33" uuid="282d7c42-5dc0-47d2-be5e-aec1b882088a"/>
 				<textElement textAlignment="Center">
 					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
 				</textElement>
