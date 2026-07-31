@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7b783718-a942-41b1-9feb-a8b67a8a1daa">
-	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.zoom" value="1.4641000000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="705"/>
+	<property name="ireport.y" value="845"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="id" class="java.lang.Integer"/>
 	<parameter name="resolucionData" class="java.lang.String"/>
@@ -177,16 +177,16 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 "<style pdfFontName='Times-Italic'>“Art. 140.- (…) Si la persona interesada no cumple lo dispuesto por la administración pública "+
 "se entenderá como desistimiento y será declarado en la resolución (…)”.</style> El presente acto administrativo se emite en ejercicio "+
 "de la facultad delegada por la Directora Nacional de Propiedad Industrial, mediante resolución "+$P{resolucionData}+". "+
-"<style pdfFontName='Times-Bold'>Notifíquese.- f) "+$P{delegado}+", "+$P{delegacion}+".</style>"]]></variableExpression>
+"<style pdfFontName='Times-Bold'>Notifíquese.- f).</style>\n\n\n\n\n"]]></variableExpression>
 	</variable>
 	<variable name="parrafo4" class="java.lang.String">
-		<variableExpression><![CDATA["\n\n\n\n\n<style pdfFontName='Times-Bold'>Razón:</style> Siento por tal, que el día de hoy <style pdfFontName='Times-Bold'>"+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format(new Date())+"</style>, "+
+		<variableExpression><![CDATA["\n<style pdfFontName='Times-Bold'>Razón:</style> Siento por tal, que el día de hoy <style pdfFontName='Times-Bold'>"+new SimpleDateFormat("dd 'de' MMMM 'de' yyyy").format(new Date())+"</style>, "+
 "notifiqué con la providencia que antecede a "+$F{ape_apod_repre}+", mediante boleta depositada en la casilla "+
 "SENADI/JUDICIAL y/o correo electrónico: <style pdfFontName='Times-Bold'>"+$P{casilla}+"</style>, correspondiente "+
 "a su apoderado/a.- Lo que certifico, por delegación de la directora general del Servicio Nacional de Derechos Intelectuales, conferida "+
 "mediante resolucion No. "+$P{resolucionNot}+".\n\n"+
 "Toda contestación a la presente se la receptará exclusivamente a través del aplicativo de alcances a modificaciones "+
-"correspondiente al dominio: \n\n<style pdfFontName='Times-Bold'>https://buscadores.derechosintelectuales.gob.ec/alcancesmodificaciones/login.xhtml</style>"]]></variableExpression>
+"correspondiente al dominio: \n\n<style pdfFontName='Times-Bold'>https://buscadores.derechosintelectuales.gob.ec/alcancesenadi/login.xhtml</style>"]]></variableExpression>
 	</variable>
 	<variable name="parrafo5" class="java.lang.String">
 		<variableExpression><![CDATA["Toda contestación a la presente se la receptará exclusivamente a través del correo electrónico: <style pdfFontName='Times-Bold'>notificacionessenadi@gmail.com</style>"]]></variableExpression>
@@ -200,7 +200,7 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 		</band>
 	</background>
 	<title>
-		<band height="62" splitType="Stretch">
+		<band height="72" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="42" width="555" height="20" uuid="3e5fe510-af45-4719-89a0-3e4911b5e0f1"/>
 				<textElement textAlignment="Center">
@@ -211,7 +211,9 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 		</band>
 	</title>
 	<pageHeader>
-		<band height="3" splitType="Stretch"/>
+		<band height="52" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} > 1]]></printWhenExpression>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="4" splitType="Stretch"/>
@@ -305,9 +307,9 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 				<textFieldExpression><![CDATA[$V{parrafo2}]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="29">
+		<band height="15">
 			<subreport>
-				<reportElement x="66" y="0" width="461" height="29" uuid="6ee6a000-8c07-4283-b6a6-be723a41f27a"/>
+				<reportElement x="66" y="0" width="461" height="15" uuid="6ee6a000-8c07-4283-b6a6-be723a41f27a"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -318,9 +320,9 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "RoReporte.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="143">
-			<textField>
-				<reportElement x="53" y="4" width="474" height="138" uuid="02da9df7-2b08-4d7c-9648-a322e1c34e49"/>
+		<band height="19">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="53" y="0" width="474" height="19" uuid="02da9df7-2b08-4d7c-9648-a322e1c34e49"/>
 				<textElement textAlignment="Justified" markup="styled">
 					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
 					<paragraph lineSpacing="Single"/>
@@ -328,13 +330,29 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 				<textFieldExpression><![CDATA[$V{parrafo3}]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="334">
+		<band height="36">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="20" uuid="37f95556-19bd-4299-a0f9-66661596d5ca"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{delegado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="16" width="555" height="20" uuid="8f810d57-68ee-4435-a4e8-6b4cd960b022"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{delegacion}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="300">
 			<image>
-				<reportElement x="345" y="207" width="168" height="122" uuid="b4471329-3e41-4f19-bcce-f7f2b8da3a5b"/>
+				<reportElement x="345" y="160" width="168" height="122" uuid="b4471329-3e41-4f19-bcce-f7f2b8da3a5b"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="53" y="10" width="474" height="209" uuid="b1fc8687-e93f-4b1a-b768-9a634684ec22"/>
+				<reportElement x="53" y="0" width="474" height="209" uuid="b1fc8687-e93f-4b1a-b768-9a634684ec22"/>
 				<textElement textAlignment="Justified" markup="styled">
 					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
 					<paragraph lineSpacing="Single"/>
@@ -342,32 +360,31 @@ new SimpleDateFormat("dd 'de' MMMM 'de' yyyy",new Locale("es", "ES")).format($F{
 				<textFieldExpression><![CDATA[$V{parrafo4}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="283" width="555" height="20" uuid="6aae79c0-b0fb-4a27-85bb-14da62740089"/>
+				<reportElement x="0" y="245" width="555" height="20" uuid="6aae79c0-b0fb-4a27-85bb-14da62740089"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{secretario}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="297" width="555" height="20" uuid="a52a2f3c-c35d-4510-93ab-db0cb40447cc"/>
+				<reportElement x="0" y="259" width="555" height="20" uuid="a52a2f3c-c35d-4510-93ab-db0cb40447cc"/>
 				<textElement textAlignment="Center">
 					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{denominacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="486" y="282" width="27" height="13" uuid="375c20fd-1758-4952-abd7-a02d5ca215f2"/>
+				<textFieldExpression><![CDATA[$F{responsable}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
 		<band height="18" splitType="Stretch"/>
 	</columnFooter>
-	<lastPageFooter>
-		<band height="67">
-			<textField>
-				<reportElement x="486" y="0" width="27" height="13" uuid="375c20fd-1758-4952-abd7-a02d5ca215f2"/>
-				<textFieldExpression><![CDATA[$F{responsable}]]></textFieldExpression>
-			</textField>
-		</band>
-	</lastPageFooter>
+	<pageFooter>
+		<band height="66"/>
+	</pageFooter>
 	<summary>
 		<band height="16" splitType="Stretch"/>
 	</summary>

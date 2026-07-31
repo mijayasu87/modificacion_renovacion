@@ -66,6 +66,9 @@ public class ModificacionBean implements Serializable {
     private boolean edicion;
     private String estadoTemp;
 
+    private boolean forzarCancelado;
+    private String mensajeCancelado;
+
     private String historial;
 
     private LoginBean loginBean;
@@ -318,6 +321,21 @@ public class ModificacionBean implements Serializable {
                             caducada.setFechaVencimiento(renovacion.getFechaVenceRegistro());
                             caducada.setIdentificacion(renovacion.getIdentificacion());
                             caducada.setCancelado(renovacion.getCancelado());
+
+                            if (!forzarCancelado && caducada.getRegistroNo() != null && !caducada.getRegistroNo().trim().isEmpty()
+                                    && caducada.getDenominacion() != null && !caducada.getDenominacion().trim().isEmpty()
+                                    && c.existsTituloCanceladoByTituloAndDenominacion(caducada.getRegistroNo(), caducada.getDenominacion())) {
+                                TituloCancelado titca = c.getTituloCanceladoByTituloAndDenoninacion(caducada.getRegistroNo(), caducada.getDenominacion());
+                                if (titca.getId() != null) {
+                                    caducada.setCancelado(titca.getTipoCancelacion());
+                                    mensajeCancelado = "El título " + caducada.getRegistroNo() + " relacionado con el trámite " + caducada.getSolicitudSenadi()
+                                            + " está CANCELADO de manera " + titca.getTipoCancelacion() + ", ¿desea enviarlo a CADUCADAS-NEGADAS de todas formas?";
+                                    PrimeFaces.current().ajax().addCallbackParam("cancelado", true);
+                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", mensajeCancelado);
+                                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                                    return;
+                                }
+                            }
 
                             if (c.validarExistenciaCaducada(caducada.getSolicitudSenadi())) {
                                 PrimeFaces.current().ajax().addCallbackParam("saved", false);
@@ -786,7 +804,7 @@ public class ModificacionBean implements Serializable {
                     }
                 }
                 if (validar.isEmpty()) {
-                    System.out.println("Descargando Múltiples Renovacion NewInfo...");
+                    System.out.println("Descargando Múltiples Renovacion NewInfo... "+selectedRenovaciones.size());
                     loginBean.setRenovacionesFlotantes(selectedRenovaciones);
                     loginBean.setNotificadasFlotantes(new ArrayList<Notificada>());
                     loginBean.setVarious(true);
@@ -802,7 +820,7 @@ public class ModificacionBean implements Serializable {
 //            context.addCallbackParam("view", "newinforme");
                     PrimeFaces.current().ajax().addCallbackParam("doit", true);
                     PrimeFaces.current().ajax().addCallbackParam("view", "newinforme");
-                    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ACCIÓN", "DESCARGANDO");
+                    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "ACCIÓN", "DESCARGANDO "+selectedRenovaciones.size()+" RENOVACIONES");
                 } else {
                     msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "VACÍO", "EL TRÁMITE " + validar);
                 }
@@ -1388,6 +1406,23 @@ public class ModificacionBean implements Serializable {
      */
     public void setEstadoTemp(String estadoTemp) {
         this.estadoTemp = estadoTemp;
+    }
+
+    /**
+     * Confirma el envío a CADUCADAS-NEGADAS de un trámite con título cancelado.
+     */
+    public void confirmarCancelado(ActionEvent ae) {
+        forzarCancelado = true;
+        guardarRegistro(ae);
+        forzarCancelado = false;
+    }
+
+    public String getMensajeCancelado() {
+        return mensajeCancelado;
+    }
+
+    public void setMensajeCancelado(String mensajeCancelado) {
+        this.mensajeCancelado = mensajeCancelado;
     }
 
     /**

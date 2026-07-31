@@ -24,6 +24,7 @@ and open the template in the editor.
         <link href="resources/assets/css/main.css" rel="stylesheet" />
 
         <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputScript library="js" name="app.js"/>
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
         <meta http-equiv="Refresh" content="#{loginBean.usuarioConsulta ? '0.1;url=renovaciones.xhtml':''}"/>
     </h:head>
@@ -54,6 +55,7 @@ and open the template in the editor.
                 <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
                 <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
                 <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
+                <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
                 <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
                 <a class="activo" href="#" title="REZAGO" >REZAGO</a>
             </div>
@@ -160,10 +162,11 @@ and open the template in the editor.
                     <br/><br/>
 
                     <h:panelGrid columns="2" style="float: right;">
-                        <h:commandLink title="Exportar a excel..." rendered="#{!loginBean.usuarioConsulta}" immediate="true">
+                        <h:commandLink id="excelExport" title="Exportar a excel..." rendered="#{!loginBean.usuarioConsulta}" immediate="true"
+                                       onclick="return downloadExcelXHR(this.id, 'rezagados_renovaciones');">
                             <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
                             <p:dataExporter type="xls" target="tablaDeDatos" fileName="rezagados_renovaciones" />
-                        </h:commandLink>                        
+                        </h:commandLink>
                     </h:panelGrid>
                     <br/>
                 </p:panel>

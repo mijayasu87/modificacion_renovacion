@@ -14,6 +14,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
         <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputScript library="js" name="app.js"/>
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
     </h:head>
     <h:body>
@@ -41,7 +42,8 @@ and open the template in the editor.
             <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
             <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
             <a class="activo" href="#" title="Desistidas" >DESISTIDAS</a>
-            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
+            <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
+            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>            
             <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
 
         </div>
@@ -221,7 +223,8 @@ and open the template in the editor.
                 </p:dataTable>
                 <p:outputLabel id="num_registros" value="#{desistidaBean.numRegistros}" style="float: left; font-size: 12px"/>
                 <h:panelGrid columns="2" style="float: right;">
-                    <h:commandLink title="Exportar a excel..." rendered="#{desistidaBean.usuarioConsulta}" immediate="true">
+                    <h:commandLink id="excelExport" title="Exportar a excel..." rendered="#{desistidaBean.usuarioConsulta}" immediate="true"
+                                   onclick="return downloadExcelXHR(this.id, '#{desistidaBean.exportName}');">
                         <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
                         <p:dataExporter type="xls" target="tablaDeDatos" fileName="#{desistidaBean.exportName}" />
                     </h:commandLink>
@@ -230,8 +233,8 @@ and open the template in the editor.
 
             <p:dialog id="dlgNuevoD" modal="true" resizable="true" width="80%"
                       header="#{desistidaBean.dialogTitle}" fitViewport="true"
-                      widgetVar="dlgNuevoD" style="font-size: 11px; margin-bottom: 10px" showEffect="explode" 
-                      hideEffect="explode" closeOnEscape="true">
+                      widgetVar="dlgNuevoD" style="font-size: 11px; margin-bottom: 10px" showEffect="explode"
+                      hideEffect="explode" closeOnEscape="true" styleClass="dlg-nuevo-n">
                 <p:ajax event="close" update="dlgNuevoD" resetValues="true" />
                 <p:growl id="nuevoreg" life="1000"/>
                 <h:form id="frmNuevoD" >
@@ -239,8 +242,8 @@ and open the template in the editor.
 
                         <p:outputLabel value="Solicitud:" for="solicitudForm"/>
                         <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
-                            <p:inputText id="solicitudForm" value="#{desistidaBean.desistida.solicitudSenadi}" title="Solicitud" required="true" 
-                                         readonly="#{desistidaBean.edicion}" style="background: #aed581 !important; text-transform: uppercase; width: 80%" />
+                            <p:inputText id="solicitudForm" value="#{desistidaBean.desistida.solicitudSenadi}" title="Solicitud" required="true"
+                                         readonly="#{desistidaBean.edicion}" styleClass="input-key" style="width: 80%" />
                             <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{desistidaBean.buscarTramite}" 
                                              rendered="#{desistidaBean.dialogTitle eq 'NUEVO DESISTIMIENTO'?true:false}" process="@parent" 
                                              update="mensajes frmNuevoD:datosNuevoD" style="width: 12%" title="BUSCAR DESISTIMIENTO"/>
@@ -281,7 +284,8 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
 
                         <p:outputLabel value="Denominación:" for="denominacionForm"  />
-                        <p:inputTextarea id="denominacionForm" value="#{desistidaBean.desistida.denominacion}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="denominacionForm" value="#{desistidaBean.desistida.denominacion}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Signo:" for="signoForm"  />
                         <p:inputText id="signoForm" value="#{desistidaBean.desistida.signo}" class="maxsize"/>
@@ -290,7 +294,8 @@ and open the template in the editor.
                         <p:inputText id="protegeForm" value="#{desistidaBean.desistida.protege}" class="maxsize"/>
 
                         <p:outputLabel value="Titular Actual:" for="titularActualForm"  />
-                        <p:inputTextarea id="titularActualForm" value="#{desistidaBean.desistida.titularActual}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="titularActualForm" value="#{desistidaBean.desistida.titularActual}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="A/R:" for="arForm"  />
                         <p:inputText id="arForm" value="#{desistidaBean.desistida.ar}" class="maxsize"/>
@@ -302,10 +307,12 @@ and open the template in the editor.
                         <p:inputText id="titApodRepreForm" value="#{desistidaBean.desistida.titApodRepre}" class="maxsize"/>
 
                         <p:outputLabel value="Ape/Apod/Repre:" for="apeApodRepreForm"  />
-                        <p:inputTextarea id="apeApodRepreForm" value="#{desistidaBean.desistida.apeApodRepre}" class="maxsize"/>
+                        <p:inputTextarea id="apeApodRepreForm" value="#{desistidaBean.desistida.apeApodRepre}" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Nom/Apod/Repre:" for="nomApodRepreForm"  />
-                        <p:inputTextarea id="nomApodRepreForm" value="#{desistidaBean.desistida.nomApodRepre}" class="maxsize"/>
+                        <p:inputTextarea id="nomApodRepreForm" value="#{desistidaBean.desistida.nomApodRepre}" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Fecha Elabora Notificación:" for="fechaElaboraNotForm" />
                         <p:calendar id="fechaElaboraNotForm"  value="#{desistidaBean.desistida.fechaElaboraNotificacion}" navigator="true"
@@ -322,7 +329,8 @@ and open the template in the editor.
                         <p:inputText id="casilleroJudicialForm" value="#{desistidaBean.desistida.casilleroJudicial}" class="maxsize"/>
 
                         <p:outputLabel value="RO:" for="roForm"  />
-                        <p:inputTextarea id="roForm" value="#{desistidaBean.desistida.ro}" class="maxsize"/>
+                        <p:inputTextarea id="roForm" value="#{desistidaBean.desistida.ro}" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Responsable:" for="responsableForm"  />
                         <p:inputText id="responsableForm" value="#{desistidaBean.desistida.responsable}" class="maxsize"/>
@@ -332,20 +340,25 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
 
                         <p:outputLabel value="Identificación:" for="identificacionForm"  />
-                        <p:inputTextarea id="identificacionForm" value="#{desistidaBean.desistida.identificacion}" class="maxsize"/>
+                        <p:inputTextarea id="identificacionForm" value="#{desistidaBean.desistida.identificacion}" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:commandLink value="Ruta Expediente" actionListener="#{desistidaBean.prepararExpediente}" process="@this"
-                                       disabled="#{desistidaBean.desistida.solicitudSenadi eq null? true:false}" style="color: blue"
-                                       oncomplete="PF('dlgExpediente').show();" update="desistidaForm:dlgExpediente mensajes"/>
-                        
-                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{desistidaBean.desistida.idRenewalForm}/pdf_voucher_renewalfrm_#{desistidaBean.desistida.idRenewalForm}.pdf')"  
-                                       disabled="#{desistidaBean.desistida.idRenewalForm eq null? true:false}" style="color: blue !important"/>
+                                       disabled="#{desistidaBean.desistida.solicitudSenadi eq null? true:false}" styleClass="url-link"
+                                       oncomplete="PF('dlgExpediente').show();" update="desistidaForm:dlgExpediente mensajes">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">folder_open</i>
+                        </p:commandLink>
+
+                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{desistidaBean.desistida.idRenewalForm}/pdf_voucher_renewalfrm_#{desistidaBean.desistida.idRenewalForm}.pdf')"
+                                       disabled="#{desistidaBean.desistida.idRenewalForm eq null? true:false}" styleClass="url-link">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">picture_as_pdf</i>
+                        </p:commandLink>
 
                     </p:panelGrid>
-                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder" style="float: right">                        
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder dlg-actions" style="width: 100%; text-align: right">
 
-                        <p:outputLabel value="PASAR A: " rendered="#{desistidaBean.edicion}"/>
-                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 100px" 
+                        <p:outputLabel value="PASAR A:" rendered="#{desistidaBean.edicion}" style="font-weight: bold"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 20px"
                                          value="#{desistidaBean.estadoTemp}" rendered="#{desistidaBean.edicion}">
                             <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="RENOVACIONES" itemValue="RENOVACIONES"/>
@@ -354,13 +367,13 @@ and open the template in the editor.
                         </p:selectOneMenu>
 
                         <p:commandButton value="#{desistidaBean.saveEdit}" actionListener="#{desistidaBean.guardarRegistro}"
-                                         update="mensajes desistidaForm:tablaDeDatos datosNuevoD" 
-                                         oncomplete="if(args.saved){PF('dlgNuevoD').hide();}" 
-                                         process="@form" class="btn_peque">
+                                         update="mensajes desistidaForm:tablaDeDatos datosNuevoD desistidaForm:dlgCancelado"
+                                         oncomplete="if(args.cancelado){PF('dlgCancelado').show();} else if(args.saved){PF('dlgNuevoD').hide();}"
+                                         process="@form" class="btn_peque" icon="pi pi-check">
                             <p:confirm header="Seguridad" message="#{desistidaBean.mensajeConfirmacion}" />
                         </p:commandButton>
 
-                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoD').hide()" class="btn_cerrar"/>
+                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoD').hide()" class="btn_cerrar" icon="pi pi-times"/>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
@@ -397,6 +410,24 @@ and open the template in the editor.
                     <p:inputTextarea id='historialText' value="#{desistidaBean.historial}" rows="10" cols="115" readonly="true"/>                    
                 </h:form>                
             </p:dialog>
+            <p:dialog id="dlgCancelado" modal="true" resizable="false"
+                      header="TÍTULO CANCELADO" fitViewport="true"
+                      widgetVar="dlgCancelado" style="font-size: 12px; width: 420px" showEffect="fade"
+                      hideEffect="explode" closeOnEscape="true">
+                <h:form id="frmCancelado">
+                    <p:outputPanel style="display:block; text-align:center; padding: 8px">
+                        <i class="material-icons" style="font-size: 40px; color: #ff9800">warning</i>
+                        <p:outputLabel value="#{desistidaBean.mensajeCancelado}" style="display:block; margin: 10px 0; font-size: 13px"/>
+                    </p:outputPanel>
+                    <p:outputPanel style="display:block; text-align:center; padding: 6px">
+                        <p:commandButton value="Sí, enviar" class="btn_buscar" actionListener="#{desistidaBean.confirmarCancelado}"
+                                         process="@this" update="mensajes desistidaForm:tablaDeDatos"
+                                         oncomplete="PF('dlgCancelado').hide(); if(args.saved){PF('dlgNuevoD').hide();}" style="margin-right: 8px;"/>
+                        <p:commandButton value="No" class="btn_cerrar" type="button" onclick="PF('dlgCancelado').hide();"/>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
                 <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" update="tablaDeDatos"/>
                 <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no"/>

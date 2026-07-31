@@ -32,6 +32,7 @@ import senadi.gob.ec.mod.dao.CaducadaDAO;
 import senadi.gob.ec.mod.dao.NotificadaDAO;
 import senadi.gob.ec.mod.dao.RenovacionDAO;
 import senadi.gob.ec.mod.model.Abandono;
+import senadi.gob.ec.mod.model.Prorroga;
 import senadi.gob.ec.mod.model.Caducada;
 import senadi.gob.ec.mod.model.Documento;
 import senadi.gob.ec.mod.model.Notificada;
@@ -317,6 +318,15 @@ public class UploadCertBean implements Serializable {
                                                                 c.saveHistorial("ABANDONO", "ABANDONO", aban.getSolicitud(), "ABANDONO EMITIDO " + un.getDocumento(), 0, login.getLogin());
                                                             } catch (Exception ex) {
                                                                 Logger.getLogger(UploadCertBean.class.getName()).log(Level.SEVERE, null, ex);
+                                                            }
+                                                        }
+                                                    } else {
+                                                        // El trámite existe en la tabla prórroga: el documento notificado es la prórroga
+                                                        Prorroga proaux = c.getProrrogaBySolicitud(un.getSolicitud());
+                                                        if (proaux.getId() != null) {
+                                                            proaux.setProrrogaNotificada(true);
+                                                            if (c.updateProrroga(proaux)) {
+                                                                c.saveHistorial("PRORROGA", "PRORROGA", proaux.getSolicitud(), "PRÓRROGA NOTIFICADA " + un.getDocumento(), 0, login.getLogin());
                                                             }
                                                         }
                                                     }

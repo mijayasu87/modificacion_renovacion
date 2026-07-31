@@ -575,6 +575,11 @@ body .ui-panel .ui-panel-content {
     border-bottom: solid #9c27b0 !important;
 }
 
+.row-prorroga {
+    border: solid #ff9800 !important;
+    background: #fff3e0 !important;
+}
+
 /* === Refinamiento visual del diálogo dlgNuevoN === */
 .dlg-nuevo-n.ui-dialog .ui-dialog-titlebar {
     background: linear-gradient(90deg, #0293C3 0%, #45B8FF 100%) !important;

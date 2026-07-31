@@ -13,6 +13,7 @@ import org.primefaces.PrimeFaces;
 import senadi.gob.ec.mod.model.Abandono;
 import senadi.gob.ec.mod.model.Caducada;
 import senadi.gob.ec.mod.model.Notificada;
+import senadi.gob.ec.mod.model.Prorroga;
 import senadi.gob.ec.mod.model.RazonCorreccion;
 import senadi.gob.ec.mod.model.Renovacion;
 import senadi.gob.ec.mod.model.Usuario;
@@ -55,6 +56,9 @@ public class LoginBean implements Serializable {
 
     private List<Abandono> abandonos;
     private Abandono abandono;
+
+    private List<Prorroga> prorrogas;
+    private Prorroga prorroga;
 
     public LoginBean() {
         shake = true;
@@ -416,5 +420,33 @@ public class LoginBean implements Serializable {
      */
     public void setAbandono(Abandono abandono) {
         this.abandono = abandono;
+    }
+
+    /**
+     * @return the prorrogas
+     */
+    public List<Prorroga> getProrrogas() {
+        return prorrogas;
+    }
+
+    /**
+     * @param prorrogas the prorrogas to set
+     */
+    public void setProrrogas(List<Prorroga> prorrogas) {
+        this.prorrogas = prorrogas;
+    }
+
+    /**
+     * @return the prorroga
+     */
+    public Prorroga getProrroga() {
+        return prorroga;
+    }
+
+    /**
+     * @param prorroga the prorroga to set
+     */
+    public void setProrroga(Prorroga prorroga) {
+        this.prorroga = prorroga;
     }
 }

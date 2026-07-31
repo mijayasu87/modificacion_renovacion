@@ -16,6 +16,7 @@ and open the template in the editor.
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
 
         <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputScript library="js" name="app.js"/>
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
     </h:head>
     <h:body>
@@ -43,8 +44,9 @@ and open the template in the editor.
             <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
             <a class="activo" href="#" title="Caducadas" >CADUCADAS-NEGADAS</a>
             <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
-            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
-            <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>           
+            <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
+            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>            
+            <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
         </div>
 
         <p:growl id="mensajes" showDetail="true" life="2000" />
@@ -269,7 +271,8 @@ and open the template in the editor.
                 </p:dataTable>
                 <p:outputLabel id="num_registros" value="#{caducadaBean.numRegistros}" style="float: left; font-size: 12px"/>
                 <h:panelGrid columns="2" style="float: right;">
-                    <h:commandLink title="Exportar a excel..." rendered="#{caducadaBean.usuarioConsulta}" immediate="true">
+                    <h:commandLink id="excelExport" title="Exportar a excel..." rendered="#{caducadaBean.usuarioConsulta}" immediate="true"
+                                   onclick="return downloadExcelXHR(this.id, '#{caducadaBean.exportName}');">
                         <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
                         <p:dataExporter type="xls" target="tablaDeDatos" fileName="#{caducadaBean.exportName}" />
                     </h:commandLink>
@@ -278,8 +281,8 @@ and open the template in the editor.
 
             <p:dialog id="dlgNuevoC" modal="true" resizable="true" width="80%"
                       header="#{caducadaBean.dialogTitle}" fitViewport="true"
-                      widgetVar="dlgNuevoC" style="font-size: 11px; margin-bottom: 10px" showEffect="explode" 
-                      hideEffect="explode" closeOnEscape="true">
+                      widgetVar="dlgNuevoC" style="font-size: 11px; margin-bottom: 10px" showEffect="explode"
+                      hideEffect="explode" closeOnEscape="true" styleClass="dlg-nuevo-n">
                 <p:ajax event="close" update="dlgNuevoC" resetValues="true" />
                 <p:growl id="nuevoreg" life="1000"/>
                 <h:form id="frmNuevoC" >
@@ -287,16 +290,17 @@ and open the template in the editor.
                         
                         <p:outputLabel value="Solicitud:" for="solicitudForm"/>
                         <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
-                            <p:inputText id="solicitudForm" value="#{caducadaBean.caducada.solicitudSenadi}" required="true"  
-                                         title="Solicitud SENADI"  style="background: #aed581 !important; text-transform: uppercase; width: 80%"/>                            
-                            <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{caducadaBean.buscarTramite}" 
-                                             rendered="#{caducadaBean.dialogTitle eq 'NUEVO REGISTRO CADUCADA-NEGADA'?true:false}" process="@parent" 
-                                             update="mensajes frmNuevoC:datosNuevoC" style="width: 12%" title="BUSCAR DESISTIMIENTO"/>
+                            <p:inputText id="solicitudForm" value="#{caducadaBean.caducada.solicitudSenadi}" required="true"
+                                         title="Solicitud SENADI" styleClass="input-key" style="width: 80%"/>
+                            <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{caducadaBean.buscarTramite}"
+                                             rendered="#{caducadaBean.dialogTitle eq 'NUEVO REGISTRO CADUCADA-NEGADA'?true:false}" process="@parent"
+                                             update="mensajes frmNuevoC:datosNuevoC caducadaForm:dlgCancelado"
+                                             oncomplete="if(args.cancelado){PF('dlgCancelado').show();}" style="width: 12%" title="BUSCAR DESISTIMIENTO"/>
                         </p:panel>
                         
                         <p:outputLabel value="Resolución:" for="resolucionForm"/>
-                        <p:inputText id="resolucionForm" value="#{caducadaBean.caducada.resolucion}" placeholder="Automático" 
-                                     title="Resolución" readonly="true" class="maxsize" style="background: #f7c7d8 !important;"/>
+                        <p:inputText id="resolucionForm" value="#{caducadaBean.caducada.resolucion}" placeholder="Automático"
+                                     title="Resolución" readonly="true" styleClass="maxsize input-auto"/>
 
                         <p:outputLabel value="Fecha Otorgada:" for="fechaOtoForm" />
                         <p:calendar id="fechaOtoForm"  value="#{caducadaBean.caducada.fechaOtorgada}" navigator="true"
@@ -307,7 +311,8 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
 
                         <p:outputLabel value="Denominación:" for="denominacionForm"  />
-                        <p:inputTextarea id="denominacionForm" value="#{caducadaBean.caducada.denominacion}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="denominacionForm" value="#{caducadaBean.caducada.denominacion}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Número Registro:" for="registronoForm"/>
                         <p:inputText id="registronoForm" value="#{caducadaBean.caducada.registroNo}" title="num registro" class="maxsize"/>
@@ -321,7 +326,8 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize estilo_orange"/>
 
                         <p:outputLabel value="Solicitante:" for="solicitanteForm"  />
-                        <p:inputTextarea id="solicitanteForm" value="#{caducadaBean.caducada.solicitante}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="solicitanteForm" value="#{caducadaBean.caducada.solicitante}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Fecha Providencia:" for="fechaProForm" />
                         <p:calendar id="fechaProForm"  value="#{caducadaBean.caducada.fechaProvidencia}" navigator="true"
@@ -332,7 +338,8 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" required="true" inputStyleClass="maxsize"/>
 
                         <p:outputLabel value="Abogado Patrocinador:" for="aboPatForm"  />
-                        <p:inputTextarea id="aboPatForm" value="#{caducadaBean.caducada.abogadoPatrocinador}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="aboPatForm" value="#{caducadaBean.caducada.abogadoPatrocinador}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Número Casillero:" for="numCasForm"/>
                         <p:inputText id="numCasForm" value="#{caducadaBean.caducada.casilleroNo}" title="num casillero" class="maxsize"/>
@@ -364,10 +371,12 @@ and open the template in the editor.
                         <p:inputText id="signoForm" value="#{caducadaBean.caducada.signo}" title="signo" class="maxsize"/>
 
                         <p:outputLabel value="Identificación:" for="identificacionForm"/>
-                        <p:inputTextarea id="identificacionForm" value="#{caducadaBean.caducada.identificacion}" title="signo" class="maxsize"/>
-                        
+                        <p:inputTextarea id="identificacionForm" value="#{caducadaBean.caducada.identificacion}" title="signo" class="maxsize"
+                                         autoResize="false" rows="2"/>
+
                         <p:outputLabel value="Observación" for="obsForm"/>
-                        <p:inputTextarea id="obsForm" value="#{caducadaBean.caducada.observacion}" title="Observación" class="maxsize" required="true"/>
+                        <p:inputTextarea id="obsForm" value="#{caducadaBean.caducada.observacion}" title="Observación" class="maxsize" required="true"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="ANTES - DESPUÉS:" for="antDesForm"/>
                         <p:selectOneMenu id="antDesForm" style="font-size: 12px;"
@@ -381,30 +390,31 @@ and open the template in the editor.
                         </p:selectOneMenu>
 
                         <p:commandLink value="Ruta Expediente" actionListener="#{caducadaBean.prepararExpediente}" process="@this"
-                                       disabled="#{caducadaBean.caducada.solicitudSenadi eq null? true:false}" style="color: blue"
-                                       oncomplete="PF('dlgExpediente').show();" update="caducadaForm:dlgExpediente mensajes"/>
+                                       disabled="#{caducadaBean.caducada.solicitudSenadi eq null? true:false}" styleClass="url-link"
+                                       oncomplete="PF('dlgExpediente').show();" update="caducadaForm:dlgExpediente mensajes">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">folder_open</i>
+                        </p:commandLink>
 
                     </p:panelGrid>
-                    
-                    <br/>
-                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder" style="float: right">
 
-                        <p:outputLabel value="PASAR A: " rendered="#{caducadaBean.edicion}"/>
-                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 100px; width: 200px" 
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder dlg-actions" style="width: 100%; text-align: right">
+
+                        <p:outputLabel value="PASAR A:" rendered="#{caducadaBean.edicion}" style="font-weight: bold"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 20px; width: 200px"
                                          value="#{caducadaBean.estadoTemp}" rendered="#{caducadaBean.edicion}">
                             <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="RENOVACIONES" itemValue="RENOVACIONES"/>
                             <f:selectItem itemLabel="NOTIFICADAS" itemValue="NOTIFICADAS"/>
                             <f:selectItem itemLabel="DESISTIDAS" itemValue="DESISTIDAS"/>
                         </p:selectOneMenu>
-                        
+
                         <p:commandButton value="#{caducadaBean.saveEdit}" actionListener="#{caducadaBean.guardarRegistro}"
-                                         update="mensajes caducadaForm:tablaDeDatos datosNuevoC" 
-                                         oncomplete="if(args.saved){PF('dlgNuevoC').hide();}" 
-                                         process="@form" class="btn_peque">
+                                         update="mensajes caducadaForm:tablaDeDatos datosNuevoC"
+                                         oncomplete="if(args.saved){PF('dlgNuevoC').hide();}"
+                                         process="@form" class="btn_peque" icon="pi pi-check">
                             <p:confirm header="Seguridad" message="#{caducadaBean.mensajeConfirmacion}" />
-                        </p:commandButton> 
-                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoC').hide()" class="btn_cerrar"/>
+                        </p:commandButton>
+                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoC').hide()" class="btn_cerrar" icon="pi pi-times"/>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
@@ -441,6 +451,25 @@ and open the template in the editor.
                     <p:inputTextarea id='historialText' value="#{caducadaBean.historial}" rows="10" cols="120" readonly="true"/>
                 </h:form>
             </p:dialog>
+            <p:dialog id="dlgCancelado" modal="true" resizable="false"
+                      header="TÍTULO CANCELADO" fitViewport="true"
+                      widgetVar="dlgCancelado" style="font-size: 12px; width: 420px" showEffect="fade"
+                      hideEffect="explode" closeOnEscape="true">
+                <h:form id="frmCancelado">
+                    <p:outputPanel style="display:block; text-align:center; padding: 8px">
+                        <i class="material-icons" style="font-size: 40px; color: #ff9800">warning</i>
+                        <p:outputLabel value="#{caducadaBean.mensajeCancelado}" style="display:block; margin: 10px 0; font-size: 13px"/>
+                    </p:outputPanel>
+                    <p:outputPanel style="display:block; text-align:center; padding: 6px">
+                        <p:commandButton value="Sí, registrar" class="btn_buscar" type="button"
+                                         onclick="PF('dlgCancelado').hide();" style="margin-right: 8px;"/>
+                        <p:commandButton value="No" class="btn_cerrar" actionListener="#{caducadaBean.descartarTramiteCancelado}"
+                                         process="@this" update="mensajes"
+                                         oncomplete="PF('dlgCancelado').hide(); PF('dlgNuevoC').hide();"/>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+
             <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
                 <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" update="caducadaForm:tablaDeDatos"/>
                 <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no"/>

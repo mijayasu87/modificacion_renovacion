@@ -14,6 +14,7 @@
     <class>senadi.gob.ec.mod.model.UploadNotificacion</class>
     <class>senadi.gob.ec.mod.model.Secretario</class>
     <class>senadi.gob.ec.mod.model.Abandono</class>
+    <class>senadi.gob.ec.mod.model.Prorroga</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

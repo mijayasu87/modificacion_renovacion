@@ -27,6 +27,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import senadi.gob.ec.mod.model.Abandono;
+import senadi.gob.ec.mod.model.Prorroga;
 import senadi.gob.ec.mod.model.Caducada;
 import senadi.gob.ec.mod.model.Delegado;
 import senadi.gob.ec.mod.model.Notificada;
@@ -722,6 +723,76 @@ System.out.println("JasperReport compiled: " + jasperReport.getName());
             return output;
         } catch (Exception ex) {
             System.out.println("Error print abandono separado: " + ex);
+            return null;
+        }
+    }
+
+    public FileInputStream viewProrroga(String path, InputStream rutaJrxml, Prorroga prorroga, String rutapdf,
+            Delegado delegado, String delegacion, Secretario secretaria, Resolucion resnot) {
+        try {
+            FileInputStream entrada;
+            JasperReport reportePrincipal = JasperCompileManager.compileReport(rutaJrxml);
+
+            Map parametro = new HashMap();
+            parametro.put("nombrePersona", delegado.getNombre());
+            parametro.put("delegacion", delegacion);
+            parametro.put("secretaria", secretaria.getNombre());
+            parametro.put("denosecre", secretaria.getDenominacion());
+            parametro.put("SUBREPORT_DIR", path + "/");
+            parametro.put("id", prorroga.getId());
+            
+            if (resnot.getId() != null) {
+                parametro.put("resolucionnot", resnot.getResolucion() + " de fecha " + Operaciones.formatDateToLarge(resnot.getFecha()));
+            }
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reportePrincipal, parametro, conn);
+            if (jasperPrint.getPages().isEmpty()) {
+                System.out.println("Hay un error con el jasperprint de prórroga");
+                return null;
+            }
+            try (OutputStream out = new FileOutputStream(rutapdf + ".pdf")) {
+                JRPdfExporter exporter = new JRPdfExporter();
+                SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+                ExporterInput inp = new SimpleExporterInput(jasperPrint);
+                configuration.setCreatingBatchModeBookmarks(true);
+                configuration.set128BitKey(Boolean.TRUE);
+                exporter.setConfiguration(configuration);
+                exporter.setExporterInput(inp);
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
+                exporter.exportReport();
+            }
+            entrada = new FileInputStream(rutapdf + ".pdf");
+            return entrada;
+        } catch (Exception ex) {
+            System.out.println("Error print prórroga: " + ex);
+            return null;
+        }
+    }
+
+    /*Arma el reporte de prórroga en bytes (para descarga múltiple / zip)*/
+    public byte[] viewProrrogaMasterBytes(String path, InputStream rutaJrxml, Prorroga prorroga,
+            Delegado delegado, String delegacion, Secretario secretaria, Resolucion resnot) {
+        JasperReport jasperReport;
+        JasperPrint jasperPrint;
+        try {
+            Map parametro = new HashMap();
+            parametro.put("nombrePersona", delegado.getNombre());
+            parametro.put("delegacion", delegacion);
+            parametro.put("secretaria", secretaria.getNombre());
+            parametro.put("denosecre", secretaria.getDenominacion());
+            parametro.put("SUBREPORT_DIR", path + "/");
+            parametro.put("id", prorroga.getId());
+            
+            if (resnot.getId() != null) {
+                parametro.put("resolucionnot", resnot.getResolucion() + " de fecha " + Operaciones.formatDateToLarge(resnot.getFecha()));
+            }
+
+            jasperReport = JasperCompileManager.compileReport(rutaJrxml);
+            jasperPrint = JasperFillManager.fillReport(jasperReport, parametro, conn);
+            byte[] output = JasperExportManager.exportReportToPdf(jasperPrint);
+            return output;
+        } catch (Exception ex) {
+            System.out.println("Error print prórroga separado: " + ex);
             return null;
         }
     }

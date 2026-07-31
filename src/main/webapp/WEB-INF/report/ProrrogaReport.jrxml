@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProrrogaReport" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b2c1d3e4-f5a6-47b8-9c0d-1e2f3a4b5c6d">
+	<property name="ireport.zoom" value="1.7715610000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="nombrePersona" class="java.lang.String"/>
+	<parameter name="delegacion" class="java.lang.String"/>
+	<parameter name="id" class="java.lang.Integer"/>
+	<parameter name="secretaria" class="java.lang.String"/>
+	<parameter name="denosecre" class="java.lang.String"/>
+	<parameter name="resolucionnot" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+    a.*
+FROM
+    prorroga AS a
+WHERE
+    a.id = $P{id}
+GROUP BY
+    a.id;]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="solicitud_senadi" class="java.lang.String"/>
+	<field name="fecha_presentacion" class="java.sql.Date"/>
+	<field name="notificacion" class="java.lang.Integer"/>
+	<field name="fecha_notifica" class="java.sql.Date"/>
+	<field name="no_registro" class="java.lang.String"/>
+	<field name="fecha_registro" class="java.sql.Date"/>
+	<field name="denominacion" class="java.lang.String"/>
+	<field name="signo" class="java.lang.String"/>
+	<field name="titular_actual" class="java.lang.String"/>
+	<field name="ape_apod_repre" class="java.lang.String"/>
+	<field name="fecha_elabora_notificacion" class="java.sql.Date"/>
+	<field name="casillero_senadi" class="java.lang.String"/>
+	<field name="casillero_judicial" class="java.lang.String"/>
+	<field name="ro" class="java.lang.String"/>
+	<field name="responsable" class="java.lang.String"/>
+	<field name="identificacion" class="java.lang.String"/>
+	<field name="cancelado" class="java.lang.String"/>
+	<field name="solicitante" class="java.lang.String"/>
+	<field name="numero_prorroga" class="java.lang.Integer"/>
+	<field name="fecha_prorroga" class="java.sql.Date"/>
+	<field name="dias_prorroga" class="java.lang.Integer"/>
+	<field name="numero_alcance" class="java.lang.String"/>
+	<field name="fecha_alcance" class="java.sql.Date"/>
+	<variable name="solicitud_n" class="java.lang.String">
+		<variableExpression><![CDATA[$F{solicitud_senadi}+" - ("+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_presentacion})+")"]]></variableExpression>
+	</variable>
+	<variable name="registro_n" class="java.lang.String">
+		<variableExpression><![CDATA[$F{no_registro}+", de ("+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_registro})+")("+$F{signo}+")"]]></variableExpression>
+	</variable>
+	<variable name="titulo_prorroga" class="java.lang.String">
+		<variableExpression><![CDATA["Providencia No. "+$F{numero_prorroga}+"-"+new SimpleDateFormat("yyyy").format(new java.util.Date())+"-SENADI"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_1" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>SERVICIO NACIONAL DE DERECHOS INTELECTUALES - "+
+"DIRECCIÓN TÉCNICA DE MODIFICACIONES AL REGISTRO.-</style> Quito, D.M., "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_prorroga})+
+", a las 10h30.- \n\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_2" class="java.lang.String">
+		<variableExpression><![CDATA["Dentro del trámite Nro. "+$F{solicitud_senadi}+", se agrega al expediente administrativo el escrito No. "+$F{numero_alcance}+", "+
+"de fecha "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_alcance})+",  respecto de la solicitud de "+
+"ampliación al término otorgado.\n\n"+
+"Esta autoridad, al amparo de lo dispuesto en el art. 161 del Código Orgánico Administrativo, y encontrándose dentro del "+
+"término que se encuentra recurriendo, procede a amplicar el mismo, que fue otorgado mediante Notificación No. "+
+$F{notificacion}+" notificada el "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_notifica})+"; "+
+"esto es, el término de cinco (5) días.\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_3" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>Notifíquese.- </style> "+$P{nombrePersona}+", "+
+"<style pdfFontName='Times-Bold'>"+$P{delegacion}+".</style>\n"]]></variableExpression>
+	</variable>
+	<variable name="parrafo_4" class="java.lang.String">
+		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>RAZÓN.-</style> Siento por tal que el día de hoy "+
+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format(new java.util.Date())+ ", notifiqué "+
+"con la resolución que antecede a "+$F{solicitante}+", en el casillero virtual Nro. "+$F{casillero_senadi}+
+"correspondiente a su apoderado/a "+$F{ape_apod_repre}+".- lo que certifico por delegación de la directora "+
+"general del Servicio Nacional de Derechos Intelectuales, conferido mediante Resolución Nro. "+$P{resolucionnot}+"."]]></variableExpression>
+	</variable>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
+				<reportElement x="-19" y="-20" width="595" height="822" uuid="1a1b1c1d-1e1f-4a2b-8c3d-4e5f6a7b8c9d"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "background.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="90" splitType="Stretch">
+			<staticText>
+				<reportElement x="-1" y="70" width="556" height="20" uuid="dd941fff-0369-423a-aa6d-d8f87ddd1102"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN NACIONAL DE PROPIEDAD INDUSTRIAL]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="22">
+			<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.intValue() > 1)]]></printWhenExpression>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="96" splitType="Stretch">
+			<staticText>
+				<reportElement x="60" y="0" width="87" height="20" uuid="2a2b2c2d-2e2f-4a3b-8c4d-5e6f7a8b9c0d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Providencia No.:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="60" y="20" width="87" height="20" uuid="3a3b3c3d-3e3f-4a4b-8c5d-6e7f8a9b0c1d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Solicitud:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="147" y="20" width="366" height="20" uuid="4a4b4c4d-4e4f-4a5b-8c6d-7e8f9a0b1c2d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{solicitud_senadi}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="60" y="39" width="87" height="20" uuid="5a5b5c5d-5e5f-4a6b-8c7d-8e9f0a1b2c3d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Denominación:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="147" y="39" width="366" height="20" uuid="6a6b6c6d-6e6f-4a7b-8c8d-9e0f1a2b3c4d"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denominacion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="60" y="79" width="453" height="17" uuid="9a9b9c9d-9e9f-4a0b-8c1d-2e3f4a5b6c7d"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="147" y="0" width="366" height="20" uuid="1bb8b065-efea-410a-a1e3-ec584c77ee8e"/>
+				<textElement>
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_prorroga}+"-SENADI-DTMR-"+new java.text.SimpleDateFormat("yyyy").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="17">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="60" y="0" width="453" height="17" uuid="2b2c2d2e-2f2a-4b3c-8d4e-5f6a7b8c9d0e"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_2}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="16" splitType="Immediate">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="60" y="0" width="453" height="16" uuid="3b3c3d3e-3f3a-4b4c-8d5e-6f7a8b9c0d1e"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_3}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="17">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="59" y="0" width="454" height="17" uuid="5b5c5d5e-5f5a-4b6c-8d7e-8f9a0b1c2d3e"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Times New Roman" size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{parrafo_4}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="145">
+			<image>
+				<reportElement x="406" y="27" width="121" height="106" uuid="6b6c6d6e-6f6a-4b7c-8d8e-9f0a1b2c3d4e"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="463" y="133" width="64" height="12" uuid="7b7c7d7e-7f7a-4b8c-8d9e-0f1a2b3c4d5e"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{responsable}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="59" width="555" height="20" uuid="8b8c8d8e-8f8a-4b9c-8d0e-1f2a3b4c5d6e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="false" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{secretaria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="60" y="79" width="458" height="42" uuid="9b9c9d9e-9f9a-4b0c-8d1e-2f3a4b5c6d7e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{denosecre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="10" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="29" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="7" splitType="Stretch"/>
+	</summary>
+</jasperReport>

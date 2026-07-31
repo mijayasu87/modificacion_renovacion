@@ -23,6 +23,7 @@ and open the template in the editor.
         <link href="resources/assets/css/main.css" rel="stylesheet" />
 
         <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputScript library="js" name="app.js"/>
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
     </h:head>
     <h:body style="background-color: #D6FFF4">
@@ -50,7 +51,8 @@ and open the template in the editor.
             <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
             <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
             <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
-            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
+            <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
+            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>            
             <a class="activo" href="#" title="Renovaciones" >RENOVACIONES</a>
             <a class="itemm" href="rezrenova.xhtml" title="REZAGO" style="display:  #{loginBean.usuarioConsulta?'none':'inline-block'}">REZAGO</a>
         </div>
@@ -346,7 +348,8 @@ and open the template in the editor.
                 <!--<p:commandLink value="Descargar Seleccionados" style="font-size: 12px" actionListener="{modificacionBean.downloadSelected}"
                                process="@this"/>-->
                 <h:panelGrid columns="2" style="float: right;">
-                    <h:commandLink title="Exportar a excel..." rendered="#{modificacionBean.usuarioConsulta}" immediate="true">
+                    <h:commandLink id="excelExport" title="Exportar a excel..." rendered="#{modificacionBean.usuarioConsulta}" immediate="true"
+                                   onclick="return downloadExcelXHR(this.id, '#{modificacionBean.exportName}');">
                         <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
                         <p:dataExporter type="xls" target="tablaDeDatos" fileName="#{modificacionBean.exportName}" />
                     </h:commandLink>
@@ -354,10 +357,10 @@ and open the template in the editor.
 
             </p:panel>
 
-            <p:dialog id="dlgNuevoR" modal="true" resizable="true" width="80%" 
+            <p:dialog id="dlgNuevoR" modal="true" resizable="true" width="80%"
                       header="#{modificacionBean.dialogTitle}" fitViewport="true"
-                      widgetVar="dlgNuevoR" showEffect="explode" 
-                      hideEffect="explode" closeOnEscape="true">
+                      widgetVar="dlgNuevoR" showEffect="explode"
+                      hideEffect="explode" closeOnEscape="true" styleClass="dlg-nuevo-n">
                 <p:ajax event="close" update="dlgNuevoR" resetValues="true" />
                 <p:growl id="nuevoreg" life="1000"/>
                 <h:form id="frmNuevoR" >
@@ -367,8 +370,8 @@ and open the template in the editor.
 
                         <p:outputLabel value="Solicitud:" for="solicitudForm"/>                                                
                         <p:panel class="noBorders" style="padding: 0 0 !important; border: none !important">
-                            <p:inputText id="solicitudForm" value="#{modificacionBean.renovacion.solicitudSenadi}" title="Solicitud" required="true" 
-                                         style="background: #aed581 !important; text-transform: uppercase; width: 80%" />
+                            <p:inputText id="solicitudForm" value="#{modificacionBean.renovacion.solicitudSenadi}" title="Solicitud" required="true"
+                                         styleClass="input-key" style="width: 80%" />
                             <p:commandButton icon="pi pi-search" class="btn_peque"   actionListener="#{modificacionBean.buscarTramite}" 
                                              rendered="#{modificacionBean.dialogTitle eq 'NUEVA RENOVACIÓN'?true:false}" process="@parent" 
                                              update="mensajes frmNuevoR:datosNuevoR" style="width: 12%" title="BUSCAR RENOVACIÓN"/>
@@ -382,8 +385,8 @@ and open the template in the editor.
                         <p:inputText id="comprobanteForm" value="#{modificacionBean.renovacion.noComprobantePresentSolic}" class="maxsize" />
 
                         <p:outputLabel value="N. Certificado:" for="certificadoForm"  />
-                        <p:inputText id="certificadoForm" value="#{modificacionBean.renovacion.certificadoNo}"  
-                                     placeholder="Automático" style="background: #f7c7d8 !important;" class="maxsize">
+                        <p:inputText id="certificadoForm" value="#{modificacionBean.renovacion.certificadoNo}"
+                                     placeholder="Automático" styleClass="maxsize input-auto">
                             <p:keyFilter mask="num" />
                         </p:inputText>
 
@@ -406,7 +409,8 @@ and open the template in the editor.
                                     mask="true" pattern="yyyy-MM-dd" inputStyleClass="maxsize" navigator="true"/>
 
                         <p:outputLabel value="Denominación:" for="denominacionForm"  />
-                        <p:inputTextarea id="denominacionForm" value="#{modificacionBean.renovacion.denominacion}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="denominacionForm" value="#{modificacionBean.renovacion.denominacion}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Signo(s) que acompaña(n) al Lema: " for="lemaForm"  />
                         <p:inputText id="lemaForm" value="#{modificacionBean.renovacion.lema}" class="maxsize"/>
@@ -416,11 +420,13 @@ and open the template in the editor.
 
 
                         <p:outputLabel value="Titular Actual:" for="titularActualForm"  />
-                        <p:inputTextarea id="titularActualForm" value="#{modificacionBean.renovacion.titularActual}" required="true" class="maxsize"/>
+                        <p:inputTextarea id="titularActualForm" value="#{modificacionBean.renovacion.titularActual}" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
 
                         <p:outputLabel value="Ab. Patr./apod/repre:" for="abogadoPForm"  />
-                        <p:inputTextarea id="abogadoPForm" value="#{modificacionBean.renovacion.abogadoPatrocinadorApeApoRepre}" class="maxsize"/>
+                        <p:inputTextarea id="abogadoPForm" value="#{modificacionBean.renovacion.abogadoPatrocinadorApeApoRepre}" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Casillero SENADI:" for="casilleroSenadiForm"  />
                         <p:inputText id="casilleroSenadiForm" value="#{modificacionBean.renovacion.casilleroSenadi}" class="maxsize"/>
@@ -432,23 +438,28 @@ and open the template in the editor.
                         <p:inputText id="responsableForm" value="#{modificacionBean.renovacion.responsable}" class="maxsize"/>
 
                         <p:outputLabel value="Identificación:" for="identificacionForm"  />
-                        <p:inputTextarea id="identificacionForm" value="#{modificacionBean.renovacion.identificacion}" class="maxsize"/>
+                        <p:inputTextarea id="identificacionForm" value="#{modificacionBean.renovacion.identificacion}" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
-                        <p:outputLabel value="Url Expediente: "/>
+                        <p:outputLabel value="Url Expediente:"/>
                         <p:commandLink value="Ruta Expediente" actionListener="#{modificacionBean.prepararExpediente}" process="@this"
-                                       disabled="#{modificacionBean.renovacion.solicitudSenadi eq null? true:false}" style="color: blue"
-                                       oncomplete="PF('dlgExpediente').show();" update="renovacionForm:dlgExpediente mensajes"/>
+                                       disabled="#{modificacionBean.renovacion.solicitudSenadi eq null? true:false}" styleClass="url-link"
+                                       oncomplete="PF('dlgExpediente').show();" update="renovacionForm:dlgExpediente mensajes">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">folder_open</i>
+                        </p:commandLink>
 
-                        <p:outputLabel value="Url Compobante: " />
-                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{modificacionBean.renovacion.idRenewalForm}/pdf_voucher_renewalfrm_#{modificacionBean.renovacion.idRenewalForm}.pdf')"  
-                                       disabled="#{modificacionBean.renovacion.idRenewalForm eq null? true:false}" style="color: blue !important"/>
+                        <p:outputLabel value="Url Comprobante:" />
+                        <p:commandLink value="Ruta Comprobante" onclick="otherpage('https://registro.propiedadintelectual.gob.ec/solicitudes/media/files/renewal_forms/#{modificacionBean.renovacion.idRenewalForm}/pdf_voucher_renewalfrm_#{modificacionBean.renovacion.idRenewalForm}.pdf')"
+                                       disabled="#{modificacionBean.renovacion.idRenewalForm eq null? true:false}" styleClass="url-link">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">picture_as_pdf</i>
+                        </p:commandLink>
 
                     </p:panelGrid>
-                    <br/>
-                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder" style="float: right">
 
-                        <p:outputLabel value="PASAR A: " rendered="#{modificacionBean.edicion}"/>
-                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 100px" 
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder dlg-actions" style="width: 100%; text-align: right">
+
+                        <p:outputLabel value="PASAR A:" rendered="#{modificacionBean.edicion}" style="font-weight: bold"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 20px"
                                          value="#{modificacionBean.estadoTemp}" rendered="#{modificacionBean.edicion}">
                             <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="NOTIFICADAS" itemValue="NOTIFICADAS"/>
@@ -457,12 +468,12 @@ and open the template in the editor.
                         </p:selectOneMenu>
 
                         <p:commandButton value="#{modificacionBean.saveEdit}" actionListener="#{modificacionBean.guardarRegistro}"
-                                         update="mensajes renovacionForm:tablaDeDatos datosNuevoR"
-                                         oncomplete="if(args.saved){PF('dlgNuevoR').hide();}"
-                                         process="@form" class="btn_peque">
+                                         update="mensajes renovacionForm:tablaDeDatos datosNuevoR renovacionForm:dlgCancelado"
+                                         oncomplete="if(args.cancelado){PF('dlgCancelado').show();} else if(args.saved){PF('dlgNuevoR').hide();}"
+                                         process="@form" class="btn_peque" icon="pi pi-check">
                             <p:confirm header="Seguridad" message="#{modificacionBean.mensajeConfirmacion}" />
                         </p:commandButton>
-                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoR').hide()" class="btn_cerrar"/>
+                        <p:commandButton value="CERRAR" onclick="PF('dlgNuevoR').hide()" class="btn_cerrar" icon="pi pi-times"/>
                     </p:panelGrid>
                 </h:form>
             </p:dialog>
@@ -502,6 +513,24 @@ and open the template in the editor.
                 </h:form>
 
             </p:dialog>
+            <p:dialog id="dlgCancelado" modal="true" resizable="false"
+                      header="TÍTULO CANCELADO" fitViewport="true"
+                      widgetVar="dlgCancelado" style="font-size: 12px; width: 420px" showEffect="fade"
+                      hideEffect="explode" closeOnEscape="true">
+                <h:form id="frmCancelado">
+                    <p:outputPanel style="display:block; text-align:center; padding: 8px">
+                        <i class="material-icons" style="font-size: 40px; color: #ff9800">warning</i>
+                        <p:outputLabel value="#{modificacionBean.mensajeCancelado}" style="display:block; margin: 10px 0; font-size: 13px"/>
+                    </p:outputPanel>
+                    <p:outputPanel style="display:block; text-align:center; padding: 6px">
+                        <p:commandButton value="Sí, enviar" class="btn_buscar" actionListener="#{modificacionBean.confirmarCancelado}"
+                                         process="@this" update="mensajes renovacionForm:tablaDeDatos"
+                                         oncomplete="PF('dlgCancelado').hide(); if(args.saved){PF('dlgNuevoR').hide();}" style="margin-right: 8px;"/>
+                        <p:commandButton value="No" class="btn_cerrar" type="button" onclick="PF('dlgCancelado').hide();"/>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+
             <p:confirmDialog global="true" showEffect="explode" hideEffect="explode">
                 <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" update="renovacionForm:tablaDeDatos"/>
                 <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no"/>

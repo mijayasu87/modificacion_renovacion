@@ -16,6 +16,7 @@ and open the template in the editor.
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
 
         <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputScript library="js" name="app.js"/>
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
     </h:head>
     <h:body>
@@ -44,8 +45,9 @@ and open the template in the editor.
             <a class="activo" href="#" title="Abandono" >ABANDONO</a>
             <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
             <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
-            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>
-            <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>           
+            <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
+            <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>            
+            <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
         </div>
         <p:growl id="mensajes" showDetail="true" life="3000"/>
         <h:form id="allform" enctype="multipart/form-data" style=" background: #e3e3e3; min-height: calc(100vh - 424px);">            
@@ -216,7 +218,8 @@ and open the template in the editor.
                     </p:dataTable>
                     <p:outputLabel id="num_registros" value="#{abandonoBean.numRegistros}" style="float: left; font-size: 12px"/>                    
                     <h:panelGrid columns="2" style="float: right;">
-                        <h:commandLink title="Exportar a excel..." rendered="#{!loginBean.usuarioConsulta}" immediate="true">
+                        <h:commandLink id="excelExport" title="Exportar a excel..." rendered="#{!loginBean.usuarioConsulta}" immediate="true"
+                                       onclick="return downloadExcelXHR(this.id, '#{abandonoBean.exportName}');">
                             <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
                             <p:dataExporter type="xls" target="tablaDeAbandonos" fileName="#{abandonoBean.exportName}"/>
                         </h:commandLink>
@@ -228,8 +231,8 @@ and open the template in the editor.
 
             <p:dialog id="dlgNuevaT" modal="true" resizable="true"
                       header="#{abandonoBean.dialogTitle}" fitViewport="true"
-                      widgetVar="dlgNuevaT" style="font-size: 11px; margin-bottom: 10px" showEffect="clip" 
-                      hideEffect="explode" closeOnEscape="true" width="80%">
+                      widgetVar="dlgNuevaT" style="font-size: 11px; margin-bottom: 10px" showEffect="clip"
+                      hideEffect="explode" closeOnEscape="true" width="80%" styleClass="dlg-nuevo-n">
                 <p:ajax event="close" update="dlgNuevaT" resetValues="true" />
                 <p:growl id="nuevoreg" life="1000"/>
                 <h:form id="frmNuevaT" >
@@ -238,8 +241,8 @@ and open the template in the editor.
 
                         <p:outputLabel value="Solicitud:" for="solicitudForm" style="float: right"/>
                         <h:panelGroup>
-                            <p:inputText id="solicitudForm" value="#{abandonoBean.abandono.solicitud}" title="Solicitud" required="true" 
-                                         style="background: #aed581 !important; width: 85%; text-transform: uppercase"/>
+                            <p:inputText id="solicitudForm" value="#{abandonoBean.abandono.solicitud}" title="Solicitud" required="true"
+                                         styleClass="input-key" style="width: 85%"/>
                             <p:commandButton icon="pi pi-search" class="btn_peque" style="position: absolute;" actionListener="#{abandonoBean.buscarTramite}"
                                              rendered="#{abandonoBean.dialogTitle eq 'NUEVO ABANDONO'?true:false}" process="@parent" update="mensajes frmNuevaT:datosNuevaT"/>
                         </h:panelGroup>
@@ -250,8 +253,8 @@ and open the template in the editor.
                                     navigator="true"/>
 
                         <p:outputLabel value="Abandono" for="noAbandonoForm" style="float: right"/>
-                        <p:inputText id="noAbandonoForm" value="#{abandonoBean.abandono.numeroAbandono}" title="Abandono"  placeholder="Automático"
-                                     style="background: #FFCDD2 !important;" required="true" class="maxsize" disabled="#{abandonoBean.dialogTitle eq 'NUEVO ABANDONO'?true:false}">
+                        <p:inputText id="noAbandonoForm" value="#{abandonoBean.abandono.numeroAbandono}" title="Abandono" placeholder="Automático"
+                                     styleClass="maxsize input-auto" required="true" disabled="#{abandonoBean.dialogTitle eq 'NUEVO ABANDONO'?true:false}">
                             <p:keyFilter mask="num" />
                         </p:inputText>
 
@@ -269,22 +272,23 @@ and open the template in the editor.
                                     navigator="true"/>
 
                         <p:outputLabel value="Solicitante:" for="solicitanteForm" style="float: right"/>
-                        <p:inputTextarea id="solicitanteForm" value="#{abandonoBean.abandono.solicitante}" title="Solicitante" required="true" class="maxsize"/>
+                        <p:inputTextarea id="solicitanteForm" value="#{abandonoBean.abandono.solicitante}" title="Solicitante" required="true" class="maxsize"
+                                         autoResize="false" rows="2"/>
 
-                        <p:outputLabel value="Denominación:" for="denominacionForm" style="float: right"/>                            
-                        <p:inputTextarea id="denominacionForm" value="#{abandonoBean.abandono.denominacion}" title="Denominación" 
-                                         required="true" class="maxsize"/>
+                        <p:outputLabel value="Denominación:" for="denominacionForm" style="float: right"/>
+                        <p:inputTextarea id="denominacionForm" value="#{abandonoBean.abandono.denominacion}" title="Denominación"
+                                         required="true" class="maxsize" autoResize="false" rows="2"/>
 
                         <p:outputLabel value="Signo:" for="signoForm" style="float: right"/>
                         <p:inputText id="signoForm" value="#{abandonoBean.abandono.signo}" title="Signo" required="true" class="maxsize"/>                        
 
-                        <p:outputLabel value="Titular Actual:" for="tactualForm" style="float: right"/>                            
-                        <p:inputTextarea id="tactualForm" value="#{abandonoBean.abandono.titularActual}" title="Titular Actual" 
-                                         required="true" class="maxsize"/>                        
+                        <p:outputLabel value="Titular Actual:" for="tactualForm" style="float: right"/>
+                        <p:inputTextarea id="tactualForm" value="#{abandonoBean.abandono.titularActual}" title="Titular Actual"
+                                         required="true" class="maxsize" autoResize="false" rows="2"/>
 
-                        <p:outputLabel value="Apoderado Representante:" for="aporeplegalForm" style="float: right"/>                            
-                        <p:inputTextarea id="aporeplegalForm" value="#{abandonoBean.abandono.apeApodRepre}" title="Apoderado Representante Legal" 
-                                         required="true" class="maxsize"/>
+                        <p:outputLabel value="Apoderado Representante:" for="aporeplegalForm" style="float: right"/>
+                        <p:inputTextarea id="aporeplegalForm" value="#{abandonoBean.abandono.apeApodRepre}" title="Apoderado Representante Legal"
+                                         required="true" class="maxsize" autoResize="false" rows="2"/>
 
                         <p:outputLabel value="F. E. Notificación:" for="feNotificacionForm" style="float: right"/>                            
                         <p:calendar id="feNotificacionForm"  value="#{abandonoBean.abandono.fechaElaboraNotificacion}" timeZone="GMT-5"
@@ -325,29 +329,33 @@ and open the template in the editor.
 
 
 
-                        <p:outputLabel value="Url: " style="float: right !important"/>
+                        <p:outputLabel value="Url:" style="float: right !important"/>
                         <p:commandLink value="Ruta Expediente" actionListener="#{abandonoBean.prepararExpediente}" process="@this"
-                                       disabled="#{abandonoBean.abandono.solicitud eq null? true:false}" style="color: blue"
-                                       oncomplete="PF('dlgExpediente').show();" update="allform:dlgExpediente mensajes"/>
+                                       disabled="#{abandonoBean.abandono.solicitud eq null? true:false}" styleClass="url-link"
+                                       oncomplete="PF('dlgExpediente').show();" update="allform:dlgExpediente mensajes">
+                            <i class="material-icons md-18" style="vertical-align: middle; margin-right: 4px;">folder_open</i>
+                        </p:commandLink>
                     </p:panelGrid>
                     <p:outputLabel value="RO:" for="roForm" style="float: left"/>
-                    <p:inputTextarea id="roForm" value="#{abandonoBean.abandono.ro}" class="maxsize" required="true"/>
-                    <br/><br/>
-                    <p:commandButton value="CERRAR" oncomplete="PF('dlgNuevaT').hide();" process="@form" class="btn_cerrar" style="float: right"/>
-                    <p:commandButton value="#{abandonoBean.saveEdit}" actionListener="#{abandonoBean.guardarAbandono}"
-                                     update="mensajes allform:tablaDeAbandonos datosNuevaT"
-                                     oncomplete="if(args.saved){PF('dlgNuevaT').hide();}"
-                                     process="@form" class="btn_peque" style="float: right; margin-left: 5px;">
-                        <p:confirm header="Seguridad" message="#{abandonoBean.mensajeConfirmacion}" />
-                    </p:commandButton>                    
-                    <p:panelGrid id="guardarBtn" columns="2" class="panel-bottom noBorders" style="float: right" >
-                        <p:outputLabel value="PASAR A: " rendered="#{abandonoBean.dialogTitle eq 'NUEVO ABANDONO'?false:true}"/>
-                        <p:selectOneMenu id="estadoRegistro" style="float: right"
+                    <p:inputTextarea id="roForm" value="#{abandonoBean.abandono.ro}" class="maxsize" required="true"
+                                     autoResize="false" rows="2"/>
+
+                    <p:panelGrid id="guardarBtn" columns="4" styleClass="ui-noborder dlg-actions" style="width: 100%; text-align: right">
+                        <p:outputLabel value="PASAR A:" rendered="#{abandonoBean.dialogTitle eq 'NUEVO ABANDONO'?false:true}" style="font-weight: bold"/>
+                        <p:selectOneMenu id="estadoRegistro" style="margin-right: 20px"
                                          value="#{abandonoBean.estadoTemp}" rendered="#{abandonoBean.dialogTitle eq 'NUEVO ABANDONO'?false:true}">
                             <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="NOTIFICADAS" itemValue="NOTIFICADAS"/>
                             <p:ajax event="itemSelect" update="mensajes frmNuevaT" listener="#{abandonoBean.onTipoAbandonoSelectedListener}" />
                         </p:selectOneMenu>
+
+                        <p:commandButton value="#{abandonoBean.saveEdit}" actionListener="#{abandonoBean.guardarAbandono}"
+                                         update="mensajes allform:tablaDeAbandonos datosNuevaT"
+                                         oncomplete="if(args.saved){PF('dlgNuevaT').hide();}"
+                                         process="@form" class="btn_peque" icon="pi pi-check">
+                            <p:confirm header="Seguridad" message="#{abandonoBean.mensajeConfirmacion}" />
+                        </p:commandButton>
+                        <p:commandButton value="CERRAR" oncomplete="PF('dlgNuevaT').hide();" process="@form" class="btn_cerrar" icon="pi pi-times"/>
                     </p:panelGrid>
 
 

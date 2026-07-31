@@ -140,7 +140,7 @@ public class NewInforme extends HttpServlet {
                     for (int i = 0; i < lb.getRenovacionesFlotantes().size(); i++) {
                         Renovacion raux = lb.getRenovacionesFlotantes().get(i);
                         InputStream is = null;
-                        System.out.println("----------> raux "+(i+1)+": "+raux.getSigno());
+                        System.out.println("----------> raux "+(i+1)+": "+raux.getSolicitudSenadi()+" - "+raux.getSigno());
                         if (lb.isNewreport()) {
                             if (raux.getSigno().trim().toUpperCase().equals("LC")) {
                                 is = getServletContext().getResourceAsStream("/WEB-INF/report/RenovacionLemaReport.jrxml");

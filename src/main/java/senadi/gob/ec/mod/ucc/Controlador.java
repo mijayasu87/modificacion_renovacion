@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import senadi.gob.ec.mod.dao.AbandonoDAO;
+import senadi.gob.ec.mod.dao.ProrrogaDAO;
 import senadi.gob.ec.mod.dao.CaducadaDAO;
 import senadi.gob.ec.mod.dao.DelegacionDAO;
 import senadi.gob.ec.mod.dao.DelegadoDAO;
@@ -32,6 +33,7 @@ import senadi.gob.ec.mod.daop.PpdiSolicitudSignoDistintivo;
 import senadi.gob.ec.mod.daop.PpdiTituloDAO;
 import senadi.gob.ec.mod.daop.PpdiTituloSignoDistintivo;
 import senadi.gob.ec.mod.model.Abandono;
+import senadi.gob.ec.mod.model.Prorroga;
 import senadi.gob.ec.mod.model.Caducada;
 import senadi.gob.ec.mod.model.Delegacion;
 import senadi.gob.ec.mod.model.Delegado;
@@ -1280,5 +1282,89 @@ public class Controlador {
     public List<Notificada> getAbandonosSinFinesSemana(int dias, String tipoAbandono) {
         AbandonoDAO ad = new AbandonoDAO(null);
         return ad.getAbandonosSinFinesSemana(dias, tipoAbandono);
+    }
+
+    /* ============================ PRÓRROGAS ============================ */
+    public boolean saveProrroga(Prorroga p) {
+        ProrrogaDAO pd = new ProrrogaDAO(p);
+        try {
+            pd.persist();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error al guardar prórroga: " + ex);
+            return false;
+        }
+    }
+
+    public boolean updateProrroga(Prorroga p) {
+        ProrrogaDAO pd = new ProrrogaDAO(p);
+        try {
+            pd.update();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error al editar prórroga: " + ex);
+            return false;
+        }
+    }
+
+    public boolean removeProrroga(Prorroga prorroga) {
+        ProrrogaDAO pd = new ProrrogaDAO(prorroga);
+        try {
+            if (!pd.getEntityManager().contains(prorroga)) {
+                System.out.println("merge prórroga");
+                prorroga = pd.getEntityManager().merge(prorroga);
+                pd = new ProrrogaDAO(prorroga);
+            }
+            pd.remove();
+            return true;
+        } catch (Exception ex) {
+            System.out.println("Error al remover prórroga: " + ex);
+            return false;
+        }
+    }
+
+    public List<Prorroga> getProrrogas() {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.buscarTodos();
+    }
+
+    public List<Prorroga> getProrrogasByCriteria(String text) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.getProrrogaByCriteria(text);
+    }
+
+    public List<Prorroga> getProrrogasByFecha(Date ini, Date fin) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.getProrrogaByFecha(ini, fin);
+    }
+
+    public List<Prorroga> getProrrogasByDenominacion(String denominacion) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.getProrrogasByDenominacion(denominacion);
+    }
+
+    public List<Prorroga> getProrrogasByTitular(String titular) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.getProrrogaByTitular(titular);
+    }
+
+    public Prorroga getProrrogaBySolicitud(String solicitud) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.getProrrogaBySolicitud(solicitud);
+    }
+
+    public boolean validarExistenciaProrroga(Prorroga p) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.validarExistenciaProrroga(p);
+    }
+
+    public int getNextNumeroProrroga(Date fecha) {
+        ProrrogaDAO pd = new ProrrogaDAO(null);
+        return pd.getNextNumeroProrroga(fecha);
+    }
+
+    public List<Notificada> getProrrogasCandidatas() {
+        NotificadaDAO nd = new NotificadaDAO(null);
+        return nd.getProrrogasCandidatas();
     }
 }

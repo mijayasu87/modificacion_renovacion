@@ -15,7 +15,7 @@
 		<variableExpression><![CDATA[$F{ro}]]></variableExpression>
 	</variable>
 	<detail>
-		<band height="25" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
 				<reportElement x="14" y="0" width="448" height="16" uuid="95030f19-dab1-4614-ae3f-afbfa44b30de"/>
 				<textElement textAlignment="Justified" markup="styled">

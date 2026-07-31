@@ -74,6 +74,8 @@ public class CaducadaBean implements Serializable {
     private boolean edicion;
     private String estadoTemp;
 
+    private String mensajeCancelado;
+
     public CaducadaBean() {
         init();
     }
@@ -362,27 +364,15 @@ public class CaducadaBean implements Serializable {
                         msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TRÁMITE NO SE PUEDE REGISTRAR: " + mapp.getObservacion());
                     } else {
                         boolean habilitado = true;
+                        // En CADUCADAS-NEGADAS se permite registrar títulos cancelados
+                        // (la confirmación "¿desea registrarlo de todas formas?" se realiza al buscar el trámite).
                         if (caducada.getDenominacion() != null && !caducada.getDenominacion().trim().isEmpty()
                                 && caducada.getRegistroNo() != null && !caducada.getRegistroNo().trim().isEmpty()) {
                             if (c.existsTituloCanceladoByTituloAndDenominacion(caducada.getRegistroNo(), caducada.getDenominacion())) {
                                 TituloCancelado titca = c.getTituloCanceladoByTituloAndDenoninacion(caducada.getRegistroNo(), caducada.getDenominacion());
-                                if (titca.getId() != null && titca.getTipoCancelacion().contains("TOTAL")) {
-                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                    caducada = new Caducada();
-                                    habilitado = false;
-                                } else if (titca.getId() != null && titca.getTipoCancelacion().contains("PARCIAL")) {
+                                if (titca.getId() != null) {
                                     caducada.setCancelado(titca.getTipoCancelacion());
-                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                } else {
-                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                    caducada = new Caducada();
-                                    habilitado = false;
                                 }
-                            } else {
-                                habilitado = true;
                             }
                         }
 
@@ -415,6 +405,25 @@ public class CaducadaBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "CAMPOS NULOS");
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    /**
+     * Se invoca cuando el usuario responde "No" a la confirmación de registrar
+     * un trámite con título cancelado: descarta los datos cargados.
+     */
+    public void descartarTramiteCancelado(ActionEvent ae) {
+        caducada = new Caducada();
+        mensajeCancelado = "";
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "SE DESCARTÓ EL REGISTRO DEL TRÁMITE CON TÍTULO CANCELADO");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public String getMensajeCancelado() {
+        return mensajeCancelado;
+    }
+
+    public void setMensajeCancelado(String mensajeCancelado) {
+        this.mensajeCancelado = mensajeCancelado;
     }
 
     public void buscarTramite(ActionEvent ae) {
@@ -498,18 +507,14 @@ public class CaducadaBean implements Serializable {
                                         if (rf.getExpedient() != null && !rf.getExpedient().trim().isEmpty()) {
                                             if (c.existsTituloCanceladoByTituloAndExpediente(caducada.getRegistroNo(), rf.getExpedient())) {
                                                 TituloCancelado titca = c.getTituloCanceladoByTituloAndExpediente(caducada.getRegistroNo(), rf.getExpedient());
-                                                if (titca.getId() != null && titca.getTipoCancelacion().contains("TOTAL")) {
-                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                                    caducada = new Caducada();
-                                                } else if (titca.getId() != null && titca.getTipoCancelacion().contains("PARCIAL")) {
+                                                if (titca.getId() != null) {
                                                     caducada.setCancelado(titca.getTipoCancelacion());
-                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
+                                                    mensajeCancelado = "El título " + caducada.getRegistroNo() + " relacionado con el trámite " + caducada.getSolicitudSenadi()
+                                                            + " está CANCELADO de manera " + titca.getTipoCancelacion() + ", ¿desea registrarlo de todas formas?";
+                                                    PrimeFaces.current().ajax().addCallbackParam("cancelado", true);
+                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", mensajeCancelado);
                                                 } else {
-                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                                    caducada = new Caducada();
+                                                    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "DATOS CARGADOS CORRECTAMENTE");
                                                 }
                                             } else {
                                                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "DATOS CARGADOS CORRECTAMENTE");
@@ -517,18 +522,14 @@ public class CaducadaBean implements Serializable {
                                         } else {
                                             if (c.existsTituloCanceladoByTituloAndDenominacion(caducada.getRegistroNo(), caducada.getDenominacion())) {
                                                 TituloCancelado titca = c.getTituloCanceladoByTituloAndDenoninacion(caducada.getRegistroNo(), caducada.getDenominacion());
-                                                if (titca.getId() != null && titca.getTipoCancelacion().contains("TOTAL")) {
-                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                                    caducada = new Caducada();
-                                                } else if (titca.getId() != null && titca.getTipoCancelacion().contains("PARCIAL")) {
+                                                if (titca.getId() != null) {
                                                     caducada.setCancelado(titca.getTipoCancelacion());
-                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
+                                                    mensajeCancelado = "El título " + caducada.getRegistroNo() + " relacionado con el trámite " + caducada.getSolicitudSenadi()
+                                                            + " está CANCELADO de manera " + titca.getTipoCancelacion() + ", ¿desea registrarlo de todas formas?";
+                                                    PrimeFaces.current().ajax().addCallbackParam("cancelado", true);
+                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", mensajeCancelado);
                                                 } else {
-                                                    msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL TÍTULO " + caducada.getRegistroNo() + " CON DENOMINACIÓN '"
-                                                            + caducada.getDenominacion() + "' SE ENCUENTRA CANCELADO DE MANERA " + titca.getTipoCancelacion() + "; CONSULTE EN EL LISTADO DE TÍTULOS CANCELADOS");
-                                                    caducada = new Caducada();
+                                                    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "DATOS CARGADOS CORRECTAMENTE");
                                                 }
                                             } else {
                                                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "DATOS CARGADOS CORRECTAMENTE");

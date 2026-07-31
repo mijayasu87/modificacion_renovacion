@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9adbad99-856a-4e2a-bbca-e00e67d776f9">
 	<property name="ireport.zoom" value="1.464100000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="245"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="nombrePersona" class="java.lang.String"/>
 	<parameter name="delegacion" class="java.lang.String"/>
@@ -180,7 +180,7 @@
 "Jurídico y Administrativo de la Función Ejecutiva y la Disposición Transitoria Tercera, inciso tercero, "+
 "del Código Orgánico de la Economía Social de los Conocimientos, Creatividad e Innovación. \n\n"+
 "Toda contestación a la presente se la receptará exclusivamente a través del aplicativo de alcances a modificaciones correspondiente al dominio: \n\n"+
-"<style isUnderline='true'>https://buscadores.derechosintelectuales.gob.ec/alcancesmodificaciones/login.xhtml</style>\n\n"+
+"<style isUnderline='true'>https://buscadores.derechosintelectuales.gob.ec/alcancesenadi/login.xhtml</style>\n\n"+
 ", que será el único medio válido para responder. "+
 "<style pdfFontName='Times-Bold'>Notifíquese. – "+$P{nombrePersona}+", "+$P{delegacion}+"</style>\n\n"+
 "<style pdfFontName='Times-Bold'>Razón: </style>Siento por tal que el día de hoy, "+
@@ -208,6 +208,11 @@ new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format(new java.util.Date())+", 
 			</textField>
 		</band>
 	</title>
+	<pageHeader>
+		<band height="50">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} > 1]]></printWhenExpression>
+		</band>
+	</pageHeader>
 	<columnHeader>
 		<band height="9" splitType="Stretch"/>
 	</columnHeader>
@@ -313,7 +318,7 @@ new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format(new java.util.Date())+", 
 				<textFieldExpression><![CDATA[$V{parrafo_2}]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="152">
+		<band height="135">
 			<image>
 				<reportElement x="364" y="4" width="121" height="106" uuid="6ace09a7-39ae-427f-ae5d-06e2c5fa2678"/>
 				<imageExpression><![CDATA[$P{SUBREPORT_DIR} + "logo_new.png"]]></imageExpression>
@@ -346,7 +351,7 @@ new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format(new java.util.Date())+", 
 		<band height="15" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="8" splitType="Stretch"/>
+		<band height="57" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
 		<band height="7" splitType="Stretch"/>

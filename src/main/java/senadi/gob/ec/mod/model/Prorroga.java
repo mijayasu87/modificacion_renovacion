@@ -20,8 +20,8 @@ import senadi.gob.ec.mod.ucc.Operaciones;
  * @author Michael Yanangómez
  */
 @Entity
-@Table(name = "notificada")
-public class Notificada implements Serializable {
+@Table(name = "prorroga")
+public class Prorroga implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -149,24 +149,6 @@ public class Notificada implements Serializable {
     @Column(name = "responsable")
     private String responsable;
 
-    @Column(name = "r1")
-    private String r1;
-
-    @Column(name = "r2")
-    private String r2;
-
-    @Column(name = "r3")
-    private String r3;
-
-    @Column(name = "r4")
-    private String r4;
-
-    @Column(name = "r5")
-    private String r5;
-
-    @Column(name = "r6")
-    private String r6;
-
     @Column(name = "identificacion")
     private String identificacion;
 
@@ -199,8 +181,18 @@ public class Notificada implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaPuestaProrroga;
 
+    @Column(name = "fecha_prorroga")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaProrroga;
+
+    @Column(name = "prorroga_notificada")
+    private Boolean prorrogaNotificada;
+
     @Column(name = "dias_prorroga")
     private Integer diasProrroga;
+
+    @Column(name = "numero_prorroga")
+    private Integer numeroProrroga;
 
     @Column(name = "numero_alcance")
     private String numeroAlcance;
@@ -776,90 +768,6 @@ public class Notificada implements Serializable {
     }
 
     /**
-     * @return the r1
-     */
-    public String getR1() {
-        return r1;
-    }
-
-    /**
-     * @param r1 the r1 to set
-     */
-    public void setR1(String r1) {
-        this.r1 = r1;
-    }
-
-    /**
-     * @return the r2
-     */
-    public String getR2() {
-        return r2;
-    }
-
-    /**
-     * @param r2 the r2 to set
-     */
-    public void setR2(String r2) {
-        this.r2 = r2;
-    }
-
-    /**
-     * @return the r3
-     */
-    public String getR3() {
-        return r3;
-    }
-
-    /**
-     * @param r3 the r3 to set
-     */
-    public void setR3(String r3) {
-        this.r3 = r3;
-    }
-
-    /**
-     * @return the r4
-     */
-    public String getR4() {
-        return r4;
-    }
-
-    /**
-     * @param r4 the r4 to set
-     */
-    public void setR4(String r4) {
-        this.r4 = r4;
-    }
-
-    /**
-     * @return the r5
-     */
-    public String getR5() {
-        return r5;
-    }
-
-    /**
-     * @param r5 the r5 to set
-     */
-    public void setR5(String r5) {
-        this.r5 = r5;
-    }
-
-    /**
-     * @return the r6
-     */
-    public String getR6() {
-        return r6;
-    }
-
-    /**
-     * @param r6 the r6 to set
-     */
-    public void setR6(String r6) {
-        this.r6 = r6;
-    }
-
-    /**
      * @return the identificacion
      */
     public String getIdentificacion() {
@@ -1000,6 +908,34 @@ public class Notificada implements Serializable {
     }
 
     /**
+     * @return the fechaProrroga
+     */
+    public Date getFechaProrroga() {
+        return fechaProrroga;
+    }
+
+    /**
+     * @param fechaProrroga the fechaProrroga to set
+     */
+    public void setFechaProrroga(Date fechaProrroga) {
+        this.fechaProrroga = fechaProrroga;
+    }
+
+    /**
+     * @return the prorrogaNotificada
+     */
+    public Boolean getProrrogaNotificada() {
+        return prorrogaNotificada;
+    }
+
+    /**
+     * @param prorrogaNotificada the prorrogaNotificada to set
+     */
+    public void setProrrogaNotificada(Boolean prorrogaNotificada) {
+        this.prorrogaNotificada = prorrogaNotificada;
+    }
+
+    /**
      * @return the diasProrroga
      */
     public Integer getDiasProrroga() {
@@ -1011,6 +947,20 @@ public class Notificada implements Serializable {
      */
     public void setDiasProrroga(Integer diasProrroga) {
         this.diasProrroga = diasProrroga;
+    }
+
+    /**
+     * @return the numeroProrroga
+     */
+    public Integer getNumeroProrroga() {
+        return numeroProrroga;
+    }
+
+    /**
+     * @param numeroProrroga the numeroProrroga to set
+     */
+    public void setNumeroProrroga(Integer numeroProrroga) {
+        this.numeroProrroga = numeroProrroga;
     }
 
     /**
