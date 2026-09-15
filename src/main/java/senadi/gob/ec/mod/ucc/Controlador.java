@@ -345,10 +345,15 @@ public class Controlador {
     public boolean removeAbandono(Abandono abandono) {
         AbandonoDAO ad = new AbandonoDAO(abandono);
         try {
+            if (!ad.getEntityManager().contains(abandono)) {
+                System.out.println("merge abandono");
+                abandono = ad.getEntityManager().merge(abandono);
+                ad = new AbandonoDAO(abandono);
+            }
             ad.remove();
             return true;
         } catch (Exception ex) {
-            System.out.println("Error al remover caducada: " + ex);
+            System.out.println("Error al remover abandono: " + ex);
             return false;
         }
     }
@@ -1361,10 +1366,5 @@ public class Controlador {
     public int getNextNumeroProrroga(Date fecha) {
         ProrrogaDAO pd = new ProrrogaDAO(null);
         return pd.getNextNumeroProrroga(fecha);
-    }
-
-    public List<Notificada> getProrrogasCandidatas() {
-        NotificadaDAO nd = new NotificadaDAO(null);
-        return nd.getProrrogasCandidatas();
     }
 }

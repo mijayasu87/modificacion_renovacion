@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -316,6 +315,25 @@ public class Operaciones {
         return fecha;
     }        
 
+    /**
+     * Los trámites IEPI-XXXX-XXXX cuentan sus plazos en días de corrido
+     * (calendario); los SENADI-XXXX-XXXX en días laborables.
+     */
+    public static boolean esTramiteIepi(String solicitud) {
+        return solicitud != null && solicitud.trim().toUpperCase().startsWith("IEPI");
+    }
+
+    /**
+     * Fecha límite de un plazo según el tipo de trámite: días de corrido para
+     * IEPI y días laborables (sin fines de semana) para SENADI.
+     */
+    public static LocalDate calcularFechaLimiteSegunTramite(String solicitud, Date fechaInicio, int dias) {
+        if (esTramiteIepi(solicitud)) {
+            return fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(dias);
+        }
+        return calcularFechaLimiteExcluyendoFinesSemana(fechaInicio, dias);
+    }
+
     public static LocalDate calcularFechaLimiteExcluyendoFinesSemana(int diasHabiles) {
         LocalDate fecha = LocalDate.now();
         int cont = 0;
@@ -331,4 +349,101 @@ public class Operaciones {
         return fecha;
     }
 
+    private static final String[] UNIDADES = {
+        "", "uno", "dos", "tres", "cuatro", "cinco",
+        "seis", "siete", "ocho", "nueve"
+    };
+
+    private static final String[] DECENAS = {
+        "diez", "once", "doce", "trece", "catorce", "quince",
+        "dieciséis", "diecisiete", "dieciocho", "diecinueve"
+    };
+
+    private static final String[] DIEZ_DIEZ = {
+        "", "", "veinte", "treinta", "cuarenta",
+        "cincuenta", "sesenta", "setenta", "ochenta", "noventa"
+    };
+
+    private static final String[] CENTENAS = {
+        "", "ciento", "doscientos", "trescientos",
+        "cuatrocientos", "quinientos", "seiscientos",
+        "setecientos", "ochocientos", "novecientos"
+    };
+
+    public static String convertir(int numero) {
+
+        if (numero == 0) {
+            return "cero";
+        }
+
+        if (numero < 0) {
+            return "menos " + convertir(-numero);
+        }
+
+        return convertirNumero(numero).trim();
+    }
+
+    public static String convertirNumero(int numero) {
+
+        if (numero < 10) {
+            return UNIDADES[numero];
+        }
+
+        if (numero < 20) {
+            return DECENAS[numero - 10];
+        }
+
+        if (numero < 30) {
+            if (numero == 20) {
+                return "veinte";
+            }
+            return "veinti" + UNIDADES[numero % 10];
+        }
+
+        if (numero < 100) {
+            String texto = DIEZ_DIEZ[numero / 10];
+            if (numero % 10 != 0) {
+                texto += " y " + UNIDADES[numero % 10];
+            }
+            return texto;
+        }
+
+        if (numero == 100) {
+            return "cien";
+        }
+
+        if (numero < 1000) {
+            String texto = CENTENAS[numero / 100];
+            if (numero % 100 != 0) {
+                texto += " " + convertirNumero(numero % 100);
+            }
+            return texto;
+        }
+
+        if (numero < 2000) {
+            return "mil" + (numero % 1000 != 0 ? " " + convertirNumero(numero % 1000) : "");
+        }
+
+        if (numero < 1000000) {
+            String texto = convertirNumero(numero / 1000) + " mil";
+            if (numero % 1000 != 0) {
+                texto += " " + convertirNumero(numero % 1000);
+            }
+            return texto;
+        }
+
+        if (numero < 2000000) {
+            return "un millón" + (numero % 1000000 != 0 ? " " + convertirNumero(numero % 1000000) : "");
+        }
+
+        if (numero < 1000000000) {
+            String texto = convertirNumero(numero / 1000000) + " millones";
+            if (numero % 1000000 != 0) {
+                texto += " " + convertirNumero(numero % 1000000);
+            }
+            return texto;
+        }
+
+        return String.valueOf(numero);
+    }
 }

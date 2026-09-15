@@ -740,6 +740,7 @@ System.out.println("JasperReport compiled: " + jasperReport.getName());
             parametro.put("denosecre", secretaria.getDenominacion());
             parametro.put("SUBREPORT_DIR", path + "/");
             parametro.put("id", prorroga.getId());
+            parametro.put("dias_letras", Operaciones.convertirNumero(prorroga.getDiasProrroga()));
             
             if (resnot.getId() != null) {
                 parametro.put("resolucionnot", resnot.getResolucion() + " de fecha " + Operaciones.formatDateToLarge(resnot.getFecha()));
@@ -782,6 +783,7 @@ System.out.println("JasperReport compiled: " + jasperReport.getName());
             parametro.put("denosecre", secretaria.getDenominacion());
             parametro.put("SUBREPORT_DIR", path + "/");
             parametro.put("id", prorroga.getId());
+            parametro.put("dias_letras", Operaciones.convertirNumero(prorroga.getDiasProrroga()));
             
             if (resnot.getId() != null) {
                 parametro.put("resolucionnot", resnot.getResolucion() + " de fecha " + Operaciones.formatDateToLarge(resnot.getFecha()));

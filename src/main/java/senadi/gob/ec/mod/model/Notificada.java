@@ -195,20 +195,6 @@ public class Notificada implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaPuestaAbandono;
 
-    @Column(name = "fecha_puesta_prorroga")
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date fechaPuestaProrroga;
-
-    @Column(name = "dias_prorroga")
-    private Integer diasProrroga;
-
-    @Column(name = "numero_alcance")
-    private String numeroAlcance;
-
-    @Column(name = "fecha_alcance")
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date fechaAlcance;
-
     /**
      * @return the id
      */
@@ -985,59 +971,4 @@ public class Notificada implements Serializable {
         this.fechaPuestaAbandono = fechaPuestaAbandono;
     }
 
-    /**
-     * @return the fechaPuestaProrroga
-     */
-    public Date getFechaPuestaProrroga() {
-        return fechaPuestaProrroga;
-    }
-
-    /**
-     * @param fechaPuestaProrroga the fechaPuestaProrroga to set
-     */
-    public void setFechaPuestaProrroga(Date fechaPuestaProrroga) {
-        this.fechaPuestaProrroga = fechaPuestaProrroga;
-    }
-
-    /**
-     * @return the diasProrroga
-     */
-    public Integer getDiasProrroga() {
-        return diasProrroga;
-    }
-
-    /**
-     * @param diasProrroga the diasProrroga to set
-     */
-    public void setDiasProrroga(Integer diasProrroga) {
-        this.diasProrroga = diasProrroga;
-    }
-
-    /**
-     * @return the numeroAlcance
-     */
-    public String getNumeroAlcance() {
-        return numeroAlcance;
-    }
-
-    /**
-     * @param numeroAlcance the numeroAlcance to set
-     */
-    public void setNumeroAlcance(String numeroAlcance) {
-        this.numeroAlcance = numeroAlcance;
-    }
-
-    /**
-     * @return the fechaAlcance
-     */
-    public Date getFechaAlcance() {
-        return fechaAlcance;
-    }
-
-    /**
-     * @param fechaAlcance the fechaAlcance to set
-     */
-    public void setFechaAlcance(Date fechaAlcance) {
-        this.fechaAlcance = fechaAlcance;
-    }
 }

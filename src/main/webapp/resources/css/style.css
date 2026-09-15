@@ -580,6 +580,38 @@ body .ui-panel .ui-panel-content {
     background: #fff3e0 !important;
 }
 
+.row-prorroga-vencida {
+    border: solid #e53935 !important;
+    background: #ffebee !important;
+}
+
+/* Etiqueta de la columna "Plazo" de la pestaña PRÓRROGAS */
+.plazo-vigente, .plazo-porvencer, .plazo-vencido, .plazo-sin {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px !important;
+    font-weight: bold;
+    color: #fff !important;
+    white-space: nowrap;
+}
+
+.plazo-vigente {
+    background: #2e7d32 !important;
+}
+
+.plazo-porvencer {
+    background: #ef6c00 !important;
+}
+
+.plazo-vencido {
+    background: #c62828 !important;
+}
+
+.plazo-sin {
+    background: #757575 !important;
+}
+
 /* === Refinamiento visual del diálogo dlgNuevoN === */
 .dlg-nuevo-n.ui-dialog .ui-dialog-titlebar {
     background: linear-gradient(90deg, #0293C3 0%, #45B8FF 100%) !important;

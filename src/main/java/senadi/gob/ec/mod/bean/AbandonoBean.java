@@ -22,6 +22,7 @@ import senadi.gob.ec.mod.model.Abandono;
 import senadi.gob.ec.mod.model.Documento;
 import senadi.gob.ec.mod.model.Historial;
 import senadi.gob.ec.mod.model.Notificada;
+import senadi.gob.ec.mod.model.Prorroga;
 import senadi.gob.ec.mod.model.iepdep.HallmarkForms;
 import senadi.gob.ec.mod.model.iepform.ModificacionApp;
 import senadi.gob.ec.mod.model.iepform.Person;
@@ -90,6 +91,8 @@ public class AbandonoBean implements Serializable {
     private String rutaNotificacionCasillero;
 
     private boolean paraEnviar;
+
+    private Integer diasProrroga;
 
     public AbandonoBean() {
         loadAbandonos();
@@ -652,6 +655,111 @@ public class AbandonoBean implements Serializable {
         }
     }
 
+    /**
+     * Abre el diálogo de "PARA PRÓRROGA" con los abandonos seleccionados. No se
+     * valida la notificación: los trámites llegan a abandonos ya notificados.
+     */
+    public void prepararParaProrrogas() {
+        FacesMessage msg = null;
+        if (selectedAbandonos == null || selectedAbandonos.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "DEBE SELECCIONAR AL MENOS UN REGISTRO DE LA TABLA");
+        } else {
+            diasProrroga = 10;
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "TRÁMITES CARGADOS");
+            PrimeFaces.current().ajax().addCallbackParam("proit", true);
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    /**
+     * Pasa los abandonos seleccionados al estado de PRÓRROGA: copia cada
+     * registro a la tabla `prorroga` (con la fecha de puesta en prórroga y los
+     * días de plazo, para el conteo y la alerta de vencimiento) y lo elimina de
+     * abandonos.
+     */
+    public void paraProrrogas(ActionEvent ae) {
+        FacesMessage msg = null;
+        if (selectedAbandonos == null || selectedAbandonos.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "DEBE SELECCIONAR AL MENOS UN REGISTRO DE LA TABLA");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        if (diasProrroga == null || diasProrroga <= 0) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "INGRESE UN NÚMERO DE DÍAS DE PRÓRROGA VÁLIDO");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        Controlador c = new Controlador();
+        int n = 0;
+        for (int i = 0; i < selectedAbandonos.size(); i++) {
+            Abandono abanaux = selectedAbandonos.get(i);
+            Prorroga proaux = c.getProrrogaBySolicitud(abanaux.getSolicitud());
+            if (proaux.getId() != null) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "EXISTENCIA", "YA EXISTE UNA PRÓRROGA CON LA SOLICITUD " + abanaux.getSolicitud());
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+
+            Prorroga p = new Prorroga();
+            p.setSolicitud(abanaux.getSolicitud().toUpperCase());
+            p.setFechaPresentacion(abanaux.getFechaPresentacion());
+            p.setNoComprobantePresentSolic(abanaux.getComprobante());
+            if (abanaux.getCertificado() != null) {
+                p.setNoComprobanteEmisionCert(abanaux.getCertificado() + "");
+            }
+            p.setNotificacion(abanaux.getNotificacion());
+            p.setFechaCertificado(abanaux.getFechaCertificado());
+            p.setRegistroNo(abanaux.getRegistro());
+            p.setFechaRegistro(abanaux.getFechaRegistro());
+            p.setFechaVenceRegistro(abanaux.getFechaVencimiento());
+            p.setDenominacion(abanaux.getDenominacion());
+            p.setSigno(abanaux.getSigno());
+            p.setTitularActual(abanaux.getTitularActual());
+            p.setApeApodRepre(abanaux.getApeApodRepre());
+            p.setFechaElaboraNotificacion(abanaux.getFechaElaboraNotificacion());
+            p.setFechaNotifica(abanaux.getFechaNotificacion());
+            p.setCasilleroSenadi(abanaux.getCasilleroSenadi());
+            p.setCasilleroJudicial(abanaux.getCasilleroJudicial());
+            p.setRo(abanaux.getRo());
+            p.setResponsable(abanaux.getResponsable());
+            p.setIdentificacion(abanaux.getIdentificacion());
+            p.setNotificacionEmitida(abanaux.isNotificacionEmitida());
+            p.setCertificadoEmitido(abanaux.isCertificadoEmitido());
+            p.setCancelado(abanaux.getCancelado());
+            p.setSolicitante(abanaux.getSolicitante());
+            p.setTipoAbandono(abanaux.getTipoAbandono());
+            // Datos propios de la prórroga
+            p.setFechaPuestaProrroga(new Date());
+            p.setDiasProrroga(diasProrroga);
+            p.setNumeroAlcance(abanaux.getNumeroAlcance());
+            p.setFechaAlcance(abanaux.getFechaAlcance());
+            p.setFechaProrroga(new Date());
+            p.setNumeroProrroga(c.getNextNumeroProrroga(p.getFechaProrroga()));
+            p.setProrrogaNotificada(false);
+
+            if (!c.saveProrroga(p)) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "NO SE PUDO PASAR A PRÓRROGA EL TRÁMITE " + abanaux.getSolicitud());
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+            if (!c.removeAbandono(abanaux)) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "NO SE PUDO REMOVER DE ABANDONOS EL TRÁMITE " + abanaux.getSolicitud());
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+            c.saveHistorial("PRORROGA", "ABANDONO", p.getSolicitud(), "PASADO A PRÓRROGA (" + diasProrroga + " DÍAS)", 0, loginBean.getLogin());
+            n++;
+        }
+        if (n > 0) {
+            loadAbandonos();
+            PrimeFaces.current().ajax().addCallbackParam("proit", true);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "SE HA PASADO A PRÓRROGA " + n + " TRÁMITE(S); REVISE LA PESTAÑA 'PRÓRROGAS'");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "HUBO UN PROBLEMA AL PASAR LOS TRÁMITES A PRÓRROGA, CONSULTE AL ADMINISTRADOR DEL SISTEMA");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
     public void onTipoAbandonoSelectedListener() {
         System.out.println(estadoTemp);
         if (estadoTemp != null && estadoTemp.equals("NOTIFICADAS")) {
@@ -1065,5 +1173,19 @@ public class AbandonoBean implements Serializable {
      */
     public void setParaEnviar(boolean paraEnviar) {
         this.paraEnviar = paraEnviar;
+    }
+
+    /**
+     * @return the diasProrroga
+     */
+    public Integer getDiasProrroga() {
+        return diasProrroga;
+    }
+
+    /**
+     * @param diasProrroga the diasProrroga to set
+     */
+    public void setDiasProrroga(Integer diasProrroga) {
+        this.diasProrroga = diasProrroga;
     }
 }

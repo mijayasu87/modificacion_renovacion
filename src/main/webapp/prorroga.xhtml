@@ -4,6 +4,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{prorrogaBean.alertaVencidas}"/>
+    </f:metadata>
     <h:head>
         <title>PRÓRROGAS-RENOVACIONES</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -35,10 +38,10 @@
                 </p:commandLink>
             </div>
             <a class="itemm" href="settings.xhtml" title="Configuración" style="display:  #{loginBean.usuarioConsulta eq true?'none':'inline-block'}"><i class="material-icons" >settings</i></a>
-            <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
-            <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
-            <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
             <a class="activo" href="#" title="Prórrogas" >PRÓRROGAS</a>
+            <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>            
+            <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
+            <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>            
             <a class="itemm" href="notificadas.xhtml" title="Notificadas" >NOTIFICADAS</a>            
             <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
         </div>
@@ -71,6 +74,13 @@
                         </p:tab>
                     </p:tabView>
 
+                    <div style="float: right; font-weight: bold; margin-top: -20px; margin-left: 5px; border: solid #ff9800; background: #fff3e0; padding: 3px" >EN PLAZO</div>
+                    <div style="float: right; font-weight: bold; margin-top: -20px; margin-left: 5px; border: solid #e53935; background: #ffebee; padding: 3px" >PLAZO VENCIDO</div>
+                    <br/>
+                    <p:outputLabel value="#{prorrogaBean.numeroVencidas} TRÁMITE(S) CON EL PLAZO DE PRÓRROGA VENCIDO"
+                                   rendered="#{prorrogaBean.numeroVencidas gt 0}"
+                                   style="float: right; font-size: 12px; font-weight: bold; color: #c62828; margin-top: 8px"/>
+
                     <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
                     <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
                         <p:graphicImage name="/images/ajax-loader.gif" />
@@ -88,6 +98,7 @@
                                  rowsPerPageTemplate="20,50,100,150,200,250,300"
                                  selection="#{prorrogaBean.selectedProrrogas}"
                                  style="font-size: 9px !important;"
+                                 rowStyleClass="#{prorrogaBean.getEstiloFila(prorroga)}"
                                  rowKey="#{prorroga.id}">
 
                         <f:facet name="header">
@@ -119,6 +130,18 @@
                             <h:outputText value="#{prorroga.fechaProrroga}" >
                                 <f:convertDateTime pattern="yyyy-MM-dd" />
                             </h:outputText>
+                        </p:column>
+                        <p:column headerText="F. Inicio Plazo" style="text-align: center;" filterBy="#{prorroga.fechaPuestaProrroga}" >
+                            <h:outputText value="#{prorroga.fechaPuestaProrroga}" title="#{prorrogaBean.getTooltipProrroga(prorroga)}" >
+                                <f:convertDateTime pattern="yyyy-MM-dd" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Días" style="text-align: center;" filterBy="#{prorroga.diasProrroga}" >
+                            <h:outputText value="#{prorrogaBean.getDiasTexto(prorroga)}" title="#{prorrogaBean.getTooltipProrroga(prorroga)}"/>
+                        </p:column>
+                        <p:column headerText="Plazo" style="text-align: center; width: 110px" >
+                            <h:outputText value="#{prorrogaBean.getEstadoPlazo(prorroga)}" title="#{prorrogaBean.getTooltipProrroga(prorroga)}"
+                                          styleClass="#{prorrogaBean.getClasePlazo(prorroga)}"/>
                         </p:column>
                         <p:column headerText="Escrito No." style="text-align: center;" filterBy="#{prorroga.numeroAlcance}" >
                             <h:outputText value="#{prorroga.numeroAlcance}" />
@@ -277,8 +300,9 @@
                         <p:selectOneMenu id="estadoRegistro" style="margin-right: 20px"
                                          value="#{prorrogaBean.estadoTemp}">
                             <f:selectItem itemLabel="Seleccionar..." itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="CERTIFICADOS (RENOVACIONES)" itemValue="RENOVACIONES"/>
                             <f:selectItem itemLabel="NOTIFICADAS" itemValue="NOTIFICADAS"/>
-                            <f:selectItem itemLabel="RENOVACIONES" itemValue="RENOVACIONES"/>
+                            <f:selectItem itemLabel="ABANDONO" itemValue="ABANDONO"/>
                             <p:ajax event="itemSelect" update="mensajes frmNuevaT:guardarBtn" listener="#{prorrogaBean.onEstadoSelectedListener}" />
                         </p:selectOneMenu>
 

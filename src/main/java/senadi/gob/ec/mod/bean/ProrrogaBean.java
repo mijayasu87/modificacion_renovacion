@@ -5,6 +5,8 @@
 package senadi.gob.ec.mod.bean;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,7 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.api.UIData;
+import senadi.gob.ec.mod.model.Abandono;
 import senadi.gob.ec.mod.model.Documento;
 import senadi.gob.ec.mod.model.Historial;
 import senadi.gob.ec.mod.model.Notificada;
@@ -160,11 +163,13 @@ public class ProrrogaBean implements Serializable {
         if (prorroga != null && prorroga.getId() != null) {
             Controlador c = new Controlador();
             if (estadoTemp != null && !estadoTemp.trim().isEmpty()) {
-                // Transferir la prórroga a otra pestaña (NOTIFICADAS / RENOVACIONES)
+                // Transferir la prórroga a otra pestaña (NOTIFICADAS / RENOVACIONES / ABANDONO)
                 if (estadoTemp.equals("NOTIFICADAS")) {
                     pasarANotificadas(c);
                 } else if (estadoTemp.equals("RENOVACIONES")) {
                     pasarARenovaciones(c);
+                } else if (estadoTemp.equals("ABANDONO")) {
+                    pasarAAbandonos(c);
                 } else {
                     msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "SELECCIONE UN ESTADO VÁLIDO");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -312,6 +317,198 @@ public class ProrrogaBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "HUBO UN ERROR AL PASAR LA PRÓRROGA A RENOVACIONES");
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    /**
+     * Pasa la prórroga en edición a la pestaña ABANDONO (vencido el plazo, el
+     * analista puede remitir el trámite a abandonos).
+     */
+    private void pasarAAbandonos(Controlador c) {
+        FacesMessage msg;
+        if (c.validarExistenciaAbandono(prorroga.getSolicitud())) {
+            PrimeFaces.current().ajax().addCallbackParam("saved", false);
+            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "EXISTENCIA", "Ya existe un trámite en abandonos con el mismo número de solicitud");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
+        Abandono a = new Abandono();
+        a.setSolicitud(prorroga.getSolicitud().toUpperCase());
+        a.setFechaPresentacion(prorroga.getFechaPresentacion());
+        a.setFechaAbandono(new Date());
+        a.setNumeroAbandono(c.getNextNumeroAbandono(a.getFechaAbandono()));
+        a.setNotificacion(prorroga.getNotificacion());
+        a.setFechaElaboraNotificacion(prorroga.getFechaElaboraNotificacion());
+        a.setFechaNotificacion(prorroga.getFechaNotifica());
+        a.setRegistro(prorroga.getRegistroNo());
+        a.setFechaRegistro(prorroga.getFechaRegistro());
+        a.setFechaVencimiento(prorroga.getFechaVenceRegistro());
+        a.setDenominacion(prorroga.getDenominacion());
+        a.setSigno(prorroga.getSigno());
+        a.setTitularActual(prorroga.getTitularActual());
+        a.setApeApodRepre(prorroga.getApeApodRepre());
+        a.setCasilleroSenadi(prorroga.getCasilleroSenadi());
+        a.setCasilleroJudicial(prorroga.getCasilleroJudicial());
+        a.setRo(prorroga.getRo());
+        a.setResponsable(prorroga.getResponsable());
+        a.setIdentificacion(prorroga.getIdentificacion());
+        a.setComprobante(prorroga.getNoComprobantePresentSolic());
+        if (prorroga.getNoComprobanteEmisionCert() != null && !prorroga.getNoComprobanteEmisionCert().trim().isEmpty()) {
+            try {
+                a.setCertificado(Integer.valueOf(prorroga.getNoComprobanteEmisionCert().trim()));
+            } catch (NumberFormatException ex) {
+                System.out.println("No. de comprobante de emisión de certificado no numérico: " + prorroga.getNoComprobanteEmisionCert());
+            }
+        }
+        a.setFechaCertificado(prorroga.getFechaCertificado());
+        a.setCertificadoEmitido(prorroga.isCertificadoEmitido());
+        a.setNotificacionEmitida(prorroga.isNotificacionEmitida());
+        a.setCancelado(prorroga.getCancelado());
+        a.setSolicitante(prorroga.getSolicitante());
+        a.setTipoAbandono(prorroga.getTipoAbandono());
+
+        if (c.saveAbandono(a) && c.removeProrroga(prorroga)) {
+            c.saveHistorial("ABANDONO", "PRORROGA", a.getSolicitud(), "PASADO A", 0, loginBean.getLogin());
+            loadProrrogas();
+            PrimeFaces.current().ajax().addCallbackParam("saved", true);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "EDITADO", "TRANSFERENCIA DE DATOS SATISFACTORIA");
+        } else {
+            PrimeFaces.current().ajax().addCallbackParam("saved", false);
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "HUBO UN ERROR AL PASAR LA PRÓRROGA A ABANDONO");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    // ======================= plazo de la prórroga / alerta =======================
+    /**
+     * Fecha en la que vence el plazo de la prórroga, contado desde que el
+     * trámite pasó a prórroga: en días laborables si es SENADI y en días de
+     * corrido si es IEPI.
+     */
+    public LocalDate getFechaLimite(Prorroga p) {
+        if (p == null || p.getFechaPuestaProrroga() == null || p.getDiasProrroga() == null) {
+            return null;
+        }
+        return Operaciones.calcularFechaLimiteSegunTramite(p.getSolicitud(), p.getFechaPuestaProrroga(), p.getDiasProrroga());
+    }
+
+    /**
+     * Tipo de conteo del plazo según el trámite: "DE CORRIDO" para IEPI y
+     * "LABORABLES" para SENADI.
+     */
+    public String getTipoConteo(Prorroga p) {
+        return p != null && Operaciones.esTramiteIepi(p.getSolicitud()) ? "DE CORRIDO" : "LABORABLES";
+    }
+
+    /**
+     * Días del plazo con el tipo de conteo, para la columna "Días".
+     */
+    public String getDiasTexto(Prorroga p) {
+        if (p == null || p.getDiasProrroga() == null) {
+            return "";
+        }
+        return p.getDiasProrroga() + " " + getTipoConteo(p).toLowerCase();
+    }
+
+    /**
+     * Días que faltan para que venza el plazo (negativo si ya venció); null si
+     * el trámite no tiene plazo configurado.
+     */
+    public Long getDiasRestantes(Prorroga p) {
+        LocalDate limite = getFechaLimite(p);
+        if (limite == null) {
+            return null;
+        }
+        return ChronoUnit.DAYS.between(LocalDate.now(), limite);
+    }
+
+    public boolean isVencida(Prorroga p) {
+        Long faltan = getDiasRestantes(p);
+        return faltan != null && faltan < 0;
+    }
+
+    /**
+     * Texto del estado del plazo que se muestra en la columna "Plazo".
+     */
+    public String getEstadoPlazo(Prorroga p) {
+        Long faltan = getDiasRestantes(p);
+        if (faltan == null) {
+            return "SIN PLAZO";
+        }
+        if (faltan > 0) {
+            return "FALTAN " + faltan + " DÍAS";
+        }
+        if (faltan == 0) {
+            return "VENCE HOY";
+        }
+        return "VENCIDA HACE " + Math.abs(faltan) + " DÍAS";
+    }
+
+    public String getTooltipProrroga(Prorroga p) {
+        Long faltan = getDiasRestantes(p);
+        if (faltan == null) {
+            return "El trámite " + (p != null ? p.getSolicitud() : "") + " no tiene plazo de prórroga configurado";
+        }
+        if (faltan >= 0) {
+            return "Faltan " + faltan + " días para que venza la prórroga del trámite " + p.getSolicitud()
+                    + " (plazo de " + p.getDiasProrroga() + " días " + getTipoConteo(p).toLowerCase()
+                    + ", vence el " + getFechaLimite(p) + ")";
+        }
+        return "La prórroga del trámite " + p.getSolicitud() + " venció hace " + Math.abs(faltan)
+                + " días (el " + getFechaLimite(p) + ", plazo de " + p.getDiasProrroga() + " días "
+                + getTipoConteo(p).toLowerCase() + "); revise el expediente y remítalo a CERTIFICADOS, NOTIFICADAS o ABANDONO";
+    }
+
+    /**
+     * Clase CSS de la fila: ámbar mientras el plazo corre, rojo si ya venció.
+     */
+    public String getEstiloFila(Prorroga p) {
+        Long faltan = getDiasRestantes(p);
+        if (faltan == null) {
+            return "";
+        }
+        return faltan < 0 ? "row-prorroga-vencida" : "row-prorroga";
+    }
+
+    /**
+     * Clase CSS de la etiqueta de la columna "Plazo": verde si hay holgura,
+     * naranja cuando está por vencer (2 días o menos) y rojo si ya venció.
+     */
+    public String getClasePlazo(Prorroga p) {
+        Long faltan = getDiasRestantes(p);
+        if (faltan == null) {
+            return "plazo-sin";
+        }
+        if (faltan < 0) {
+            return "plazo-vencido";
+        }
+        return faltan <= 2 ? "plazo-porvencer" : "plazo-vigente";
+    }
+
+    public int getNumeroVencidas() {
+        int vencidas = 0;
+        if (prorrogas != null) {
+            for (Prorroga p : prorrogas) {
+                if (isVencida(p)) {
+                    vencidas++;
+                }
+            }
+        }
+        return vencidas;
+    }
+
+    /**
+     * Alerta que se muestra al abrir la pestaña con los trámites cuyo plazo de
+     * prórroga ya venció.
+     */
+    public void alertaVencidas() {
+        if (FacesContext.getCurrentInstance().isPostback()) {
+            return;
+        }
+        int vencidas = getNumeroVencidas();
+        if (vencidas > 0) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "ALERTA",
+                    vencidas + " TRÁMITE(S) CON EL PLAZO DE PRÓRROGA VENCIDO; REVISE EL EXPEDIENTE Y REMÍTALO A CERTIFICADOS, NOTIFICADAS O ABANDONO"));
+        }
     }
 
     public void onEstadoSelectedListener() {

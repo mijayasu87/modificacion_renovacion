@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ProrrogaReport" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b2c1d3e4-f5a6-47b8-9c0d-1e2f3a4b5c6d">
 	<property name="ireport.zoom" value="1.7715610000000013"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="144"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="nombrePersona" class="java.lang.String"/>
 	<parameter name="delegacion" class="java.lang.String"/>
@@ -10,6 +10,7 @@
 	<parameter name="secretaria" class="java.lang.String"/>
 	<parameter name="denosecre" class="java.lang.String"/>
 	<parameter name="resolucionnot" class="java.lang.String"/>
+	<parameter name="dias_letras" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
     a.*
@@ -62,11 +63,12 @@ new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_prorroga})+
 	<variable name="parrafo_2" class="java.lang.String">
 		<variableExpression><![CDATA["Dentro del trámite Nro. "+$F{solicitud_senadi}+", se agrega al expediente administrativo el escrito No. "+$F{numero_alcance}+", "+
 "de fecha "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_alcance})+",  respecto de la solicitud de "+
-"ampliación al término otorgado.\n\n"+
-"Esta autoridad, al amparo de lo dispuesto en el art. 161 del Código Orgánico Administrativo, y encontrándose dentro del "+
+"ampliación al "+($F{solicitud_senadi}.contains("SENADI")?"término":"plazo")+" otorgado.\n\n"+
+"Esta autoridad, al amparo de lo dispuesto en el art. "+($F{solicitud_senadi}.contains("SENADI")?"161 del Código Orgánico Administrativo":
+"119 del Estatuto del Régimen Jurídico Administrativo de la Función Ejecutiva")+", y encontrándose dentro del "+
 "término que se encuentra recurriendo, procede a amplicar el mismo, que fue otorgado mediante Notificación No. "+
 $F{notificacion}+" notificada el "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format($F{fecha_notifica})+"; "+
-"esto es, el término de cinco (5) días.\n"]]></variableExpression>
+"esto es, el "+($F{solicitud_senadi}.contains("SENADI")?"término":"plazo")+" de "+$P{dias_letras}+" ("+$F{dias_prorroga}+") días.\n"]]></variableExpression>
 	</variable>
 	<variable name="parrafo_3" class="java.lang.String">
 		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>Notifíquese.- </style> "+$P{nombrePersona}+", "+
@@ -76,7 +78,7 @@ $F{notificacion}+" notificada el "+new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy
 		<variableExpression><![CDATA["<style pdfFontName='Times-Bold'>RAZÓN.-</style> Siento por tal que el día de hoy "+
 new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy").format(new java.util.Date())+ ", notifiqué "+
 "con la resolución que antecede a "+$F{solicitante}+", en el casillero virtual Nro. "+$F{casillero_senadi}+
-"correspondiente a su apoderado/a "+$F{ape_apod_repre}+".- lo que certifico por delegación de la directora "+
+" correspondiente a su apoderado/a "+$F{ape_apod_repre}+".- lo que certifico por delegación de la directora "+
 "general del Servicio Nacional de Derechos Intelectuales, conferido mediante Resolución Nro. "+$P{resolucionnot}+"."]]></variableExpression>
 	</variable>
 	<background>

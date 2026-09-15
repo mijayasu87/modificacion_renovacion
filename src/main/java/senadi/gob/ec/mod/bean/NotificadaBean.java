@@ -27,7 +27,6 @@ import senadi.gob.ec.mod.model.Caducada;
 import senadi.gob.ec.mod.model.Desistida;
 import senadi.gob.ec.mod.model.Historial;
 import senadi.gob.ec.mod.model.Notificada;
-import senadi.gob.ec.mod.model.Prorroga;
 import senadi.gob.ec.mod.model.Renovacion;
 import senadi.gob.ec.mod.model.UploadNotificacion;
 import senadi.gob.ec.mod.model.iepdep.HallmarkForms;
@@ -92,8 +91,6 @@ public class NotificadaBean implements Serializable {
     private Date fechaPuestaAbandono;
 
     private String tipoAbandono;
-
-    private Integer diasProrroga;
 
     private boolean forzarCancelado;
     private String mensajeCancelado;
@@ -1012,14 +1009,9 @@ public class NotificadaBean implements Serializable {
             abandonosS = true;
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "DEBE SELECCIONAR AL MENOS UN REGISTRO DE LA TABLA");
         } else {
-            String enProrroga = getSolicitudesParaProrroga();
-            if (!enProrroga.trim().isEmpty()) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL/LOS TRÁMITE(S) " + enProrroga + " ESTÁ(N) PARA PRÓRROGA, NO SE PUEDE(N) PASAR A ABANDONO");
-            } else {
-                abandonosS = false;
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "TRÁMITES CARGADOS");
-                PrimeFaces.current().ajax().addCallbackParam("abait", true);
-            }
+            abandonosS = false;
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "TRÁMITES CARGADOS");
+            PrimeFaces.current().ajax().addCallbackParam("abait", true);
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
@@ -1030,139 +1022,10 @@ public class NotificadaBean implements Serializable {
             abandonosS = true;
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "DEBE SELECCIONAR AL MENOS UN REGISTRO DE LA TABLA");
         } else {
-            String enProrroga = getSolicitudesParaProrroga();
-            if (!enProrroga.trim().isEmpty()) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL/LOS TRÁMITE(S) " + enProrroga + " ESTÁ(N) PARA PRÓRROGA, NO SE PUEDE(N) ESTABLECER PARA ABANDONO");
-            } else {
-                abandonosS = false;
-                fechaPuestaAbandono = new Date();
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "TRÁMITES CARGADOS");
-                PrimeFaces.current().ajax().addCallbackParam("abait", true);
-            }
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-
-    /**
-     * Devuelve, separadas por coma, las solicitudes seleccionadas que ya están
-     * marcadas para prórroga (fechaPuestaProrroga != null).
-     */
-    public String getSolicitudesParaProrroga() {
-        StringBuilder sb = new StringBuilder();
-        if (selectedNotificadas != null) {
-            for (Notificada n : selectedNotificadas) {
-                if (n.getFechaPuestaProrroga() != null) {
-                    if (sb.length() > 0) {
-                        sb.append(", ");
-                    }
-                    sb.append(n.getSolicitud());
-                }
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Devuelve, separadas por coma, las solicitudes seleccionadas que ya están
-     * marcadas para abandono (fechaPuestaAbandono != null).
-     */
-    public String getSolicitudesParaAbandono() {
-        StringBuilder sb = new StringBuilder();
-        if (selectedNotificadas != null) {
-            for (Notificada n : selectedNotificadas) {
-                if (n.getFechaPuestaAbandono() != null) {
-                    if (sb.length() > 0) {
-                        sb.append(", ");
-                    }
-                    sb.append(n.getSolicitud());
-                }
-            }
-        }
-        return sb.toString();
-    }
-
-    public void prepararParaProrrogas() {
-        FacesMessage msg = null;
-        if (selectedNotificadas.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "DEBE SELECCIONAR AL MENOS UN REGISTRO DE LA TABLA");
-        } else {
-            // Todos deben estar emitidos/notificados
-            StringBuilder noEmitidos = new StringBuilder();
-            for (Notificada n : selectedNotificadas) {
-                if (!n.isNotificacionEmitida()) {
-                    if (noEmitidos.length() > 0) {
-                        noEmitidos.append(", ");
-                    }
-                    noEmitidos.append(n.getSolicitud());
-                }
-            }
-            if (noEmitidos.length() > 0) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "SOLO SE PUEDE PONER PARA PRÓRROGA TRÁMITES NOTIFICADOS/EMITIDOS. NO EMITIDOS: " + noEmitidos.toString());
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                return;
-            }
-            // Exclusión mutua con abandono
-            String enAbandono = getSolicitudesParaAbandono();
-            if (!enAbandono.trim().isEmpty()) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "EL/LOS TRÁMITE(S) " + enAbandono + " ESTÁ(N) PARA ABANDONO, NO SE PUEDE(N) ESTABLECER PARA PRÓRROGA");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                return;
-            }
-            // Aviso si alguno ya estaba para prórroga (se actualizarán los días)
-            String enProrroga = getSolicitudesParaProrroga();
-            if (!enProrroga.trim().isEmpty()) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "EL/LOS TRÁMITE(S) " + enProrroga + " YA ESTABA(N) PARA PRÓRROGA, SE ACTUALIZARÁN LOS DÍAS");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-            }
-            diasProrroga = 10;
-            PrimeFaces.current().ajax().addCallbackParam("proit", true);
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-
-    public void paraProrrogas(ActionEvent ae) {
-        FacesMessage msg = null;
-        if (!selectedNotificadas.isEmpty()) {
-            if (diasProrroga != null && diasProrroga > 0) {
-                Controlador c = new Controlador();
-                int n = 0;
-                for (int i = 0; i < selectedNotificadas.size(); i++) {
-                    Notificada notaux = selectedNotificadas.get(i);
-                    // Red de seguridad: emitido y no en abandono
-                    if (!notaux.isNotificacionEmitida()) {
-                        msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "EL TRÁMITE " + notaux.getSolicitud() + " NO ESTÁ NOTIFICADO/EMITIDO");
-                        FacesContext.getCurrentInstance().addMessage(null, msg);
-                        return;
-                    }
-                    if (notaux.getFechaPuestaAbandono() != null) {
-                        msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "EL TRÁMITE " + notaux.getSolicitud() + " ESTÁ PARA ABANDONO, NO SE PUEDE PARA PRÓRROGA");
-                        FacesContext.getCurrentInstance().addMessage(null, msg);
-                        return;
-                    }
-                    notaux.setFechaPuestaProrroga(new Date());
-                    notaux.setDiasProrroga(diasProrroga);
-                    // numeroAlcance y fechaAlcance se bindean por fila en el diálogo
-                    if (!c.updateNotificada(notaux)) {
-                        msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "NO SE PUDO ESTABLECER PARA PRÓRROGA A " + notaux.getSolicitud());
-                        FacesContext.getCurrentInstance().addMessage(null, msg);
-                        return;
-                    } else {
-                        c.saveHistorial("NOTIFICADAS", "NOTIFICADAS", notaux.getSolicitud(), "PARA PRÓRROGA (" + diasProrroga + " DÍAS)", 0, loginBean.getLogin());
-                        n++;
-                    }
-                }
-                if (n > 0) {
-                    loadNotificadas();
-                    PrimeFaces.current().ajax().addCallbackParam("proit", true);
-                    msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "SE HA ESTABLECIDO SATISFACTORIAMENTE LOS NOTIFICADOS SELECCIONADOS PARA PRÓRROGA");
-                } else {
-                    msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "HUBO UN PROBLEMA AL GUARDAR LAS PRÓRROGAS, CONSULTE AL ADMINISTRADOR DEL SISTEMA");
-                }
-            } else {
-                msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "INGRESE UN NÚMERO DE DÍAS DE PRÓRROGA VÁLIDO");
-            }
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "AVISO", "DEBE SELECCIONAR AL MENOS UN REGISTRO DE LA TABLA");
+            abandonosS = false;
+            fechaPuestaAbandono = new Date();
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", "TRÁMITES CARGADOS");
+            PrimeFaces.current().ajax().addCallbackParam("abait", true);
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
@@ -1176,11 +1039,6 @@ public class NotificadaBean implements Serializable {
                 for (int i = 0; i < selectedNotificadas.size(); i++) {
                     System.out.println(selectedNotificadas.get(i).getSolicitud());
                     Notificada notaux = selectedNotificadas.get(i);
-                    if (notaux.getFechaPuestaProrroga() != null) {
-                        msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "EL TRÁMITE " + notaux.getSolicitud() + " ESTÁ PARA PRÓRROGA, NO SE PUEDE PASAR A ABANDONO");
-                        FacesContext.getCurrentInstance().addMessage(null, msg);
-                        return;
-                    }
                     Abandono abandono = new Abandono();
                     abandono.setSolicitud(notaux.getSolicitud().toUpperCase());
                     abandono.setFechaPresentacion(notaux.getFechaPresentacion());
@@ -1247,11 +1105,6 @@ public class NotificadaBean implements Serializable {
                     int n = 0;
                     for (int i = 0; i < selectedNotificadas.size(); i++) {
                         Notificada notaux = selectedNotificadas.get(i);
-                        if (notaux.getFechaPuestaProrroga() != null) {
-                            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "EL TRÁMITE " + notaux.getSolicitud() + " ESTÁ PARA PRÓRROGA, NO SE PUEDE ESTABLECER PARA ABANDONO");
-                            FacesContext.getCurrentInstance().addMessage(null, msg);
-                            return;
-                        }
                         notaux.setTipoAbandono(tipoAbandono);
                         notaux.setFechaPuestaAbandono(fechaPuestaAbandono);
                         if (!c.updateNotificada(notaux)) {
@@ -1284,13 +1137,6 @@ public class NotificadaBean implements Serializable {
     }
 
     public String getTooltipAbandono(Notificada noti) {
-        if (noti.getFechaPuestaProrroga() != null && noti.getDiasProrroga() != null) {
-            LocalDate limite = Operaciones.calcularFechaLimiteExcluyendoFinesSemana(noti.getFechaPuestaProrroga(), noti.getDiasProrroga());
-            long faltan = ChronoUnit.DAYS.between(LocalDate.now(), limite);
-            return faltan >= 0
-                    ? "Faltan " + faltan + " días para pasar el trámite " + noti.getSolicitud() + " a prórroga"
-                    : "La prórroga del trámite " + noti.getSolicitud() + " ya venció hace " + Math.abs(faltan) + " días";
-        }
         if (noti.getFechaPuestaAbandono() == null || noti.getTipoAbandono() == null) {
             return "";
         }
@@ -1334,20 +1180,6 @@ public class NotificadaBean implements Serializable {
 
     public void setMensajeCancelado(String mensajeCancelado) {
         this.mensajeCancelado = mensajeCancelado;
-    }
-
-    /**
-     * @return the diasProrroga
-     */
-    public Integer getDiasProrroga() {
-        return diasProrroga;
-    }
-
-    /**
-     * @param diasProrroga the diasProrroga to set
-     */
-    public void setDiasProrroga(Integer diasProrroga) {
-        this.diasProrroga = diasProrroga;
     }
 
     /**

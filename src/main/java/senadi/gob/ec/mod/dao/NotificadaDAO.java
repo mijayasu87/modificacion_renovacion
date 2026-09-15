@@ -120,10 +120,4 @@ public class NotificadaDAO extends DAOAbstract<Notificada>{
         query.setHint("javax.persistence.cache.storeMode", "REFRESH");
         return query.getResultList();
     }
-
-    public List<Notificada> getProrrogasCandidatas() {
-        Query query = this.getEntityManager().createQuery("SELECT n FROM Notificada n WHERE n.fechaPuestaProrroga IS NOT NULL");
-        query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-        return query.getResultList();
-    }
 }

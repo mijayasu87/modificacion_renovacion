@@ -40,10 +40,10 @@ and open the template in the editor.
                 </p:commandLink>
             </div>
             <a class="itemm" href="settings.xhtml" title="Configuración" style="display:  #{loginBean.usuarioConsulta eq true?'none':'inline-block'}"><i class="material-icons" >settings</i></a>
+            <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
             <a class="itemm" href="abandono.xhtml" title="Abandono" >ABANDONO</a>
             <a class="itemm" href="caducadas.xhtml" title="Caducadas" >CADUCADAS-NEGADAS</a>
-            <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>
-            <a class="itemm" href="prorroga.xhtml" title="Prórrogas" >PRÓRROGAS</a>
+            <a class="itemm" href="desistidas.xhtml" title="Desistidas" >DESISTIDAS</a>            
             <a class="activo" href="#" title="Notificadas" >NOTIFICADAS</a>            
             <a class="itemm" href="renovaciones.xhtml" title="Renovaciones" >RENOVACIONES</a>
         </div>
@@ -105,11 +105,6 @@ and open the template in the editor.
                                  update="mensajes dlgParaAbandono tipoAbanForm"
                                  style="float: right; font-weight: bold; margin-top: 12px;" class="btn_peque"
                                  oncomplete="if(args.abait){PF('dlgParaAbandono').show();}"/>
-                <p:commandButton value="PARA PRÓRROGA" actionListener="#{notificadaBean.prepararParaProrrogas}"
-                                 update="mensajes dlgParaProrroga paraProForm"
-                                 style="float: right; font-weight: bold; margin-top: 12px; margin-right: 5px;" class="btn_peque"
-                                 oncomplete="if(args.proit){PF('dlgParaProrroga').show();}"/>
-                <div style="float: right; font-weight: bold; margin-top: 55px; margin-right: -80px; border: solid #ff9800; background: #fff3e0; padding: 6px; " >PARA PRÓRROGA</div>
                 <div style="float: right; font-weight: bold; margin-top: 55px; margin-right: -300px; border: solid #9c27b0; padding: 6px; " >REGLAMENTO</div>
                 <div style="float: right; font-weight: bold; margin-top: 55px; margin-right: -211px; border: solid #00E676; padding: 6px; " >ERJAFE</div>
                 <div style="float: right; font-weight: bold; margin-top: 55px; margin-right: -154px; border: solid dodgerblue; padding: 6px; " >COA</div>
@@ -153,31 +148,31 @@ and open the template in the editor.
                     <p:column  id="solicitud" headerText="Solicitud" style="text-align: center;" 
                                filterBy="#{notificada.solicitud}">
                         <h:outputText value="#{notificada.solicitud}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="fechap" headerText="Fecha Presentación" style="text-align: center;"
                                filterBy="#{notificada.fechaPres}"
                                filterMatchMode="startsWith">
                         <h:outputText value="#{notificada.fechaPres}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="comprobante" headerText="# Comprobante" style="text-align: center;"
                                filterBy="#{notificada.noComprobantePresentSolic}"
                                filterMatchMode="startsWith">
                         <h:outputText value="#{notificada.noComprobantePresentSolic}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="# Comprobante Emis. Cert" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.noComprobanteEmisionCert}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="Total Fol. Exp." style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.totalFoliosExpediente}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
                     <p:column id="notificacion" headerText="Notificación" style="text-align: center;" filterBy="#{notificada.notificacion}" >
                         <p:commandLink id="notlink" value="#{notificada.notificacion}" style="color: #0089ec; font-size: 14px; font-weight: bold" process="@this"
@@ -185,12 +180,12 @@ and open the template in the editor.
                                        oncomplete="if(args.viewnotificacion){otherpage(args.view)};" update="mensajes notlink" rendered="#{notificada.notificacionEmitida}"/>
                         <h:outputText value="#{notificada.notificacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
                                       rendered="#{!notificada.notificacionEmitida}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>                   
                     <p:column  id="fechaENo" headerText="F. El. Not." style="text-align: center;"
                                filterBy="#{notificada.fechaElaboraNotificacion}" >
                         <h:outputText value="#{notificada.fechaElaboraNotificacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}">
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}">
                             <f:convertDateTime pattern="yyyy-MM-dd" />
                         </h:outputText>
                     </p:column>
@@ -198,90 +193,90 @@ and open the template in the editor.
                     <p:column  id="titulor" headerText="Título Resolución" style="text-align: center;"
                                filterBy="#{notificada.tituloResolucion}">
                         <h:outputText value="#{notificada.tituloResolucion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="nregistro" headerText="# registro" style="text-align: center;"
                                filterBy="#{notificada.registroNo}">
                         <h:outputText value="#{notificada.registroNo}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="fechar" headerText="Fecha Registro" style="text-align: center;"
                                filterBy="#{notificada.fechaRegPres}">
                         <h:outputText value="#{notificada.fechaRegPres}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="fechavc" headerText="F. Venc. Registro" style="text-align: center;"
                                filterBy="#{notificada.fechaVenRegPres}">
                         <h:outputText value="#{notificada.fechaVenRegPres}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="denominacion" headerText="Denominación" style="text-align: center;"
                                filterBy="#{notificada.denominacion}">
                         <h:outputText value="#{notificada.denominacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="Lema" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.lema}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="Signo" style="text-align: center;" filterBy="#{notificada.signo}" >
                         <h:outputText value="#{notificada.signo}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="Clase" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.clase}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="Protege" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.protege}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="titulara" headerText="Titular Actual" style="text-align: center;"
                                filterBy="#{notificada.titularActual}">
                         <h:outputText value="#{notificada.titularActual}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="ApeApodRepre" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.apeApodRepre}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="NomApodRepre" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.nomApodRepre}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="casilleros" headerText="Casillero SENADI" style="text-align: center;"
                                filterBy="#{notificada.casilleroSenadi}">
                         <h:outputText value="#{notificada.casilleroSenadi}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="casilleroj" headerText="Casillero Judicial" style="text-align: center;"
                                filterBy="#{notificada.casilleroJudicial}">
                         <h:outputText value="#{notificada.casilleroJudicial}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  id="responsable" headerText="Responsable" style="text-align: center;" 
                                filterBy="#{notificada.responsable}">
                         <h:outputText value="#{notificada.responsable}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column  headerText="Identificación" style="text-align: center;" styleClass="vd-hidden-column">
                         <h:outputText value="#{notificada.identificacion}" title="#{notificadaBean.getTooltipAbandono(notificada)}"
-                                      styleClass="#{notificada.fechaPuestaProrroga ne null?'row-prorroga':notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
+                                      styleClass="#{notificada.tipoAbandono eq 'ERJAFE'?'row-erjafe':notificada.tipoAbandono eq 'REGLAMENTO'?'row-reglamento':notificada.tipoAbandono eq 'COA'?'row-coa':''}"/>
                     </p:column>
 
                     <p:column id="editar" headerText="Acción" style="width: 120px;"  exportable="false"
@@ -485,71 +480,6 @@ and open the template in the editor.
                                      style="float: right; font-weight: bold;" class="btn_buscar"
                                      oncomplete="if(args.abit){PF('dlgParaAbandono').hide();}">
                         <p:confirm header="CONFIRMAR" message="SEGURO DE CONFIGURAR LAS NOTIFICACIONES SELECCIONADAS PARA ABANDONO ?"/> 
-                    </p:commandButton>
-
-                </h:form>
-            </p:dialog>
-
-            <p:dialog id="dlgParaProrroga" modal="true" resizable="true"
-                      header="TRÁMITES SELECCIONADOS PARA ESTABLECER PARA PRÓRROGA" fitViewport="true"
-                      widgetVar="dlgParaProrroga" style="font-size: 11px; margin-bottom: 10px;" showEffect="clip"
-                      hideEffect="explode" closeOnEscape="true" width="800px">
-                <p:ajax event="close" update="dlgParaProrroga" resetValues="true" />
-                <p:growl id="paraPro" life="1000"/>
-                <h:form id="paraProForm" >
-                    <p:panel style="margin: 0 auto; text-align: center;" styleClass="panelpara">
-                        <p:outputLabel value="Las Notificaciones seleccionadas se configurarán para prórroga y, una vez cumplido el plazo en días hábiles, se pasarán a la pestaña 'PRÓRROGAS'"
-                                       style="font-size: 10px !important; text-align: center !important;"/>
-                    </p:panel>
-                    <p:dataTable id="tablaDePro" var="item"
-                                 value="#{notificadaBean.selectedNotificadas}" widgetVar="tablaDePro"
-                                 emptyMessage="No hay Datos para mostrar"
-                                 paginator="true"
-                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 rows="10"
-                                 rowsPerPageTemplate="10,25,60,150,200,250,300"
-                                 style="margin:3px auto; font-size: 9px !important; background: none">
-
-                        <p:column headerText="Solicitud" style="text-align: center;" >
-                            <h:outputText value="#{item.solicitud}" />
-                        </p:column>
-                        <p:column headerText="Denominación" style="text-align: center;" >
-                            <h:outputText value="#{item.denominacion}" />
-                        </p:column>
-                        <p:column headerText="Notificación" style="text-align: center;" >
-                            <h:outputText value="#{item.notificacion}" />
-                        </p:column>
-                        <p:column headerText="F. Notificación" style="text-align: center;" >
-                            <h:outputText value="#{item.fechaNotifica}" >
-                                <f:convertDateTime pattern="yyyy-MM-dd" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column headerText="Escrito No. (Alcance)" style="text-align: center;" >
-                            <p:inputText value="#{item.numeroAlcance}" class="maxsize"/>
-                        </p:column>
-                        <p:column headerText="Fecha Escrito" style="text-align: center;" >
-                            <p:calendar value="#{item.fechaAlcance}" mask="true" pattern="yyyy-MM-dd"
-                                        navigator="true" inputStyleClass="maxsize"/>
-                        </p:column>
-                        <f:facet name="footer">
-                            <p:outputPanel>
-                                <h:outputText value="#{notificadaBean.selectedNotificadas.size()} Registros" style="font-size: 9px"/>
-                            </p:outputPanel>
-                        </f:facet>
-                    </p:dataTable>
-                    <p:panelGrid style="width:  100% !important" columns="2" columnClasses="thirty-percent, sixty-percent">
-                        <p:outputLabel value="Días de Prórroga:" for="diasProrroga" style="float: right"/>
-                        <p:inputText id="diasProrroga" value="#{notificadaBean.diasProrroga}" class="maxsize" required="true">
-                            <p:keyFilter mask="num" />
-                        </p:inputText>
-                    </p:panelGrid>
-
-                    <p:commandButton value="CERRAR" class="btn_cerrar" onclick="PF('dlgParaProrroga').hide();" style="float: right;"/>
-                    <p:commandButton value="PARA PRÓRROGA" actionListener="#{notificadaBean.paraProrrogas}"
-                                     update="mensajes notificadaForm:tablaDeDatos diasProrroga" process="@form"
-                                     style="float: right; font-weight: bold;" class="btn_buscar"
-                                     oncomplete="if(args.proit){PF('dlgParaProrroga').hide();}">
-                        <p:confirm header="CONFIRMAR" message="SEGURO DE CONFIGURAR LAS NOTIFICACIONES SELECCIONADAS PARA PRÓRROGA ?"/>
                     </p:commandButton>
 
                 </h:form>
